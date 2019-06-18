@@ -1,0 +1,27 @@
+<?php
+namespace Simec\$modulo;
+
+/**
+ * Especificação do controller do PAR3
+ */
+trait ControleTrait
+{
+
+    /**
+     * Retorna a responsabilidade do usuário
+     * @return \Simec\$modulo\UsuarioResponsabilidade
+     */
+    protected function usuarioResponsabilidade()
+    {
+        return new UsuarioResponsabilidade();
+    }
+
+    /**
+     * Retorna o usuário logado na sessão
+     * @return \Simec\$modulo\UsuarioSessao
+     */
+    protected function usuario()
+    {
+        return new UsuarioSessao();
+    }
+}

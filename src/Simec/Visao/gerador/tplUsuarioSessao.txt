@@ -1,0 +1,17 @@
+<?php
+namespace Simec\$modulo;
+
+/**
+ * Usuário registrado na sessão
+ */
+class UsuarioSessao extends \Simec\Corporativo\Usuario\UsuarioSessao
+{
+
+    /**
+     * Método construtor da sessão do usuário
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+}

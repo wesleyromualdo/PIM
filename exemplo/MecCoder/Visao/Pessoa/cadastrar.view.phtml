@@ -1,0 +1,46 @@
+<div class="ibox" style="width:100%;">
+    <div class="ibox-title">
+        <h5>Exemplo de CRUD na arquitetura nova</h5>
+    </div>
+    <div class="row">
+    <?php 
+    echo $simec->tab($arAba, $urlAba);
+    ?>
+    </div>
+    <div class="ibox-content">
+    	<form method="POST" name="formSalvarPessoa" id="formSalvarPessoa" class="form form-horizontal notprint" action="">
+    		<input type="hidden" name="requisicao" id="requisicao" value="">
+        	<div class="row">
+               	<div class="form-group">
+                	<label class="col-sm-2 col-md-2 col-lg-2 control-label">Nome:</label>
+                    <div class="col-md-4">
+                        <input name="nome" type="text" value="<?php echo $pessoa->petnome; ?>" class="form-control">
+                    </div>
+    			</div>
+        	</div>
+        	<div class="row">
+        	<?php echo $simec->input('idade', 'Idade', $pessoa->petidade, array('maxlength'=>'4', 'type'=>'number'/*, 'onkeyup'=>"this.value=mascaraglobal('####',this.value);"*/), ["label-size"=>2, "input-size"=>4]);?>
+        	</div>
+        	<div class="row">
+            <?php
+            echo $simec->select('estuf[]', 'Estado', $pessoa->estuf, $sqlEstado, ["data-placeholder"=>"Estado", "multiple"], ["label-size"=>2, "input-size"=>4]);
+            ?>
+        	</div>
+        	<div class="row">
+        	<?php echo $simec->radio('sexo', 'Sexo', $pessoa->petsexo, ['M' => 'Masculino', 'F' => 'Feminino'], [], ["label-size"=>2, "input-size"=>4]); ?>
+        	</div>
+    	</form>
+    </div>
+    <div class="ibox-footer">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-2">
+                <button type="button" class="btn btn-success salvar" style="width:110px;">
+                    <i class="fa fa-save"></i> Salvar
+                </button>
+                <button type="button" class="btn btn-success novo" style="width:110px;">
+                    <i class="fa fa-plus"></i> Novo
+                </button>				
+            </div>
+        </div>
+    </div>    
+</div>

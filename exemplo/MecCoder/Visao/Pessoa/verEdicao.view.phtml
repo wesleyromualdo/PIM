@@ -1,0 +1,64 @@
+<div class="ibox" style="width:100%;">
+    <div class="ibox-title">
+        <h5>Exemplo de edição</h5>
+    </div>
+    <form method="POST" class="form" data-view-assign="_JS.pessoa" action="?modulo=exemplo/controle/pessoa/salvar" >
+        <div class="ibox-content">
+            <input name="id" type="hidden" data-val-id >
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">CPF:</label>
+                        <input name="cpf" type="text" value="" class="form-control js-cmp-cpf" data-val-cpf >
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Nome:</label>
+                        <input name="nome" type="text" value="" class="form-control" data-val-nome >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Telefone:</label>
+                        <input name="telefone" type="text" value="" class="form-control" data-val-telefone >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Naturalidade:</label>
+                        <select class="form-control" name="naturalidade" data-collection='_JS.estados' data-tpl-item='<option data-val-uf data-html-descricao>' data-val-naturalidade >
+                            <option value="">Selecione</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Nascimento:</label>
+                        <input name="nascimento" type="text" value="" class="form-control js-cmp-data" data-val-nascimento >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Peso:</label>
+                        <input name="peso" type="text" value="" class="form-control" data-val-peso >
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ibox-footer">
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-5">
+                    <a href="?modulo=exemplo/controle/pessoa/ver-pesquisa" class="btn btn-default" >
+                        Cancelar
+                    </a>				
+                    <button type="submit" class="btn btn-success js-salvar"
+                        <i class="fa fa-ok"></i> 
+                        Enviar
+                    </button>
+                </div>
+            </div>
+        </div>    
+    </form>
+</div>
