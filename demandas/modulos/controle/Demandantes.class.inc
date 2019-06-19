@@ -28,7 +28,7 @@ class Demandantes extends mvc\Controle
 	            die;
 	        case 'salvar_demanda_itens':
 	            $demid = $this->salvarDemanda( $_REQUEST );
-	            $url = 'demandas.php?modulo=demandantes/cadastarDemanda&acao=A&ddtid='.$_REQUEST['ddtid'].'&demid='.$demid;
+	            $url = 'demandas.php?modulo=demandantes/cadastarDemanda&acao=A&ddtid='.$_GET['ddtid'].'&demid='.$demid;
 	            $this->sucesso($url);
 	            die;
 	        case 'incluirLinhaItensDemanda':
@@ -37,15 +37,15 @@ class Demandantes extends mvc\Controle
 	        case 'salva_pessoa_juridica':
 	            $this->salva_pessoa_juridica( $_REQUEST );
 	            if( $_REQUEST['enfid'] && $_REQUEST['tipo'] ){
-	                $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_REQUEST['ddtid'].'&enfid='.$_REQUEST['enfid'].'&tipo='.$_REQUEST['tipo'].'&funcao='.$_REQUEST['funcao'];
+	                $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_GET['ddtid'].'&enfid='.$_GET['enfid'].'&tipo='.$_GET['tipo'].'&funcao='.$_GET['funcao'];
 	            } else {
-	                $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_REQUEST['ddtid'];
+	                $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_GET['ddtid'];
 	            }
 	            $this->sucesso($url);
 	            die;
 	        case 'salva_pessoa_fisica':
 	            $this->salva_pessoa_fisica( $_REQUEST );
-	            $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_REQUEST['ddtid'].'&enfid='.$_REQUEST['enfid'].'&tipo='.$_REQUEST['tipo'].'&funcao='.$_REQUEST['funcao'];
+	            $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_GET['ddtid'].'&enfid='.$_GET['enfid'].'&tipo='.$_GET['tipo'].'&funcao='.$_GET['funcao'];
 	            $this->sucesso($url);
 	            die;
 	        case 'montar_tela_pessoa':
@@ -54,6 +54,9 @@ class Demandantes extends mvc\Controle
 	            if( $_REQUEST['tipo'] == 'F' ){
 	                echo $this->monta_tela_pessoafisica( $_REQUEST );
 	            } else {
+	                $_REQUEST['enjid'] = $_REQUEST['enjid_pai'];
+	                $_REQUEST['enfid'] = $_REQUEST['enfid_pai'];
+	                $_REQUEST['ejfid'] = $_REQUEST['ejfid_pai'];
 	               echo $this->monta_tela_pessoajuridica( $_REQUEST );
 	            }
 	            die;
@@ -367,7 +370,7 @@ class Demandantes extends mvc\Controle
 	        $arDado['enjid'] = $arrPost['enjid'];
 	        $arDado['enfid'] = $arrPost['enfid'];
 	        $arDado['ejfid'] = $arrPost['ejfid'];
-	        	        
+	           
 	        $arDado['entidades'] = $arFuncao['enfdsc'];
 	        $arDado['demandante']['enfid'] = $arrPost['enfid'];
 	        

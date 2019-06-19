@@ -14,13 +14,13 @@
     	<div class="row">
     		<div class="col-lg-12">
 <?php       if( (int)$this->qtd_ja_cadastrado < (int)$this->qtd_representante ){?>
-                    <button type="button" class="btn btn-primary btn-incluir" style="width: 200px;" onclick="abreModalPessoa('');"><i class="fa fa-edit"></i> Incluir</button>
+                    <button type="button" class="btn btn-primary btn-incluir" style="width: 200px;" onclick="abreModalPessoaFisica('', '');"><i class="fa fa-edit"></i> Incluir</button>
 <?php       }?>
             </div>
     	</div>
     	<div class="row">
     		<div class="col-lg-12">
-    			<form method="post" name="formulario-lista-pessoa-juridica" id="formulario-lista-pessoa-juridica" class="form form-horizontal">
+    			<form method="post" name="formulario-lista-pessoa-fisica" id="formulario-lista-pessoa-fisica" class="form form-horizontal">
     			<input type="hidden" name="enfid" value="<?php echo $_REQUEST['enfid'];?>">
     			<input type="hidden" name="tipo" value="<?php echo $_REQUEST['tipo'];?>">
     			<input type="hidden" name="ejfid" value="<?php echo $this->ejfid;?>">
@@ -39,7 +39,7 @@
                     //$listagemSimec->turnOnPesquisator();
                     $listagemSimec->setQuery( $this->sql_pessoafisica );
                     //ver(Simec_Listagem::TOTAL_QTD_REGISTROS,d);
-                    $listagemSimec->addAcao('view', array('func' => 'abreModalPessoa', 'extra-params' => array('enrtipo')));
+                    $listagemSimec->addAcao('view', array('func' => 'abreModalPessoaFisica', 'extra-params' => array('enrtipo')));
                     $listagemSimec->setFormFiltros('formulario-entidade');
                     $listagemSimec->addCallbackDeCampo('enscpf', 'formata_numero_cnpj_cpf');
                     $listagemSimec->setTotalizador(Simec_Listagem::TOTAL_QTD_REGISTROS);
@@ -65,22 +65,22 @@
                 </div>
             </div>
             <div class="ibox-footer" style="text-align: center;">
-                <button type="button" id="btn-salvar-pessoa" class="btn btn-primary" data-loading-text="Salvando aguarde ..."><i class="fa fa-save"></i> Salvar</button>
-                <button type="button" id="btn-fechar-pessoa" data-dismiss="modal" class="btn btn-success"><i class="fa fa-times-circle-o"></i> Fechar</button>
+                <button type="button" id="btn-salvar-pessoa-fisica" class="btn btn-primary" data-loading-text="Salvando aguarde ..."><i class="fa fa-save"></i> Salvar</button>
+                <button type="button" id="btn-fechar-pessoa-fisica" data-dismiss="modal" class="btn btn-success"><i class="fa fa-times-circle-o"></i> Fechar</button>
             </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-function abreModalPessoa( ensid, enrtipo){
+function abreModalPessoaFisica( ensid, enrtipo){
 	jQuery("#form_pessoa").html('');
 
-	var enfid = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="enfid"]').val();
-	var ejfid = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="ejfid"]').val();
-	var tipo = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="tipo"]').val();
-	var enrgestor = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="enrgestor"]').val();
-	var enrtipo = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="enrtipo"]').val();
+	var enfid = jQuery('[name="formulario-lista-pessoa-fisica"]').find('[name="enfid"]').val();
+	var ejfid = jQuery('[name="formulario-lista-pessoa-fisica"]').find('[name="ejfid"]').val();
+	var tipo = jQuery('[name="formulario-lista-pessoa-fisica"]').find('[name="tipo"]').val();
+	var enrgestor = jQuery('[name="formulario-lista-pessoa-fisica"]').find('[name="enrgestor"]').val();
+	var enrtipo = jQuery('[name="formulario-lista-pessoa-fisica"]').find('[name="enrtipo"]').val();
 	
 	var caminho = window.location.href;
 	var action = '&requisicao=montar_tela_pessoa&ensid='+ensid+'&ejfid='+ejfid+'&enfid='+enfid+'&tipo='+tipo+'&enrtipo='+enrtipo+'&enrtipo='+enrtipo+'&enrgestor='+enrgestor;
@@ -96,12 +96,12 @@ function abreModalPessoa( ensid, enrtipo){
 	jQuery("#modal-form-pessoa-fisica").modal("show");
 }
 
-jQuery('#btn-salvar-pessoa').click(function(){	
+jQuery('#btn-salvar-pessoa-fisica').click(function(){	
 	jQuery('[name="formulario-pessoa-fisica"]').find('[name="requisicao"]').val('salva_pessoa_fisica');
 	jQuery('[name="formulario-pessoa-fisica"]').submit();
 });
 
-function getEnderecoByCEP(endcep,tipoendereco) {	
+/*function getEnderecoByCEP(endcep,tipoendereco) {	
 	url = '/geral/consultadadosentidade.php?requisicao=pegarenderecoPorCEP';
 	data = '&endcep=' + endcep;
 	$.post(
@@ -118,5 +118,5 @@ function getEnderecoByCEP(endcep,tipoendereco) {
 		}
 	);
 
-}
+}*/
 </script>

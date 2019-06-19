@@ -19,7 +19,7 @@ if( $this->funcao == 'R' ){
     	<div class="row">
     		<div class="col-lg-12">
 <?php       if( (int)$this->qtd_ja_cadastrado < (int)$this->qtd_representante ){?>
-                    <button type="button" class="btn btn-primary btn-incluir" style="width: 200px;" onclick="abreModalPessoa(<?php echo $ejfid; ?>, '');"><i class="fa fa-edit"></i> Incluir</button>
+                    <button type="button" class="btn btn-primary btn-incluir" style="width: 200px;" onclick="abreModalPessoaJuridica(<?php echo $ejfid; ?>, '');"><i class="fa fa-edit"></i> Incluir</button>
 <?php       }?>
             </div>
     	</div>
@@ -40,8 +40,8 @@ if( $this->funcao == 'R' ){
                     if( !empty($this->verifica_gestor) ){
                         $listagemSimec->addAcao('plus', array('func' => 'abreListaGetor', 'extra-params' => array('enjid')));
                     }
-                    $listagemSimec->addAcao('view', array('func' => 'abreModalPessoa', 'extra-params' => array('ejfid')));
-                    //$listagemSimec->addAcao('view', 'abreModalPessoa');
+                    $listagemSimec->addAcao('view', array('func' => 'abreModalPessoaJuridica', 'extra-params' => array('enjid')));
+                    //$listagemSimec->addAcao('view', 'abreModalPessoaJuridica');
                     $listagemSimec->setFormFiltros('formulario-entidade');
                     $listagemSimec->addCallbackDeCampo('enjcnpj', 'formata_numero_cnpj_cpf');
                     $listagemSimec->setTotalizador(Simec_Listagem::TOTAL_QTD_REGISTROS);
@@ -66,8 +66,8 @@ if( $this->funcao == 'R' ){
                 </div>
             </div>
             <div class="ibox-footer" style="text-align: center;">
-                <button type="button" id="btn-salvar-pessoa" class="btn btn-primary" data-loading-text="Salvando aguarde ..."><i class="fa fa-save"></i> Salvar</button>
-                <button type="button" id="btn-fechar-pessoa" data-dismiss="modal" class="btn btn-success"><i class="fa fa-times-circle-o"></i> Fechar</button>
+                <button type="button" id="btn-salvar-pessoa-juridica" class="btn btn-primary" data-loading-text="Salvando aguarde ..."><i class="fa fa-save"></i> Salvar</button>
+                <button type="button" id="btn-fechar-pessoa-juridica" data-dismiss="modal" class="btn btn-success"><i class="fa fa-times-circle-o"></i> Fechar</button>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@ if( $this->funcao == 'R' ){
 
 <script type="text/javascript">
 
-function abreModalPessoa( enjid, ejfid ){
+function abreModalPessoaJuridica( ejfid, enjid ){
 	jQuery("#form_pessoa").html('');
 	
 	var caminho = window.location.href;
@@ -92,7 +92,7 @@ function abreModalPessoa( enjid, ejfid ){
 	jQuery("#modal-form-pessoa-juridica").modal("show");
 }
 
-jQuery('#btn-salvar-pessoa').click(function(){	
+jQuery('#btn-salvar-pessoa-juridica').click(function(){	
 	jQuery('[name="formulario-pessoa-juridica"]').find('[name="requisicao"]').val('salva_pessoa_juridica');
 	jQuery('[name="formulario-pessoa-juridica"]').submit();
 });
