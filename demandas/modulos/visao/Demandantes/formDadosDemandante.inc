@@ -49,7 +49,7 @@ $arrEntidade = array();
     <div class="ibox-title">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="left"><?php echo $this->enjdsc; ?></h2>
+                <h2 class="left"><?php echo $this->demandante['enjdsc']; ?></h2>
             </div>
         </div>
     </div>
@@ -63,7 +63,7 @@ $arrEntidade = array();
                 	<div class="space-25"></div>
                 	<div id="menuDirigentes">
                     	<h5>INFORMAÇÕES</h5>
-                            <div class="menuUnidade <?php echo ( ($_REQUEST['enfid'] == '' || $_REQUEST['enfid'] === ($this->funcao_entidade[0]['enfidpai']) ) ? 'menuSelecionado' : '') ?>" tipo="J" enfid="<?php echo $this->funcao_entidade[0]['enfidpai'];?>">
+                            <div class="menuUnidade <?php echo ( ($_REQUEST['enfid'] == '' || $_REQUEST['enfid'] === ($this->funcao_entidade[0]['enfidpai']) ) ? 'menuSelecionado' : '') ?>" tipo="J" funcao="P" enfid="<?php echo $this->funcao_entidade[0]['enfidpai'];?>">
                                 <?php echo $iconPreenchido; ?>
                                 <?php echo $this->funcao_entidade[0]['entidade_pai']?>
                                 <?php $arrEntidade[$this->funcao_entidade[0]['enfidpai']] = $this->funcao_entidade[0]['entidade_pai']; ?>
@@ -71,7 +71,7 @@ $arrEntidade = array();
                         <h5>REPRESENTANTES</h5>
 <?php                   foreach ($this->funcao_entidade as $v) {
                             $arrEntidade[$v['enfidfilho']] = $v['entidade_filho'];?>
-							<div class="menuUnidade <?php echo ( $_REQUEST['enfid'] === ($v['enfidfilho']) ? 'menuSelecionado' : '') ?>" tipo="<?php echo $v['enftipo'];?>" enfid="<?php echo $v['enfidfilho']; ?>">
+							<div class="menuUnidade <?php echo ( $_REQUEST['enfid'] === ($v['enfidfilho']) ? 'menuSelecionado' : '') ?>" tipo="<?php echo $v['enftipo'];?>" funcao="R" enfid="<?php echo $v['enfidfilho']; ?>">
                                 <?php echo $iconPreenchido; ?>
                                 <?php echo $v['entidade_filho']; ?>
                             </div>    
@@ -95,6 +95,7 @@ $arrEntidade = array();
                         default:
                             $_REQUEST['tipo'] = 'J';
                             $_REQUEST['enfid'] = '1';
+                            $_REQUEST['funcao'] = 'P';
                             $arrEntidade['entidade'] = $arrEntidade;
                             $this->carregarDados($arrEntidade);
                             echo $this->incluirVisaoAcessoria('formListaPessoaJuridica');
@@ -117,7 +118,8 @@ $('.menuUnidade').click(function(){
     var menuAtual = '<?php echo $_REQUEST['enfid']; ?>';
     var tipo      = $(this).attr('tipo');
     var enfid      = $(this).attr('enfid');
-    var url       = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid=<?php echo $_REQUEST['ddtid'];?>&enfid='+enfid+'&tipo='+tipo; 
+    var funcao      = $(this).attr('funcao');
+    var url       = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid=<?php echo $_REQUEST['ddtid'];?>&enfid='+enfid+'&tipo='+tipo+'&funcao='+funcao; 
     
     if (enfid != menuAtual) {
         $(location).attr('href',url);

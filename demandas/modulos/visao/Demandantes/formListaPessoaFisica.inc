@@ -6,7 +6,7 @@
 	<div class="ibox-title">
         <div class="row">
         	<div class="col-md-12" >
-    	       <h3 id="entidade">Dados do(a) <?php echo $this->entidade[$_REQUEST['enfid']];?>(a)</h3>
+    	       <h3 id="entidade">Dados do(a) <?php echo $this->entidades;?>(a)</h3>
             </div>
 		</div>
 	</div>
@@ -24,9 +24,11 @@
     			<input type="hidden" name="enfid" value="<?php echo $_REQUEST['enfid'];?>">
     			<input type="hidden" name="tipo" value="<?php echo $_REQUEST['tipo'];?>">
     			<input type="hidden" name="ejfid" value="<?php echo $this->ejfid;?>">
-    			<input type="hidden" name="tipo_representante"   id="tipo_representante"  value="<?php echo $this->tipo_representante; ?>"/>
+    			<input type="hidden" name="enrgestor" value="<?php echo $this->enrgestor;?>">
+    			<input type="hidden" name="enrtipo"   id="enrtipo"  value="<?php echo $this->enrtipo; ?>"/>
     			
                 	<?php
+                	
                     $listagemSimec = new Simec_Listagem();
                     $arrayCabecalho = array('CPF', 'Nome', 'E-mail', 'Telefone');
                     $esconderColunas = array('enjid', 'ensid', 'ejfid', 'enrtipo', 'gestor', 'enfid', 'ensstatus', 'enjendcep', 'enjendlogradouro',
@@ -37,7 +39,7 @@
                     //$listagemSimec->turnOnPesquisator();
                     $listagemSimec->setQuery( $this->sql_pessoafisica );
                     //ver(Simec_Listagem::TOTAL_QTD_REGISTROS,d);
-                    $listagemSimec->addAcao('view', array('func' => 'abreModalPessoa', 'extra-params' => array('enrtipo', 'gestor')));
+                    $listagemSimec->addAcao('view', array('func' => 'abreModalPessoa', 'extra-params' => array('enrtipo')));
                     $listagemSimec->setFormFiltros('formulario-entidade');
                     $listagemSimec->addCallbackDeCampo('enscpf', 'formata_numero_cnpj_cpf');
                     $listagemSimec->setTotalizador(Simec_Listagem::TOTAL_QTD_REGISTROS);
@@ -63,24 +65,25 @@
                 </div>
             </div>
             <div class="ibox-footer" style="text-align: center;">
-                <button type="button" id="btn-fechar-pessoa" data-dismiss="modal" class="btn btn-success"><i class="fa fa-times-circle-o"></i> Fechar</button>
                 <button type="button" id="btn-salvar-pessoa" class="btn btn-primary" data-loading-text="Salvando aguarde ..."><i class="fa fa-save"></i> Salvar</button>
+                <button type="button" id="btn-fechar-pessoa" data-dismiss="modal" class="btn btn-success"><i class="fa fa-times-circle-o"></i> Fechar</button>
             </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-function abreModalPessoa( ensid, enrtipo, gestor ){
+function abreModalPessoa( ensid, enrtipo){
 	jQuery("#form_pessoa").html('');
 
 	var enfid = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="enfid"]').val();
 	var ejfid = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="ejfid"]').val();
 	var tipo = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="tipo"]').val();
-	var tipo_representante = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="tipo_representante"]').val();
+	var enrgestor = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="enrgestor"]').val();
+	var enrtipo = jQuery('[name="formulario-lista-pessoa-juridica"]').find('[name="enrtipo"]').val();
 	
 	var caminho = window.location.href;
-	var action = '&requisicao=montar_tela_pessoa&ensid='+ensid+'&ejfid='+ejfid+'&enfid='+enfid+'&tipo='+tipo+'&enrtipo='+enrtipo+'&tipo_representante='+tipo_representante+'&gestor='+gestor;
+	var action = '&requisicao=montar_tela_pessoa&ensid='+ensid+'&ejfid='+ejfid+'&enfid='+enfid+'&tipo='+tipo+'&enrtipo='+enrtipo+'&enrtipo='+enrtipo+'&enrgestor='+enrgestor;
 	jQuery.ajax({
 	    type: "POST",
 	    url: caminho,

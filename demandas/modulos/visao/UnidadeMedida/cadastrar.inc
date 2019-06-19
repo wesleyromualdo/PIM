@@ -1,21 +1,22 @@
 <?php
   global $simec;
+
 ?>
 
 <div class="ibox">
+
     <div class="ibox-title">
           <h3 class="center">Unidade de Medida</h3>
     </div>
+
     <div class="tabs-container">
       <ul class="nav nav-tabs nav-custom">
-        <li>
-          <a class="nav-link" href="demandas.php?modulo=unidadeMedida/listar">Pesquisar</a>
-        </li>
         <li class="active">
           <a class="nav-link" href="demandas.php?modulo=unidadeMedida/cadastrar"><?php echo ($this->co_unidade_medida) ? 'Editar' : 'Cadastrar'; ?></a>
         </li>
       </ul>
     </div>
+    
     <div class="ibox-content">
       <div class="row">
         <div class="col-lg-12">
@@ -25,21 +26,17 @@
                 <div class="col-lg-6">
                   <?php
                   
-                    $arrAttrSigla = array(
-                      'placeholder' => 'Sigla da Unidade de Medida',
-                      'maxlength' => '20'
-                    );
-                    $arrAttrDesc = array(
-                      'placeholder' => 'Descrição da Unidade de Medida',
-                      'maxlength' => '200'
-                    );
+                  $arrAttrSigla = array(
+                    'placeholder' => 'Sigla da Unidade de Medida',
+                    'maxlength' => '20'
+                  );
+                  $arrAttrDesc = array(
+                    'placeholder' => 'Descrição da Unidade de Medida',
+                    'maxlength' => '200'
+                  );
 
-                    echo $simec->input( 'ds_sigla', 'Sigla', $this->ds_sigla, $arrAttrSigla, array('label-size' => '4') );
-                    echo $simec->input( 'ds_unidade_medida', 'Descrição', $this->ds_unidade_medida, $arrAttrDesc, array('label-size' => '4') );
-
-                    if (!empty($this->co_unidade_medida)) {
-                        echo $simec->radio("co_status", "Situação", $this->co_status, array('1' => 'Ativo', '0' => 'Inativo'), array('id' => 'co_status'), array('label-size' => '4', 'input-size' => '8'));
-                    }
+                  echo $simec->input( 'ds_sigla', 'Sigla', $this->ds_sigla, $arrAttrSigla, array('label-size' => '4') );
+                  echo $simec->input( 'ds_unidade_medida', 'Descrição', $this->ds_unidade_medida, $arrAttrDesc, array('label-size' => '4') );
                   ?>
                 </div>
             </div>

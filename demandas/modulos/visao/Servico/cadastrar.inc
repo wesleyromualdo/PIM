@@ -32,29 +32,26 @@
                 <div class="col-lg-6">
                   <?php
                   
-                    $arrAttrCod = array(
-                      'placeholder' => 'Código do Serviço',
-                      'maxlength' => '20'
-                    );
-                    $arrAttrDesc = array(
-                      'placeholder' => 'Descrição do Serviço',
-                      'maxlength' => '255'
-                    );
-                    $arrAttrCombo = array(
-                      'id' => 'co_unidade_medida'
-                    );
-                    $arrAttrCombo2 = array(
-                      'id' => 'co_grupo_servico'
-                    );
+                  $arrAttrCod = array(
+                    'placeholder' => 'Código do Serviço',
+                    'maxlength' => '20'
+                  );
+                  $arrAttrDesc = array(
+                    'placeholder' => 'Descrição do Serviço',
+                    'maxlength' => '255'
+                  );
+                  $arrAttrCombo = array(
+                    'id' => 'co_unidade_medida'
+                  );
+                  $arrAttrCombo2 = array(
+                    'id' => 'co_grupo_servico'
+                  );
 
-                    echo $simec->input( 'nu_codigo_servico', 'Código do Serviço', $this->nu_codigo_servico, $arrAttrCod, array('label-size' => '4') );
-                    echo $simec->input( 'ds_servico', 'Descrição do Serviço', $this->ds_servico, $arrAttrDesc, array('label-size' => '4') );
-                    echo $simec->select('co_unidade_medida', 'Unidade de Medida', $this->co_unidade_medida, $this->sql_unidade_medida, $arrAttrCombo, array('label-size' => '4', 'input-size' => '8'));
-                    echo $simec->select('co_grupo_servico', 'Grupo do Serviço', $this->co_grupo_servico, $this->sql_grupo_servico, $arrAttrCombo2, array('label-size' => '4', 'input-size' => '8'));
+                  echo $simec->input( 'nu_codigo_servico', 'Código do Serviço', $this->nu_codigo_servico, $arrAttrCod, array('label-size' => '4') );
+                  echo $simec->input( 'ds_servico', 'Descrição do Serviço', $this->ds_servico, $arrAttrDesc, array('label-size' => '4') );
 
-                    if (!empty($this->co_servico)) {
-                        echo $simec->radio("co_status", "Situação", $this->co_status, array('1' => 'Ativo', '0' => 'Inativo'), array('id' => 'co_status'), array('label-size' => '4', 'input-size' => '8'));
-                    }
+                  echo $simec->select('co_unidade_medida', 'Unidade de Medida', $this->co_unidade_medida, $this->sql_unidade_medida, $attrCombo, array('label-size' => '4', 'input-size' => '8'));
+                  echo $simec->select('co_grupo_servico', 'Grupo do Serviço', $this->co_grupo_servico, $this->sql_grupo_servico, $attrCombo2, array('label-size' => '4', 'input-size' => '8'));
                   ?>
                 </div>
             </div>
@@ -85,7 +82,7 @@ $(document).ready(function() {
 
 
   jQuery('.btn-voltar').click(function(){
-      window.location='<?=$_SERVER["HTTP_REFERER"]?>'
+      window.location='demandas.php?modulo=servico/listar'
   }); 
 
 });

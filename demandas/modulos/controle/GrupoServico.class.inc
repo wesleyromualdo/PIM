@@ -17,44 +17,38 @@ class GrupoServico extends mvc\Controle
             case 'salvarGrupoServico':
                 
                 $this->acaoSalvar();
-                $this->sucesso('demandas.php?modulo=grupoServico/listar');
+                $this->sucesso('demandas.php?modulo=GrupoServico/listar');
                 die;
                 break;
 
             case 'deletarGrupoServico':
                 $this->acaoDeletar();
-                $this->sucesso('demandas.php?modulo=grupoServico/listar');
+                $this->sucesso('demandas.php?modulo=GrupoServico/listar');
                 die;
                 break;
 
-            case 'listarGrupoFilhoPorPai':
-                  
-                    $this->listarGrupoFilhoPorPai($_REQUEST['dados'][0]);
+            case 'mostrarFilhos':
+                 
 
+                $filtro = array('co_grupo_servico_pai' => $_REQUEST['dados'][0]);
+
+                $this->modelGrupoServico->listarGrupoServico($filtro)->render(Simec_Listagem::SEM_REGISTROS_LISTA_VAZIA);
+
+
+                //$this->sucesso('demandas.php?modulo=GrupoServico/listar');
                 die;
                 break;
-
-
-            case 'listarServicosPorGrupo': 
-
-                    $this->listarServicosPorGrupo($_REQUEST['dados'][0]);
-
-                die;
-                break;
-
 
 
         }
     }   
     
     public function acaoListar()
-    {
-
-        $pesquisar = $_POST['pesquisar'];
-        $this->visao->pesquisar = $pesquisar;
+    {    
+         
         
         $arDado = array('listagem' =>  $this->modelGrupoServico->listarGrupoServico($_POST));
-        $this->visao->setarIncludeCSS('/library/simec/css/OcultarToolBarListagem.css', true);
+        
         $this->visao->carregarDados($arDado);
         $this->visao->setarTituloCabecalho('');
         $this->visao->incluirVisao('lista');
@@ -107,47 +101,6 @@ class GrupoServico extends mvc\Controle
         $this->modelGrupoServico->commit();
         
     }
-
-
-
-    private function listarGrupoFilhoPorPai($co_grupo_servico_pai){
-
-        
-        $arDado = array('listagem' => 
-
-            $this->modelGrupoServico
-            ->listarGrupoFilhoPorPai($co_grupo_servico_pai)
-        
-        );
-         
-
-
-        $this->visao->carregarDados($arDado); 
-        $this->visao->incluirVisao('listarGrupoFilhoPorPai', false);
-
-    }
     
-
-    private function listarServicosPorGrupo($co_grupo_servico){
-        
-
-        
-        $arDado = array('listagem' => 
-
-            $this->modelGrupoServico
-                ->listarServicosPorGrupo($co_grupo_servico)
-        
-        ); 
-         
-
-        $this->visao->carregarDados($arDado); 
-        $this->visao->incluirVisao('listarServicosPorGrupo', false);
-
-         
-
-
-    }
-    
-
     
 }

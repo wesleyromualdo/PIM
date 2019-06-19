@@ -1,24 +1,18 @@
 <?php 
 global $simec;
 
-$arrEntidade[$this->funcao_entidade[0]['enfidpai']] = $this->funcao_entidade[0]['entidade_pai'];
-
-foreach ($this->funcao_entidade as $v) {
-    $arrEntidade[$v['enfidfilho']] = $v['entidade_filho'];
-}
-//ver($this->pessoa_fisica,d);
-//$renderEntidade = new Demanda_Controller_Entidade();
 ?>
 <form method="post" name="formulario-pessoa-fisica" id="formulario-pessoa-fisica" class="form form-horizontal">
-    <input type="hidden" name="ddtid"   id="ddtid"  value="<?php echo $_REQUEST['ddtid']?>"/>
-    <input type="hidden" name="ensid"   id="ensid"  value="<?php echo $_REQUEST['ensid']?>"/>
-    <input type="hidden" name="enfid"   id="enfid"  value="<?php echo $_REQUEST['enfid']?>"/>
-    <input type="hidden" name="ejfid"   id="ejfid"  value="<?php echo $_REQUEST['ejfid']?>"/>
-    <input type="hidden" name="tipo_representante"   id="tipo_representante"  value="<?php echo $_REQUEST['tipo_representante']; ?>"/>
+    <input type="hidden" name="ddtid"   id="ddtid"  value="<?php echo $this->ddtid; ?>"/>
+    <input type="hidden" name="ensid"   id="ensid"  value="<?php echo $this->ensid; ?>"/>
+    <input type="hidden" name="enfid"   id="enfid"  value="<?php echo $this->enfid; ?>"/>
+    <input type="hidden" name="ejfid"   id="ejfid"  value="<?php echo $this->ejfid; ?>"/>
+    <input type="hidden" name="enrgestor"   id="enrgestor"  value="<?php echo $this->enrgestor; ?>"/>
+    <input type="hidden" name="enrtipo"   id="enrtipo"  value="<?php echo $this->enrtipo; ?>"/>
     
     <input type="hidden" name="requisicao" value=""/>
     <div class="ibox-title">
-    	<h3 id="entidade">Dados da <?php echo $arrEntidade[$_REQUEST['enfid']];?></h3>
+    	<h3 id="entidade">Dados do(a) <?php echo $this->entidades;?></h3>
     </div>
     <div class="ibox-content"><?php
     $radioSexo = array('f' => 'Feminino', 'm' => 'Masculino');
@@ -34,7 +28,7 @@ foreach ($this->funcao_entidade as $v) {
     echo $simec->telefone('enstelefone', 'Telefone Comercial', $this->pessoa_fisica['enstelefone'], array('class' => 'telefone', $disabled['enstelefone'], $required));
     ?></div>
     <div class="ibox-title">
-    	<h3>Endereço da <?php echo $arrEntidade[$_REQUEST['enfid']];?></h3>
+    	<h3>Endereço da <?php echo $this->entidades;?></h3>
     </div>
     <div class="ibox-content"><?php 
     echo $simec->cep('enjendcep', 'CEP', $this->pessoa_fisica['enjendcep'], array('class' => 'cep', 'onblur' => 'getEnderecoByCEP(this.value,\'1\');', '', 'required'));

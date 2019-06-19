@@ -21,7 +21,7 @@ $simec = new Simec_View_Helper();
 
 $_SESSION['sislayoutbootstrap'] = 'zimec';
 
-Simec_Listagem::monitorarExport(false);
+Simec_Listagem::monitorarExport($_SESSION['sisdiretorio']);
 //Carrega as funções de controle de acesso
 include_once "controleAcesso.inc";
 

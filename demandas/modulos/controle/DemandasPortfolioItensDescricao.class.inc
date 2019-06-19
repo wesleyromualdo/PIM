@@ -26,8 +26,6 @@ class DemandasPortfolioItensDescricao extends mvc\Controle
         $arDado = array();
         
         $_POST['returnsql'] = true;
-        $pesquisar = $_POST['pesquisar'];
-        $this->visao->pesquisar = $pesquisar;
         
         $arDado['sql_portfolio_itens_descricao'] = $moDemandasPortfolioItensDescricao->listaPortfolioItensDescricao($_POST);
         
@@ -59,6 +57,7 @@ class DemandasPortfolioItensDescricao extends mvc\Controle
         
         $_REQUEST['cidstatus'] = '0';
         $moDemandasPortfolioItensDescricao->popularDadosObjeto($_REQUEST)->salvar();
+        
         $moDemandasPortfolioItensDescricao->commit();
         
     }
@@ -66,9 +65,11 @@ class DemandasPortfolioItensDescricao extends mvc\Controle
     public function acaoSalvar()
     {
         $moDemandasPortfolioItensDescricao = new DemandasPortfolioItensDescricao_Model();
-
+        
         $moDemandasPortfolioItensDescricao->popularDadosObjeto($_REQUEST)->salvar();
+        
         $moDemandasPortfolioItensDescricao->commit();
+        
     }
     
     

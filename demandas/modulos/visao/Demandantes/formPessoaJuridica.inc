@@ -3,14 +3,15 @@ global $simec;
 
 ?>
 <form method="post" name="formulario-pessoa-juridica" id="formulario-pessoa-juridica" class="form form-horizontal">
-    <input type="hidden" name="ddtid"   id="ddtid"  value="<?php echo $this->demandante['ddtid']?>"/>
-    <input type="hidden" name="enjid"   id="enjid"  value="<?php echo $this->demandante['enjid']?>"/>
-    <input type="hidden" name="enfid"   id="enfid"  value="<?php echo $this->demandante['enfid']?>"/>
-    <input type="hidden" name="ejfid_pai"   id="ejfid_pai"  value="<?php echo $this->demandante['ejfid'];?>"/>
+    <input type="hidden" name="ddtid"   id="ddtid"  value="<?php echo $this->ddtid; ?>"/>
+    <input type="hidden" name="enjid"   id="enjid"  value="<?php echo $this->enjid; ?>"/>
+    <input type="hidden" name="enfid"   id="enfid"  value="<?php echo $this->enfid; ?>"/>
+    <input type="hidden" name="ejfid"   id="ejfid"  value="<?php echo $this->ejfid; ?>"/>
+    <input type="hidden" name="ejfid_pai"   id="ejfid_pai"  value="<?php echo $this->demandante['ejfid']; ?>"/>
     
     <input type="hidden" name="requisicao" value=""/>
     <div class="ibox-title">
-    	<h3 id="entidade">Dados da <?php echo $this->entidade[$this->demandante['enfid']];?></h3>
+    	<h3 id="entidade">Dados do(a) <?php echo $this->entidades;?></h3>
     </div>
     <div class="ibox-content"><?php
     echo '<input type="hidden" name="enjcnpj_old" value="'.formatar_cnpj($this->pessoa_juridica['enjcnpj']).'"/>';
@@ -22,7 +23,7 @@ global $simec;
     echo $simec->telefone('enjtelefone', 'Telefone Comercial', $this->pessoa_juridica['enjtelefone'], array('class' => 'telefone', '', 'required'));
     ?></div>
     <div class="ibox-title">
-    	<h3>Endereço da <?php echo $this->entidade[$this->demandante['enfid']];?></h3>
+    	<h3>Endereço do(a) <?php echo $this->entidades;?></h3>
     </div>
     <div class="ibox-content"><?php 
     echo $simec->cep('enjendcep', 'CEP', $this->pessoa_juridica['enjendcep'], array('class' => 'cep', 'onblur' => 'getEnderecoByCEP(this.value,\'1\');', '', 'required'));

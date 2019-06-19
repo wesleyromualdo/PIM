@@ -24,39 +24,9 @@ class Servico_Model extends Modelo
         'co_status' => null,
     );
 
-
-
     public function listaServico( $arrPost )
     {
-        
-        $sql = $this->getSqlListagemFiltro($arrPost);
-
-        if($arrPost['returnsql']) {
-            
-            return $sql;
-            
-        } else {
-            
-            $arrDados = $this->carregar($sql);
-            $arrDados = $arrDados ? $arrDados : array();
-            
-            return $arrDados;
-            
-        }
-        
-    }
-
-    public function getSqlListagemFiltro( $arrPost ){
-
-        $filtro = ' sv.co_status = 1 ';
-
-        if( isset($arrPost['co_status']) ){
-            if($arrPost['co_status'] != '-1'){
-                $filtro = " sv.co_status = '".$arrPost['co_status']."' ";
-            } else {
-                $filtro = " (sv.co_status = 1 OR sv.co_status = 0) ";
-            }
-        }
+        $filtro = '';
         
         if( $arrPost['nu_codigo_servico'] ){
             $filtro .= " AND sv.nu_codigo_servico ILIKE '%".$arrPost['nu_codigo_servico']."%' ";
@@ -82,14 +52,23 @@ class Servico_Model extends Modelo
                 FROM demandas.servico sv
                 LEFT JOIN demandas.unidade_medida um ON um.co_unidade_medida = sv.co_unidade_medida
                 LEFT JOIN demandas.grupo_servico es ON es.co_grupo_servico = sv.co_grupo_servico
-                WHERE {$filtro}";
+                WHERE sv.co_status = 1 {$filtro}";
+        
 
-
-        return $sql;
-
-
+        if($arrPost['returnsql']) {
+            
+            return $sql;
+            
+        } else {
+            
+            $arrDados = $this->carregar($sql);
+            $arrDados = $arrDados ? $arrDados : array();
+            
+            return $arrDados;
+            
+        }
+        
     }
-
 
     public function getComboUnidadeMedida()
     {
@@ -107,14 +86,14 @@ class Servico_Model extends Modelo
 
     public function getServicoPorId($co_servico)
     {
-        if ($co_servico) {
-            $sql = "SELECT 
-                        sv.co_servico, sv.nu_codigo_servico, sv.ds_servico, um.ds_unidade_medida, es.ds_grupo_servico, 
-                        um.co_unidade_medida, es.co_grupo_servico, sv.co_status
-                    FROM demandas.servico sv
-                    LEFT JOIN demandas.unidade_medida um ON um.co_unidade_medida = sv.co_unidade_medida
-                    LEFT JOIN demandas.grupo_servico es ON es.co_grupo_servico = sv.co_grupo_servico
-                    WHERE sv.co_servico = $co_servico ";
+        if($co_servico)
+        {
+            $sql = "SELECT sv.co_servico, sv.nu_codigo_servico, sv.ds_servico, um.ds_unidade_medida, es.ds_grupo_servico, 
+                um.co_unidade_medida, es.co_grupo_servico
+                FROM demandas.servico sv
+                LEFT JOIN demandas.unidade_medida um ON um.co_unidade_medida = sv.co_unidade_medida
+                LEFT JOIN demandas.grupo_servico es ON es.co_grupo_servico = sv.co_grupo_servico
+                WHERE sv.co_status = 1 {$filtro}";
 
             $arrDados = $this->pegaLinha($sql);
         }

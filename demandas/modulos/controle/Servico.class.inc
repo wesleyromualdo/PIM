@@ -26,8 +26,6 @@ class Servico extends mvc\Controle
 	    $arDado = array();
         
         $_POST['returnsql'] = true;
-        $pesquisar = $_POST['pesquisar'];
-        $this->visao->pesquisar = $pesquisar;
 	    
 	    $arDado['sql_servico'] = $moServico->listaServico($_POST);
         $arDado['sql_unidade_medida'] = $moUnidadeMedida->getComboUnidadeMedida();

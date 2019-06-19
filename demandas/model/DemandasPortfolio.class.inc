@@ -46,26 +46,18 @@ class DemandasPortfolio_Model extends Modelo
 
     public function listaPortfolio( $arrPost )
     {
-        $filtro = ' dcostatus = 1 ';
-
-        if( isset($arrPost['dcostatus']) ){
-            if($arrPost['dcostatus'] != '-1'){
-                $filtro = " dcostatus = '".$arrPost['dcostatus']."' ";
-            } else {
-                $filtro = " (dcostatus = 1 OR dcostatus = 0) ";
-            }
-        }
+        $filtro = '';
         
         if( $arrPost['dctid'] ){
-            $filtro .= " and ct.dctid='".$arrPost['dctid']."'";
+            $filtro = " and ct.dctid='".$arrPost['dctid']."'";
         }
         
         if( $arrPost['dcdid'] ){
-            $filtro .= " and cd.dcdid='".$arrPost['dcdid']."'";
+            $filtro = " and cd.dcdid='".$arrPost['dcdid']."'";
         }
         
         if( $arrPost['dddid'] ){
-            $filtro .= " and dd.dddid='".$arrPost['dddid']."'";
+            $filtro = " and dd.dddid='".$arrPost['dddid']."'";
         }
         
         $sql = "SELECT dc.dcoid, cd.dcddsc, ct.dctdsc, ej.enjdsc FROM demandas.demandas_portfolio dc 
@@ -74,7 +66,8 @@ class DemandasPortfolio_Model extends Modelo
                 INNER JOIN demandas.demandados dd ON dd.dddid = dc.dddid 
                 INNER JOIN corporativo.entidades_juridicaxfuncao jf ON jf.ejfid = dd.ejfid
                 INNER JOIN corporativo.entidades_juridica ej ON ej.enjid = jf.enjid
-                WHERE {$filtro}";
+                WHERE dcostatus=1 {$filtro}";
+        
 
         if($arrPost['returnsql']) {
             

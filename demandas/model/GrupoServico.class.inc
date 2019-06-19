@@ -53,33 +53,31 @@ class GrupoServico_Model extends Modelo
         );
     }
 
+
+
     public function antesSalvar()
     {
+
         return parent::antesSalvar();
     }
 
+
     public function Get( $arrFiltro )
     {
+ 
         $arrDados = $this->carregar(listaFiltroSql($arrFiltro));
         $arrDados = $arrDados ? $arrDados : array();
         
         return $arrDados; 
     }
 
+
     public function listaFiltroSql( $arrFiltro )
     {
-        $filtro = ' grupo.co_status = 1 ';
-
-        if( isset($arrFiltro['co_status']) ){
-            if($arrFiltro['co_status'] != '-1'){
-                $filtro = " grupo.co_status = '".$arrFiltro['co_status']."' ";
-            } else {
-                $filtro = " (grupo.co_status = 1 OR grupo.co_status = 0) ";
-            }
-        }
-
+        $filtro = '';
+        
         if( $arrFiltro['nu_codigo_grupo_servico'] ){
-            $filtro .= " and grupo.nu_codigo_grupo_servico ilike removeAcento('%".$arrFiltro['nu_codigo_grupo_servico']."%')";
+            $filtro = " and grupo.nu_codigo_grupo_servico ilike removeAcento('%".$arrFiltro['nu_codigo_grupo_servico']."%')";
         }
 
         if( $arrFiltro['ds_grupo_servico'] ){
@@ -90,106 +88,74 @@ class GrupoServico_Model extends Modelo
             $filtro .= " and grupo.co_grupo_servico = ".$arrFiltro['co_grupo_servico'] ."";
         }
 
+
         if( $arrFiltro['co_grupo_servico_pai'] ){
             $filtro .= " and grupo.co_grupo_servico_pai = ".$arrFiltro['co_grupo_servico_pai'] ."";
         }
 
-        if( $arrFiltro['exibe_somente_pai'] ){
-            $filtro .= " and grupo.co_grupo_servico_pai IS NULL ";
-        }
+
+
         
-        $sql = " SELECT
-                    grupo.co_grupo_servico ,
-                    grupo.nu_codigo_grupo_servico, 
-                    grupo.ds_grupo_servico,
-                CASE WHEN grupo.co_status = 1 
-                    THEN  'Ativo' 
-                    ELSE 'Inativo'
-                END AS co_status ,
-                CASE WHEN pai.co_grupo_servico IS NULL 
-                    THEN  '-' 
-                    ELSE pai.co_grupo_servico || ''
-                END AS co_grupo_servico_pai ,
-                CASE WHEN pai.ds_grupo_servico IS NULL 
-                    THEN  '-' 
-                    ELSE pai.ds_grupo_servico || ''
-                END  as cs_grupo_servico_pai , 
-                CASE WHEN grupo.co_grupo_servico_pai IS NULL 
-                    THEN grupo.co_grupo_servico || '' 
-                    ELSE grupo.co_grupo_servico_pai  || '-' || grupo.co_grupo_servico
-                END AS ordem
-                FROM demandas.grupo_servico grupo 
-                LEFT JOIN demandas.grupo_servico pai  ON grupo.co_grupo_servico_pai  =  pai.co_grupo_servico
-                WHERE  {$filtro}
-                ORDER BY co_grupo_servico";
+        $sql = " 
+        SELECT
+            grupo.co_grupo_servico ,
+            grupo.nu_codigo_grupo_servico, 
+            grupo.ds_grupo_servico,
+            CASE WHEN pai.co_grupo_servico IS NULL 
+                THEN  '-' 
+                ELSE pai.co_grupo_servico || ''
+            END AS co_grupo_servico_pai ,
+   
+            CASE WHEN pai.ds_grupo_servico IS NULL 
+                THEN  '-' 
+                ELSE pai.ds_grupo_servico || ''
+            END  as cs_grupo_servico_pai ,   
+
+            CASE WHEN grupo.co_grupo_servico_pai IS NULL 
+                THEN grupo.co_grupo_servico || '' 
+                ELSE grupo.co_grupo_servico_pai  || '-' || grupo.co_grupo_servico
+            END AS ordem
+            
+
+            FROM demandas.grupo_servico grupo 
+            LEFT JOIN demandas.grupo_servico pai  ON grupo.co_grupo_servico_pai  =  pai.co_grupo_servico
+
+            WHERE grupo.co_status =  1
+
+                {$filtro} 
+
+            ORDER BY 6 
+         ";
+        
 
         return $sql;
+        
     }
+
+
+
+
 
     public function listarGrupoServico ($arrFiltro){
 
         $listagemSimec = new Simec_Listagem();
 
-        $arrayCabecalho = array('Código', 'Grupo Serviço', 'Status');
-        $esconderColunas = array('co_grupo_servico', 'cs_grupo_servico_pai', 'co_grupo_servico_pai','ordem');
-        $arrFiltro['exibe_somente_pai'] = true;
+
+        $arrayCabecalho = array('Código', 'Grupo Serviço', 'Código Serviço Pai', 'Grupo Serviço Pai');
+        $esconderColunas = array('co_grupo_servico', 'ordem');
 
         $listagemSimec->setCabecalho($arrayCabecalho);
         $listagemSimec->esconderColunas($esconderColunas);
         $listagemSimec->turnOnPesquisator();
         $listagemSimec->setQuery($this->listaFiltroSql($arrFiltro));
-        $listagemSimec->addAcao('plus', array('func' => 'listarGrupoFilhoPorPai', 'extra-params' => array('co_grupo_servico')));
+        $listagemSimec->addAcao('plus', array('func' => 'mostrarFilhos', 'extra-params' => array('co_grupo_servico')));
         $listagemSimec->addAcao('edit', array('func' => 'abrirGrupoServico', 'extra-params' => array('co_grupo_servico')));
         $listagemSimec->addAcao('delete', array('func' => 'deletarGrupoServico', 'extra-params' => array('co_grupo_servico')));
         $listagemSimec->setFormFiltros('formulario-cardapio-tipo');
-        $listagemSimec->setAcaoComoCondicional('delete', [['campo' => 'co_status', 'valor' => 'Ativo', 'op' => 'igual']]);
-        $listagemSimec->setAcaoComoCondicional('edit', [['campo' => 'co_status', 'valor' => 'Ativo', 'op' => 'igual']]);
         $listagemSimec->setTotalizador(Simec_Listagem::TOTAL_QTD_REGISTROS);
         $listagemSimec->setTamanhoPagina(50);
         $listagemSimec->setCampos($arrayCabecalho);
 
-        return $listagemSimec;
-    }
-
-    public function listarGrupoFilhoPorPai ($co_grupo_servico_pai){
-
-        $listagemSimec = new Simec_Listagem();
-
-        $arrFiltro = array('co_grupo_servico_pai' =>$co_grupo_servico_pai);
-        $arrayCabecalho = array('Código', 'Subgrupo Serviço', 'Status');
-        $esconderColunas = array('co_grupo_servico', 'cs_grupo_servico_pai', 'co_grupo_servico_pai','ordem');
-
-        $listagemSimec->setCabecalho($arrayCabecalho);
-        $listagemSimec->esconderColunas($esconderColunas);
-        $listagemSimec->setQuery($this->listaFiltroSql($arrFiltro));
-        $listagemSimec->addAcao('plus', array('func' => 'listarServicosPorGrupo', 'extra-params' => array('co_grupo_servico') ));
-        $listagemSimec->addAcao('edit', array('func' => 'abrirGrupoServico', 'extra-params' => array('co_grupo_servico')));
-        $listagemSimec->addAcao('delete', array('func' => 'deletarGrupoServico', 'extra-params' => array('co_grupo_servico')));
-        $listagemSimec->setAcaoComoCondicional('delete', [['campo' => 'co_status', 'valor' => 'Ativo', 'op' => 'igual']]);
-        $listagemSimec->setAcaoComoCondicional('edit', [['campo' => 'co_status', 'valor' => 'Ativo', 'op' => 'igual']]);
-        $listagemSimec->setFormFiltros('formulario-cardapio-tipo');
-        $listagemSimec->setCampos($arrayCabecalho);
-
-        return $listagemSimec;
-
-    }
-
-
-    public function listarServicosPorGrupo ($co_grupo_servico){
-
-        $listagemSimec = new Simec_Listagem();
-        $modelServico = new Servico_Model();
-
-        $arrayCabecalho = array('Código', 'Descrição Serviço', 'Unidade de Medida', 'Grupo Serviço');
-        $esconderColunas = array('co_servico');
-
-        $listagemSimec->setCabecalho($arrayCabecalho);
-        $listagemSimec->esconderColunas($esconderColunas);
-        $listagemSimec->setQuery($modelServico->getSqlListagemFiltro(array('co_grupo_servico' =>$co_grupo_servico)));
-        $listagemSimec->addAcao('edit', array('func' => 'abrirServico', 'extra-params' => array('co_servico')));
-        $listagemSimec->addAcao('delete', array('func' => 'deletarServico', 'extra-params' => array('co_servico')));
-        $listagemSimec->setFormFiltros('formulario-cardapio-tipo');
-        $listagemSimec->setCampos($arrayCabecalho);
 
         return $listagemSimec;
 
@@ -197,29 +163,21 @@ class GrupoServico_Model extends Modelo
 
     public function listaGrupoServicoFilhos()
     {
-        $sql = "select
-                    grupo_pai.co_grupo_servico as codigo,
-                    coalesce(grupo_pai.nu_codigo_grupo_servico || '.' || gs.nu_codigo_grupo_servico || ' - ' || gs.ds_grupo_servico) as descricao
-                from
-                    demandas.grupo_servico gs
-                cross join lateral (
-                    select 
-                        gsp.co_grupo_servico,
-                        gsp.nu_codigo_grupo_servico,
-                        gsp.ds_grupo_servico,
-                        gsp.co_grupo_servico_pai
-                    from
-                        demandas.grupo_servico gsp
-                    where
-                        gsp.co_status = 1
-                        and gs.co_grupo_servico = gsp.co_grupo_servico_pai
-                    ) as grupo_pai
-                where
-                    gs.co_status = 1
-                    and grupo_pai.co_grupo_servico_pai is not null order by grupo_pai.nu_codigo_grupo_servico;";
+        $sql = "
+                SELECT 
+                    gp.co_grupo_servico as codigo, 
+                    COALESCE(gppai.nu_codigo_grupo_servico || ' - ' || gp.nu_codigo_grupo_servico || ' - ' || gp.ds_grupo_servico) as descricao 
+                    
+                FROM    demandas.grupo_servico gp 
+                INNER JOIN demandas.grupo_servico gppai ON gp.co_grupo_servico_pai = gppai.co_grupo_servico
+                WHERE   gp.co_status = 1 
+                AND     gp.co_grupo_servico_pai is not null
+
+                ";
 
         return $sql;
     }
+ 
 
     public function listaGrupoServicoPai()
     {
@@ -236,6 +194,7 @@ class GrupoServico_Model extends Modelo
         $arrDados = $arrDados ? $arrDados : array();
 
         return $arrDados;
+
     }
     
     public function getGrupoServicoPorId( $co_grupo_servico ) {

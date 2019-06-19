@@ -51,28 +51,26 @@ class DemandasPortfolioDescricao_Model extends Modelo
 
     public function listaPortfolioDescricao( $arrPost )
     {
-        $filtro = ' dcdstatus = 1 ';
-
-        if( isset($arrPost['dcdstatus']) ){
-            if($arrPost['dcdstatus'] != '-1'){
-                $filtro = " dcdstatus = '".$arrPost['dcdstatus']."' ";
-            } else {
-                $filtro = " (dcdstatus = 1 OR dcdstatus = 0) ";
-            }
-        }
-
-        if ( $arrPost['dcddsc'] ){
-            $filtro .= " and dcddsc ilike removeAcento('%".$arrPost['dcddsc']."%')";
+        $filtro = '';
+        
+        if( $arrPost['dcddsc'] ){
+            $filtro = " and dcddsc ilike removeAcento('%".$arrPost['dcddsc']."%')";
         }
         
-        $sql = "SELECT dcdid, dcddsc FROM demandas.demandas_portfolio_descricao WHERE {$filtro}";
+        $sql = "SELECT dcdid, dcddsc FROM demandas.demandas_portfolio_descricao WHERE dcdstatus=1 {$filtro}";
+        
 
         if($arrPost['returnsql']) {
+            
             return $sql;
+            
         } else {
+            
             $arrDados = $this->carregar($sql);
             $arrDados = $arrDados ? $arrDados : array();
+            
             return $arrDados;
+            
         }
         
     }

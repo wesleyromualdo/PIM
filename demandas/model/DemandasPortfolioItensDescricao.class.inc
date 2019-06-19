@@ -41,21 +41,13 @@ class DemandasPortfolioItensDescricao_Model extends Modelo
 
     public function listaPortfolioItensDescricao( $arrPost )
     {
-        $filtro = ' cidstatus = 1 ';
-
-        if( isset($arrPost['cidstatus']) ){
-            if($arrPost['cidstatus'] != '-1'){
-                $filtro = " cidstatus = '".$arrPost['cidstatus']."' ";
-            } else {
-                $filtro = " (cidstatus = 1 OR cidstatus = 0) ";
-            }
-        }
-
-        if( $arrPost['ciddsc'] ){
-            $filtro .= " and ciddsc ilike removeAcento('%".$arrPost['ciddsc']."%')";
+        $filtro = '';
+        
+        if( $arrPost['dcddsc'] ){
+            $filtro = " and dcddsc ilike removeAcento('%".$arrPost['dcddsc']."%')";
         }
         
-        $sql = "SELECT cidid, ciddsc FROM demandas.demandas_portfolio_itens_descricao WHERE {$filtro}";
+        $sql = "SELECT cidid, ciddsc FROM demandas.demandas_portfolio_itens_descricao WHERE cidstatus=1 {$filtro}";
         
 
         if($arrPost['returnsql']) {
@@ -84,20 +76,6 @@ class DemandasPortfolioItensDescricao_Model extends Modelo
         $arrDados = $arrDados ? $arrDados : array();
         
         return $arrDados;
-    }
-
-    public function getComboItensDescricao($dcoid){
-
-        if($dcoid) {
-            $sql = "SELECT cidid AS codigo, ciddsc AS descricao 
-                    FROM demandas.demandas_portfolio_itens_descricao 
-                    WHERE cidstatus=1  
-                    AND cidid NOT IN(SELECT cidid FROM demandas.demandas_portfolio_itens  WHERE dcoid={$dcoid} AND dcistatus = 1)";
-        } else {
-            $sql = "SELECT cidid AS codigo, ciddsc AS descricao FROM demandas.demandas_portfolio_itens_descricao WHERE cidstatus=1";
-        }
-
-        return $sql;
     }
     
 }

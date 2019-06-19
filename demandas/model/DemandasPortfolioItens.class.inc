@@ -51,12 +51,7 @@ class DemandasPortfolioItens_Model extends Modelo
             $filtro = " and dcoid='".$arrPost['dcoid']."'";
         }
         
-        $sql = "SELECT ci.dciid, cd.ciddsc, ci.dcivalor, 
-                CASE WHEN ci.dcivaloreditavel = 't'
-                    THEN  'SIM' 
-                    ELSE 'NÃO'
-                END AS dcivaloreditavel                
-                FROM demandas.demandas_portfolio_itens ci 
+        $sql = "SELECT ci.dciid, cd.ciddsc, ci.dcivalor, dcivaloreditavel FROM demandas.demandas_portfolio_itens ci 
                 INNER JOIN demandas.demandas_portfolio_itens_descricao cd ON cd.cidid = ci.cidid 
                 WHERE dcistatus=1 {$filtro}";
         

@@ -26,8 +26,6 @@ class DemandasPortfolioTipo extends mvc\Controle
 	    $arDado = array();
 	    
 	    $_POST['returnsql'] = true;
-        $pesquisar = $_POST['pesquisar'];
-        $this->visao->pesquisar = $pesquisar;
 	    
 	    $arDado['sql_portfolio_tipo'] = $moDemandasPortfolioTipo->listaPortfolioTipo($_POST);
 	    

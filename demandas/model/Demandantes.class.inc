@@ -109,6 +109,8 @@ class Demandantes_Model extends Modelo
         if( $arrParam['enjid'] ) $filtro = " and ej.enjid = {$arrParam['enjid']} ";
         if( $arrParam['enfid'] ) $filtro .= " and ejf.enfid = {$arrParam['enfid']} ";
         
+        //if( $arrParam['funcao'] == 'R' )
+        
         $sql = "SELECT ej.enjid, enjcnpj, enjdsc, d.ejfid, enfid, enjstatus, enjrazaosocial, enjinscricaoestadual, enjemail, enjtelefone, enjendcep, enjendlogradouro, 
                 	enjendcomplemento, enjendnumero, enjendbairro, muncod
                 FROM corporativo.entidades_juridica ej 
@@ -142,7 +144,7 @@ class Demandantes_Model extends Modelo
                 	INNER JOIN corporativo.entidades_juridicaxfuncao ejf ON ejf.enjid = ej.enjid
                 	INNER JOIN corporativo.entidades_associativo ea ON ea.ejfidfilho = ejf.ejfid 
                 	INNER JOIN demandas.demandantes d ON d.ejfid = ea.ejfid 
-                WHERE ejf.ejfstatus = 1 and d.ddtid = $ddtid $filtro";
+                WHERE ejf.ejfstatus = 1 and d.ddtid = {$arrParam['ddtid']} $filtro";
         
         if( $arrParam['retornoSQL'] == true ){
             return $sql;
@@ -163,7 +165,7 @@ class Demandantes_Model extends Modelo
         if( $arrParam['enfid'] ) $filtro .= " and eff.enfid = {$arrParam['enfid']} ";
         if( $arrParam['enjid'] ) $filtro .= " and ejf.enjid = {$arrParam['enjid']} ";
         
-        if( $arrParam['tipo_representante'] == 'G' ){
+        if( $arrParam['enrtipo'] == 'G' ){
             $sql = "SELECT ef.ensid, ef.enscpf, er.enrtipo, 'N' as gestor, ef.ensdsc, eff.enfid, ef.ensstatus, ef.ensemail, ef.enstelefone, ef.ensendcep as enjendcep, ef.ensendlogradouro as enjendlogradouro,
                     	ef.ensendcomplemento as enjendcomplemento, ef.ensendnumero as enjendnumero, ef.ensendbairro as enjendbairro,
                         ef.ensdatanascimento, ef.ensrg, ef.ensorgexpedidor, ef.enssexo
@@ -171,7 +173,7 @@ class Demandantes_Model extends Modelo
                     	INNER JOIN corporativo.entidades_fisicaxfuncao eff ON eff.ensid = ef.ensid AND eff.effstatus = 1
                     	INNER JOIN corporativo.entidades_representantes er ON er.enfidfilho = eff.enfid AND er.enrstatus = 1
                     WHERE ef.ensstatus = 1 AND er.enrtipo = 'G' $filtro";
-        } elseif( $arrParam['tipoGestor'] ){
+        } elseif( $arrParam['enrgestor'] ){
             $sql = "SELECT ef.ensid, ej.enjid, ejf.ejfid, ef.enscpf, 'E' as enrtipo, 'S' as gestor, ef.ensdsc, eff.enfid, ef.ensstatus, ef.ensemail, ef.enstelefone, ef.ensendcep as enjendcep, ef.ensendlogradouro as enjendlogradouro,
                     	ef.ensendcomplemento as enjendcomplemento, ef.ensendnumero as enjendnumero, ef.ensendbairro as enjendbairro,
                         ef.ensdatanascimento, ef.ensrg, ef.ensorgexpedidor, ef.enssexo
@@ -446,7 +448,7 @@ INSERT INTO demandas.demandas(dcoid, ddtid, docid, demcpfresponsavel, demstatus)
                     VALUES({$enjid}, {$arrPost['enfid']}, 1) returning ejfid";
             $ejfidfilho = $this->pegaUm($sql);
             
-            if( $_REQUEST['tipo_representante'] != 'G' && !in_array($arrPost['enfid'], array(1) ) ){
+            if( $arrPost['funcao'] == 'R' ){
                 $sql = "INSERT INTO corporativo.entidades_associativo(ejfid, ejfidfilho) VALUES(".$arrPost['ejfid_pai'].", {$ejfidfilho})";
                 $this->executar($sql);
             }
@@ -501,7 +503,7 @@ INSERT INTO demandas.demandas(dcoid, ddtid, docid, demcpfresponsavel, demstatus)
                     VALUES({$ensid}, {$arrPost['enfid']}, 1) returning effid";
             $effid = $this->pegaUm($sql);
             
-            if( $_REQUEST['tipo_representante'] != 'G' ){
+            if( $_REQUEST['enrtipo'] != 'G' ){
                 $sql = "INSERT INTO corporativo.entidades_associativo(effid, ejfid) VALUES($effid, ".$arrPost['ejfid'].")";
                 $this->executar($sql);
             }
