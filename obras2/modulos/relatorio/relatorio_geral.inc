@@ -1805,8 +1805,8 @@ $db->cria_aba($abacod_tela, $url, '');
     <div class="row form-filters text-center">
         <div class="col">
 
-            <button type="button" class="btn btn-success" value="Visualizar" onclick="obras_exibeRelatorioGeral('exibir');" ><span class="glyphicon glyphicon-list-alt"></span> Visualizar </button>
-            <button type="button" class="btn btn-success" value="Visualizar XLS" onclick="obras_exibeRelatorioGeralXLS();" ><span class="glyphicon glyphicon-download-alt"></span> Gerar Excel</button>
+            <button type="button" class="btn btn-success" value="Visualizar" onclick="obras_exibeRelatorioGeral('exibir');" ><span class="glyphicon glyphicon-list-alt"></span> Pesquisar </button>
+            <button type="button" class="btn btn-success" value="Gerar Excel" onclick="obras_exibeRelatorioGeralXLS();" ><span class="glyphicon glyphicon-download-alt"></span> Gerar Excel</button>
             <button type="button" class="btn btn-primary" value="Salvar Consulta" onclick="obras_exibeRelatorioGeral('salvar');"><span class="glyphicon glyphicon-floppy-disk"></span> Salvar Consulta</button>
         </div>
     </div>   

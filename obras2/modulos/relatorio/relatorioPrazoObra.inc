@@ -2,7 +2,7 @@
 	include APPRAIZ . 'includes/cabecalho.inc';
 
 	print '<br/>';
-	monta_titulo( 'Relatório - Prazo de Obra', 'Relatório Validações - Monitoramento de Obras' );
+
 
 	//usa a referência para listar o campo situação
 	require APPRAIZ . 'obras2/includes/principal/listaRestricao/ctrl.php';
@@ -19,100 +19,106 @@
 	</style>
 	<form action="obras2.php?modulo=relatorio/popupRelatorioPrazoObras&acao=A" method="post" name="filtro" id="filtro">
 	<input type="hidden" name="pesquisa" id="pesquisa" value="1"/>
+	<?php 
+		monta_titulo_relatorios( 'Relatório - Prazo de Obra', 'Relatório Validações - Monitoramento de Obras' );
+	?>
 
-	<table class="tabela" align="center" bgcolor="#f5f5f5" cellspacing="1" cellpadding="3">
-		<tr>
-			<td class="SubTituloDireita" style="width: 190px;">ID Obras</td>
-			<td>
-				<?php echo campo_texto( 'obrid', 'N', 'S', '', 58, 60, '', '', 'left', '', 0, ''); ?>
-			</td>
-		</tr>
-		<tr>
-            <td class="SubTituloDireita">Programa:</td>
-            <td class="tdInputForm">
-                <select name="prfid[]" class="chosen-select" multiple data-placeholder="Selecione">
-                    <?php  $programa = new ProgramaFonte();
-                    $param = array("orgid" => $_SESSION['obras2']['orgid']);
-                    foreach ($programa->listacombo($param, false) as $key) {
+
+    <div class="form-filters form-design">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-md-4">Obra/ID:</div>
+                    <div class="col-lg-8">
+                        <?php echo campo_texto('obrid', 'N', 'S', '', 58, 60, '', '', 'left', '', 0, ''); ?>    
+                    </div> 
+                </div>
+                <div class="row">
+                    <div class="col-md-4">Municípios</div>
+                    <div class="col-lg-8">
+                        <select name="muncod[]" class="chosen-select municipios" multiple data-placeholder="Selecione">
+                            <?php
+                            $municipio = new Municipio();
+                            foreach ($municipio->listaComboMulti() as $key) {
+                                ?>
+                                <option
+                                        value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['muncod']) && in_array($key['codigo'], $_POST['muncod'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+                            <?php } ?>
+                        </select>  
+                    </div> 
+                </div>
+                <div class="row">
+                    <div class="col-md-4">Fonte</div>
+                    <div class="col-lg-8">
+                        <select name="tooid[]" class="chosen-select" multiple data-placeholder="Selecione">
+                            <?php  $tipoOrigemObra = new TipoOrigemObra();
+                            $param = array();
+                            foreach ($tipoOrigemObra->listaCombo(true, $param, false) as $key) {
+                                ?>
+                                <option
+                                        value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['tooid']) && in_array($key['codigo'], $_POST['tooid'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+                            <?php } ?>
+                        </select>  
+                    </div> 
+                </div>
+            </div>
+
+            <!--Segunda Col-->
+            <div class="col-lg-6">
+                <div class="row"> 
+                    <div class="col-md-4">Situação da Obra:</div>
+                    <div class="col-lg-8">
+                        <?php
+                        $sql_obr = "";
+
+                        $dados = $db->carregar(getSqlEstadoDoc(TPDID_OBJETO));
+                        $dados = $dados ? $dados : array();
                         ?>
-                        <option
-                                value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['prfid']) && in_array($key['codigo'], $_POST['prfid'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-                    <?php } ?>
-                </select>
-            </td>
-		</tr>
-	
-        <tr>
-            <td class="SubTituloDireita">Fonte:</td>
-            <td class="tdInputForm">
-                <select name="tooid[]" class="chosen-select" multiple data-placeholder="Selecione">
-                    <?php  $tipoOrigemObra = new TipoOrigemObra();
-                    $param = array();
-                    foreach ($tipoOrigemObra->listaCombo(true, $param, false) as $key) {
-                       ?>
-                        <option
-                                value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['tooid']) && in_array($key['codigo'], $_POST['tooid'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-                    <?php } ?>
-                </select>
-            </td>
-        </tr>
-   
+                        <select name="esdid_obr[]" class="chosen-select" multiple data-placeholder="Selecione">
+                            <?php
+                            foreach ($dados as $key) {
+                                ?>
+                                <option
+                                        value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['esdid_obr']) && in_array($key['codigo'], $_POST['esdid_obr'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>                    
+                </div>  
+                <div class="row"> 
+                    <div class="col-md-4">Programa</div>
+                    <div class="col-lg-8">
+                        <select name="prfid[]" class="chosen-select" multiple data-placeholder="Selecione">
+                            <?php  $programa = new ProgramaFonte();
+                            $param = array("orgid" => $_SESSION['obras2']['orgid']);
+                            foreach ($programa->listacombo($param, false) as $key) {
+                                ?>
+                                <option
+                                        value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['prfid']) && in_array($key['codigo'], $_POST['prfid'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>                    
+                </div>  
+                <div class="row"> 
+                    <div class="col-md-4">Paralisação</div>
+                    <div class="col-lg-8">
+						<?php 	
+				            $array_paralisacao = array(array("descricao" => "Sim","codigo" => "Sim"),array("descricao" => "Não","codigo" => "Não"));                        
+							$db->monta_combo( "paralisacao", $array_paralisacao, "S", "Selecione", "", "", "", "", "N", "paralisacao" );			
+						?>
+		            </div>                    
+                </div>                                 
+            </div>
+        </div>       
+    </div>
+    <div class="row form-filters text-center">
+        <div class="col">
 
-		<tr>
-            <td class="SubTituloDireita">Situação da Obra:</td>
-            <td>
-                <?php
-                $sql_obr = "";
+            <button type="button" class="btn btn-success" value="Pesquisar" onclick="obras_exibeRelatorioGeral('exibir');" style="cursor: pointer;"><span class="glyphicon glyphicon-list-alt"></span> Pesquisar </button>
+            <button type="button" class="btn btn-success" value="Gerar Excel" onclick="obras_exibeRelatorioGeralXLS();"style="cursor: pointer;" ><span class="glyphicon glyphicon-download-alt"></span> Gerar Excel</button>
 
-                $dados = $db->carregar(getSqlEstadoDoc(TPDID_OBJETO));
-                $dados = $dados ? $dados : array();
-                ?>
-                <select name="esdid[]" class="chosen-select" multiple data-placeholder="Selecione">
-                    <?php
-                    foreach ($dados as $key) {
-                        ?>
-                        <option
-                                value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['esdid']) && in_array($key['codigo'], $_POST['esdid'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-                    <?php } ?>
-                </select>
-            </td>
-        </tr>
+        </div>
+    </div> 
 
-		<tr>
-			<td class="SubTituloDireita">Município:</td>
-            <td class="td_municipio ">
-                <select name="muncod[]" class="chosen-select municipios" multiple data-placeholder="Selecione">
-                    <?php
-                    $municipio = new Municipio();
-                    foreach ($municipio->listaComboMulti() as $key) {
-                        ?>
-                        <option
-                                value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['muncod']) && in_array($key['codigo'], $_POST['muncod'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-                    <?php } ?>
-                </select>
-            </td>				
-		</tr>
-
-		<tr>
-			<td class="SubTituloDireita">Paralisação:</td>
-			<td>
-				<?php 	
-		            $array_paralisacao = array(array("descricao" => "Sim","codigo" => "Sim"),array("descricao" => "Não","codigo" => "Não"));                        
-					$db->monta_combo( "paralisacao", $array_paralisacao, "S", "Selecione", "", "", "", "", "N", "paralisacao" );			
-				?>
-			</td>
-		</tr>
-
-
-
-		<tr>
-			<td bgcolor="#CCCCCC"></td>
-			<td bgcolor="#CCCCCC">
-				<input type="button" value="Visualizar" onclick="obras_exibeRelatorioGeral('exibir');" style="cursor: pointer;"/>
-				<input type="button" value="Visualizar XLS" onclick="obras_exibeRelatorioGeral('xls');" style="cursor: pointer;"/>
-			</td>
-		</tr>
-</table>
 <script type="text/javascript">
 var formulario = document.getElementById('filtro');
 

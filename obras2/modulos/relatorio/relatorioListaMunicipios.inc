@@ -45,7 +45,7 @@ if ($_POST) {
 
 include APPRAIZ . 'includes/cabecalho.inc';
 print '<br/>';
-monta_titulo('Relatório - Bloqueio Obras', '');
+
 ?>
 
 <script type="text/javascript" src="../includes/JQuery/jquery-1.7.2.min.js"></script>
@@ -115,57 +115,61 @@ $(function(){
 </script>
 <form name="frmListaMun" id="frmListaMun" method="post">
     <input type="hidden" name="xls" id="xls" value="">
-    <table align="center" bgcolor="#f5f5f5" border="0" class="tabela" cellpadding="3" cellspacing="1">
-        <tr id="idMunicipio">
-            <td class="SubTituloDireita ">Municípios(s):</td>
-            <td class="td_municipio ">
-                <select name="muncod[]" class="chosen-select municipios" multiple data-placeholder="Selecione">
-                    <?php
-                    $municipio = new Municipio();
-                    foreach ($municipio->listaComboMulti() as $key) {
-                        ?>
-                        <option
-                                value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['muncod']) && in_array($key['codigo'], $_POST['muncod'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-                    <?php } ?>
-                </select>
-            </td>
-            </td>
-        </tr>
 
-        <tr>
-            <td class="SubTituloDireita">Possui pendência PAR?:</td>
-            <td class="tdInputForm">
-                <input type='radio' id='foto' name='pendencia' value='sim' <?= ( $_POST["pendencia"] == "sim" ? "checked='checked'" : "" ) ?>/> Sim
-                <input type='radio' id='foto' name='pendencia' value='nao' <?= ( $_POST["pendencia"] == "nao" ? "checked='checked'" : "" ) ?>/> Não
-                <input type='radio' id='foto' name='pendencia' value='todos' <?= ( $_POST["pendencia"] == "todos" ? "checked='checked'" : "" ) ?>/> Todas
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="SubTituloDireita">Possui pendência de desembolso?:</td>
-            <td class="tdInputForm">
-                <input type='radio' id='pendencia_r' name='pendencia_r' value='sim' <?= ( $_POST["pendencia_r"] == "sim" ? "checked='checked'" : "" ) ?>/> Sim
-                <input type='radio' id='pendencia_r' name='pendencia_r' value='nao' <?= ( $_POST["pendencia_r"] == "nao" ? "checked='checked'" : "" ) ?>/> Não
-                <input type='radio' id='pendencia_r' name='pendencia_r' value='todos' <?= ( $_POST["pendencia_r"] == "todos" ? "checked='checked'" : "" ) ?>/> Todas
-            </td>
-        </tr>        
-        <tr>
-            <td class="SubTituloDireita">Esfera:</td>
-            <td class="tdInputForm">
-                <input type='radio' id='' name='esfera' value='M' <?= ( $_POST["esfera"] == "M" ? "checked='checked'" : "" ) ?>/> Municipal
-                <input type='radio' id='' name='esfera' value='E' <?= ( $_POST["esfera"] == "E" ? "checked='checked'" : "" ) ?>/> Estadual
-            </td>
-        </tr>
 
-       <tr>
-            <td colspan="2" class="">
-                <center>
-                    <input type="submit" value="Pesquisar" name="btn_salvar"/>&nbsp;&nbsp;
-                    <input type="submit" value="Gerar Excel" name="btn_export_xls"/>
-                </center>
-            </td>
-        </tr>
-    </table>
+    <?php
+        monta_titulo_relatorios('Relatório - Bloqueio Obras', 'Relatório Lista Municípios');
+    ?>
+
+
+    <div class="form-filters form-design">
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-md-4">Municípios(s)</div>
+                    <div class="col-lg-8">
+                        <select name="muncod[]" class="chosen-select municipios" multiple data-placeholder="Selecione">
+                            <?php
+                            $municipio = new Municipio();
+                            foreach ($municipio->listaComboMulti() as $key) {
+                                ?>
+                                <option
+                                        value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['muncod']) && in_array($key['codigo'], $_POST['muncod'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+                            <?php } ?>
+                        </select>   
+                    </div> 
+                </div> 
+                <div class="row">
+                    <div class="col-md-4">Possui pendência de desembolso?</div>
+                    <div class="col-lg-8">
+                        <input type='radio' id='pendencia_r' name='pendencia_r' value='sim' <?= ( $_POST["pendencia_r"] == "sim" ? "checked='checked'" : "" ) ?>/> Sim
+                        <input type='radio' id='pendencia_r' name='pendencia_r' value='nao' <?= ( $_POST["pendencia_r"] == "nao" ? "checked='checked'" : "" ) ?>/> Não
+                        <input type='radio' id='pendencia_r' name='pendencia_r' value='todos' <?= ( $_POST["pendencia_r"] == "todos" ? "checked='checked'" : "" ) ?>/> Todas  
+                    </div> 
+                </div>                     
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-md-4">Possui pendência PAR?</div>
+                    <div class="col-lg-8">
+                        <input type='radio' id='foto' name='pendencia' value='sim' <?= ( $_POST["pendencia"] == "sim" ? "checked='checked'" : "" ) ?>/> Sim
+                        <input type='radio' id='foto' name='pendencia' value='nao' <?= ( $_POST["pendencia"] == "nao" ? "checked='checked'" : "" ) ?>/> Não
+                         <input type='radio' id='foto' name='pendencia' value='todos' <?= ( $_POST["pendencia"] == "todos" ? "checked='checked'" : "" ) ?>/> Todas  
+                    </div> 
+                </div>      
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-filters text-center">
+        <div class="col">
+
+            <button type="submit" class="btn btn-success" value="Pesquisar" name="btn_salvar"><span class="glyphicon glyphicon-list-alt"></span> Pesquisar </button>
+            <button type="submit" class="btn btn-success" value="Gerar Excel" name="btn_export_xls"><span class="glyphicon glyphicon-download-alt"></span> Gerar Excel</button>
+
+        </div>
+    </div> 
 </form>
 <?php
 $acao = '';

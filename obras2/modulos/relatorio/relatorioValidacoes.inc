@@ -121,182 +121,192 @@ if($_GET['download']){
 		monta_titulo_relatorios( 'Relatório - Monitoramento de Obras: Validações ', 'Relatório Validações' );
 	?>
 
+
 	<div class="form-filters form-design">
-        <div class="row">
-            <div class="col-lg-2">ID Obras </div>
-            <div class="col-lg-10">
-				<?php echo campo_texto( 'obrid', 'N', 'S', '', 47, 60, '', '', 'left', '', 0, ''); ?>
-            </div>
-        </div> 
+		<div class="row">
+		    <div class="col-lg-6">
+		        <div class="row">
+		            <div class="col-md-4">
+		                ID Obras:
+		            </div>
+		            <div class="col-md-8">
+						<?php echo campo_texto( 'obrid', 'N', 'S', '', 47, 60, '', '', 'left', '', 0, ''); ?>
+		            </div>
+		        </div>
+		        <div class="row">
+		            <div class="col-md-4">Tipo de Ensino:</div>
+		            <div class="col-md-8">
+						<?php						
+							$orgaos = $db->carregar("SELECT orgid, orgdesc FROM obras2.orgao where orgid in (1, 2, 3)");					
+							$count = count($orgaos);
+							for($i = 0; $i < $count; $i++){						
+								echo '<input type="checkbox" id="orgid" name="orgid[]" value="' . $orgaos[$i]['orgid'] . '"/> ' . $orgaos[$i]["orgdesc"] . '</label>&nbsp;';						
+							}
+						?>
+		            </div>
+		        </div>
+		        <div class="row">
+		            <div class="col-md-4">Programa</div>
+		            <div class="col-md-8">
+				        <select name="prfid[]" class="chosen-select" multiple data-placeholder="Selecione">
+				            <?php  $programa = new ProgramaFonte();
+				            $param = array("orgid" => $_SESSION['obras2']['orgid']);
+				            foreach ($programa->listacombo($param, false) as $key) {
+				                ?>
+				                <option
+				                        value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['prfid']) && in_array($key['codigo'], $_POST['prfid'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+				            <?php } ?>
+				        </select>
+		            </div>
+		        </div>
 
-        <div class="row">
-            <div class="col-lg-2">ID Pré-Obras </div>
-            <div class="col-lg-10">
-				<?php echo campo_texto( 'preid', 'N', 'S', '', 47, 60, '', '', 'left', '', 0, ''); ?>
-            </div>
-        </div> 
-        <div class="row">
-            <div class="col-lg-2">Tipo de Ensino:</div>
-            <div class="col-lg-10">
-				<?php						
-					$orgaos = $db->carregar("SELECT orgid, orgdesc FROM obras2.orgao where orgid in (1, 2, 3)");					
-					$count = count($orgaos);
-					for($i = 0; $i < $count; $i++){						
-						echo '<input type="checkbox" id="orgid" name="orgid[]" value="' . $orgaos[$i]['orgid'] . '"/> ' . $orgaos[$i]["orgdesc"] . '</label>&nbsp;';						
-					}
-				?>
-            </div>
-        </div> 
-        <div class="row">
-            <div class="col-lg-2">Programa</div>
-            <div class="col-lg-10">
-		        <select name="prfid[]" class="chosen-select" multiple data-placeholder="Selecione">
-		            <?php  $programa = new ProgramaFonte();
-		            $param = array("orgid" => $_SESSION['obras2']['orgid']);
-		            foreach ($programa->listacombo($param, false) as $key) {
-		                ?>
-		                <option
-		                        value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['prfid']) && in_array($key['codigo'], $_POST['prfid'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-		            <?php } ?>
-		        </select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2">Tipologia</div>
-            <div class="col-lg-10">
-	            <select name="tpoid[]" id="tpoid" class="chosen-select" multiple data-placeholder="Selecione">
-	                <?php   $tipologiaObra = new TipologiaObra();
-	                $param = array("orgid" => $_SESSION['obras2']['orgid']);
-	                $dados = $tipologiaObra->listaCombo($param, false);
-	                    foreach ($dados as $key) {
-	                ?>
-	                    <option value="<?php echo $key['codigo'] ?>" <?php if ($tpoid && in_array($key['codigo'], $tpoid)) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-	                <?php } ?>
-	            </select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2">Unidade</div>
-            <div class="col-lg-10">
-			<?php 			
-				$sql = "SELECT ee.entid as codigo,upper(ee.entnome) as descricao 
-	                    FROM entidade.entidade ee
-						INNER JOIN 
-	                        obras2.empreendimento oi ON oi.entidunidade = ee.entid 
-	                    WHERE empstatus = 'A'
-						GROUP BY 
-	                        ee.entnome, 
-	                        ee.entid 
-	                    ORDER BY 
-	                        ee.entnome";
-                $dados = $db->carregar($sql);
-			?>
-            <select name="entidunidade[]" id="entidunidade" class="chosen-select" multiple data-placeholder="Selecione">
-                <?php
+		        <div class="row">
+		            <div class="col-md-4">Tipologia</div>
+		            <div class="col-md-8">
+			            <select name="tpoid[]" id="tpoid" class="chosen-select" multiple data-placeholder="Selecione">
+			                <?php   $tipologiaObra = new TipologiaObra();
+			                $param = array("orgid" => $_SESSION['obras2']['orgid']);
+			                $dados = $tipologiaObra->listaCombo($param, false);
+			                    foreach ($dados as $key) {
+			                ?>
+			                    <option value="<?php echo $key['codigo'] ?>" <?php if ($tpoid && in_array($key['codigo'], $tpoid)) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+			                <?php } ?>
+			            </select>
+		            </div>
+		        </div>
+		        <div class="row">
+		            <div class="col-md-4">Unidade</div>
+		            <div class="col-md-8">
+					<?php 			
+						$sql = "SELECT ee.entid as codigo,upper(ee.entnome) as descricao 
+			                    FROM entidade.entidade ee
+								INNER JOIN 
+			                        obras2.empreendimento oi ON oi.entidunidade = ee.entid 
+			                    WHERE empstatus = 'A'
+								GROUP BY 
+			                        ee.entnome, 
+			                        ee.entid 
+			                    ORDER BY 
+			                        ee.entnome";
+		                $dados = $db->carregar($sql);
+					?>
+		            <select name="entidunidade[]" id="entidunidade" class="chosen-select" multiple data-placeholder="Selecione">
+		                <?php
 
-                foreach ($dados as $key) {
-                    ?>
-                    <option value="<?php echo $key['codigo'] ?>" <?php if ($entidunidade && in_array($key['codigo'], $tentidunidade)) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-                <?php } ?>
-            </select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2">Situação da Obra </div>
-            <div class="col-lg-10">
-	            <?php
-	                $sql_obr = "";
-	                $dados = $db->carregar(getSqlEstadoDoc(TPDID_OBJETO));
-	                $dados = $dados ? $dados : array();
-	            ?>
-	        	<select name="esdid_obr[]" class="chosen-select" multiple data-placeholder="Selecione">
-	                <?php
-	                    foreach ($dados as $key) {
-	                ?>
-	                <option value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['esdid_obr']) && in_array($key['codigo'], $_POST['esdid_obr'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-	                    <?php } ?>
-	             </select>
-            </div>
-        </div> 
-       <div class="row">
-            <div class="col-lg-2">Recebeu o primeiro repasse? </div>
-            <div class="col-lg-10">
-                <input type="radio" name="repasse" id="" value="S" <?= ( $_POST["repasse"] == "S" ? "checked='checked'" : "" ) ?>/> Sim&nbsp;
-                <input type="radio" name="repasse" id="" value="N" <?= ( $_POST["repasse"] == "N" ? "checked='checked'" : "" ) ?>/> Não&nbsp;
-                <input type="radio" name="repasse" id="" value="T"  <?= ( $_POST["repasse"] == "T" || $_POST["repasse"] == "" ? "checked='checked'" : "" ) ?> /> Todas
-            </div>
-        </div> 
-       <div class="row">
-            <div class="col-lg-2">2ª Parcela Validada:</div>
-            <div class="col-lg-10">
-				<input type="radio" value="S" id="homologacao" name="homologacao" <?php if($_REQUEST["homologacao"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
-				<input type="radio" value="N" id="homologacao" name="homologacao" <?php if($_REQUEST["homologacao"] == "N") { echo "checked"; } ?> /> Não Validados&nbsp;
-				<input type="radio" value="P" id="homologacao" name="homologacao" <?php if($_REQUEST["homologacao"] == "P") { echo "checked"; } ?> /> Não Analisados&nbsp;
-				<input type="radio" value="" id="homologacao" name="homologacao"  <?php if($_REQUEST["homologacao"] == "") { echo "checked"; } ?> /> Todos
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2">Data 2ª Parcela Validada:</div>
-            <div class="col-lg-10">
-	        	de&nbsp;
-	        	<input type="text" id="dthomologacao_de" name="dthomologacao_de" value="<?php echo $dthomologacao_de;?>" size="15" maxlength="10" class="normal calendar" >
-	       		 &nbsp;
-	        	até&nbsp;
-	        	<input type="text" id="dthomologacao_ate" name="dthomologacao_ate" value="<?php echo $dthomologacao_ate;?>" size="15" maxlength="10" class="normal calendar">
-            </div>
-        </div> 
-        <div class="row">
-            <div class="col-lg-2">Execução 25% Validada:</div>
-            <div class="col-lg-10">
-				<input type="radio" value="S" id="execucao25" name="execucao25" <?php if($_REQUEST["execucao25"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
-				<input type="radio" value="N" id="execucao25" name="execucao25" <?php if($_REQUEST["execucao25"] == "N") { echo "checked"; } ?> /> Não&nbsp; Validados&nbsp;
-				<input type="radio" value="P" id="execucao25" name="execucao25" <?php if($_REQUEST["execucao25"] == "P") { echo "checked"; } ?> /> Não&nbsp; Analisados
-				<input type="radio" value="" id="execucao25" name="execucao25"  <?php if($_REQUEST["execucao25"] == "") { echo "checked"; } ?> /> Todos
-            </div>
-        </div> 
-        <div class="row">
-            <div class="col-lg-2">Data 2ª Execução 25% Validada:</div>
-            <div class="col-lg-10">
-		    	de&nbsp;
-		    	<input type="text" id="dtexecucao25_de" name="dtexecucao25_de" value="<?php echo $dtexecucao25_de;?>" size="15" maxlength="10" class="normal calendar" >
-		        &nbsp;
-		        até&nbsp;
-		        <input type="text" id="dtexecucao25_ate" name="dtexecucao25_ate" value="<?php echo $dtexecucao25_ate;?>" size="15" maxlength="10" class="normal calendar">
-            </div>
-        </div> 
-        <div class="row">
-            <div class="col-lg-2">Execução 50% Validada:</div>
-            <div class="col-lg-10">
-				<input type="radio" value="S" id="execucao50" name="execucao50" <?php if($_REQUEST["execucao50"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
-				<input type="radio" value="N" id="execucao50" name="execucao50" <?php if($_REQUEST["execucao50"] == "N") { echo "checked"; } ?> /> Não&nbsp; Validados&nbsp;
-				<input type="radio" value="P" id="execucao50" name="execucao50" <?php if($_REQUEST["execucao50"] == "P") { echo "checked"; } ?> /> Não Analisados&nbsp;
-				<input type="radio" value="" id="execucao50" name="execucao50"  <?php if($_REQUEST["execucao50"] == "") { echo "checked"; } ?> /> Todos
-            </div>
-        </div> 
-        <div class="row">
-            <div class="col-lg-2">Possui anexo da homologação da licitação:</div>
-            <div class="col-lg-10">
-				<input type="radio" value="S" id="arqhanexosim" name="arqhanexo"  <?php if($_REQUEST["arqhanexo"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
-				<input type="radio" value="N" id="arqhanexonao" name="arqhanexo"  <?php if($_REQUEST["arqhanexo"] == "N") { echo "checked"; } ?> /> Não&nbsp;	
-				<input type="radio" value="" id="arqahnexotodos" name="arqhanexo" <?php if($_REQUEST["arqhanexo"] == "") { echo "checked"; } ?> /> Todos&nbsp;
-            </div>
-        </div> 
-        <div class="row">
-            <div class="col-lg-2">Possui anexo da ordem de serviço:</div>
-            <div class="col-lg-10">
-				<input type="radio" value="S" id="arqanexosim" name="arqanexo"  <?php if($_REQUEST["arqanexo"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
-				<input type="radio" value="N" id="arqanexonao" name="arqanexo"  <?php if($_REQUEST["arqanexo"] == "N") { echo "checked"; } ?> /> Não&nbsp;	
-				<input type="radio" value="" id="arqanexotodos" name="arqanexo" <?php if($_REQUEST["arqanexo"] == "") { echo "checked"; } ?> /> Todos
-            </div>
-        </div> 
+		                foreach ($dados as $key) {
+		                    ?>
+		                    <option value="<?php echo $key['codigo'] ?>" <?php if ($entidunidade && in_array($key['codigo'], $tentidunidade)) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+		                <?php } ?>
+		            </select>
+		            </div>
+		        </div>
+		        <div class="row">
+		            <div class="col-md-4">Situação da Obra </div>
+		            <div class="col-md-8">
+			            <?php
+			                $sql_obr = "";
+			                $dados = $db->carregar(getSqlEstadoDoc(TPDID_OBJETO));
+			                $dados = $dados ? $dados : array();
+			            ?>
+			        	<select name="esdid_obr[]" class="chosen-select" multiple data-placeholder="Selecione">
+			                <?php
+			                    foreach ($dados as $key) {
+			                ?>
+			                <option value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['esdid_obr']) && in_array($key['codigo'], $_POST['esdid_obr'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+			                    <?php } ?>
+			             </select>
+		            </div>
+		        </div> 
+		       <div class="row">
+		            <div class="col-md-4">Recebeu o primeiro repasse? </div>
+		            <div class="col-md-8">
+		                <input type="radio" name="repasse" id="" value="S" <?= ( $_POST["repasse"] == "S" ? "checked='checked'" : "" ) ?>/> Sim&nbsp;
+		                <input type="radio" name="repasse" id="" value="N" <?= ( $_POST["repasse"] == "N" ? "checked='checked'" : "" ) ?>/> Não&nbsp;
+		                <input type="radio" name="repasse" id="" value="T"  <?= ( $_POST["repasse"] == "T" || $_POST["repasse"] == "" ? "checked='checked'" : "" ) ?> /> Todas
+		            </div>
+		        </div> 
 
+		    </div>
+
+
+		    <!--SEGUNDA COLUNA-->
+		    <div class="col-lg-6">
+		       <div class="row">
+		            <div class="col-md-4">2ª Parcela Validada:</div>
+		            <div class="col-md-8">
+						<input type="radio" value="S" id="homologacao" name="homologacao" <?php if($_REQUEST["homologacao"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
+						<input type="radio" value="N" id="homologacao" name="homologacao" <?php if($_REQUEST["homologacao"] == "N") { echo "checked"; } ?> /> Não Validados&nbsp;
+						<input type="radio" value="P" id="homologacao" name="homologacao" <?php if($_REQUEST["homologacao"] == "P") { echo "checked"; } ?> /> Não Analisados&nbsp;
+						<input type="radio" value="" id="homologacao" name="homologacao"  <?php if($_REQUEST["homologacao"] == "") { echo "checked"; } ?> /> Todos
+		            </div>
+		        </div>
+		        <div class="row">
+		            <div class="col-md-4">Data 2ª Parcela Validada:</div>
+		            <div class="col-md-8">
+			        	de&nbsp;
+			        	<input type="text" id="dthomologacao_de" name="dthomologacao_de" value="<?php echo $dthomologacao_de;?>" size="15" maxlength="10" class="normal calendar" >
+			       		 &nbsp;
+			        	até&nbsp;
+			        	<input type="text" id="dthomologacao_ate" name="dthomologacao_ate" value="<?php echo $dthomologacao_ate;?>" size="15" maxlength="10" class="normal calendar">
+		            </div>
+		        </div> 
+		        <div class="row">
+		            <div class="col-md-4">Execução 25% Validada:</div>
+		            <div class="col-md-8">
+						<input type="radio" value="S" id="execucao25" name="execucao25" <?php if($_REQUEST["execucao25"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
+						<input type="radio" value="N" id="execucao25" name="execucao25" <?php if($_REQUEST["execucao25"] == "N") { echo "checked"; } ?> /> Não&nbsp; Validados&nbsp;
+						<input type="radio" value="P" id="execucao25" name="execucao25" <?php if($_REQUEST["execucao25"] == "P") { echo "checked"; } ?> /> Não&nbsp; Analisados
+						<input type="radio" value="" id="execucao25" name="execucao25"  <?php if($_REQUEST["execucao25"] == "") { echo "checked"; } ?> /> Todos
+		            </div>
+		        </div> 
+		        <div class="row">
+		            <div class="col-md-4">Data 2ª Execução 25% Validada:</div>
+		            <div class="col-md-8">
+				    	de&nbsp;
+				    	<input type="text" id="dtexecucao25_de" name="dtexecucao25_de" value="<?php echo $dtexecucao25_de;?>" size="15" maxlength="10" class="normal calendar" >
+				        &nbsp;
+				        até&nbsp;
+				        <input type="text" id="dtexecucao25_ate" name="dtexecucao25_ate" value="<?php echo $dtexecucao25_ate;?>" size="15" maxlength="10" class="normal calendar">
+		            </div>
+		        </div> 
+		        <div class="row">
+		            <div class="col-md-4">Execução 50% Validada:</div>
+		            <div class="col-md-8">
+						<input type="radio" value="S" id="execucao50" name="execucao50" <?php if($_REQUEST["execucao50"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
+						<input type="radio" value="N" id="execucao50" name="execucao50" <?php if($_REQUEST["execucao50"] == "N") { echo "checked"; } ?> /> Não&nbsp; Validados&nbsp;
+						<input type="radio" value="P" id="execucao50" name="execucao50" <?php if($_REQUEST["execucao50"] == "P") { echo "checked"; } ?> /> Não Analisados&nbsp;
+						<input type="radio" value="" id="execucao50" name="execucao50"  <?php if($_REQUEST["execucao50"] == "") { echo "checked"; } ?> /> Todos
+		            </div>
+		        </div> 
+		        <div class="row">
+		            <div class="col-md-4">Possui anexo da homologação da licitação:</div>
+		            <div class="col-md-8">
+						<input type="radio" value="S" id="arqhanexosim" name="arqhanexo"  <?php if($_REQUEST["arqhanexo"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
+						<input type="radio" value="N" id="arqhanexonao" name="arqhanexo"  <?php if($_REQUEST["arqhanexo"] == "N") { echo "checked"; } ?> /> Não&nbsp;	
+						<input type="radio" value="" id="arqahnexotodos" name="arqhanexo" <?php if($_REQUEST["arqhanexo"] == "") { echo "checked"; } ?> /> Todos&nbsp;
+		            </div>
+		        </div> 
+		        <div class="row">
+		            <div class="col-md-4">Possui anexo da ordem de serviço:</div>
+		            <div class="col-md-8">
+						<input type="radio" value="S" id="arqanexosim" name="arqanexo"  <?php if($_REQUEST["arqanexo"] == "S") { echo "checked"; } ?> /> Sim&nbsp;
+						<input type="radio" value="N" id="arqanexonao" name="arqanexo"  <?php if($_REQUEST["arqanexo"] == "N") { echo "checked"; } ?> /> Não&nbsp;	
+						<input type="radio" value="" id="arqanexotodos" name="arqanexo" <?php if($_REQUEST["arqanexo"] == "") { echo "checked"; } ?> /> Todos
+		            </div>
+		        </div> 
+		    </div>
+		</div>					
 	</div>
+
+
+
+	
 
     <div class="row form-filters text-center">
         <div class="col">
 
             <button type="button" class="btn btn-success" value="Visualizar" onclick="obras_exibeRelatorioGeral('exibir');" style="cursor: pointer;"><span class="glyphicon glyphicon-list-alt"></span> Visualizar </button>
-	            <button type="button" class="btn btn-success" value="Visualizar XLS" onclick="obras_exibeRelatorioGeralXLS();"style="cursor: pointer;" ><span class="glyphicon glyphicon-download-alt"></span> Gerar Excel</button>
+	        <button type="button" class="btn btn-success" value="Visualizar XLS" onclick="obras_exibeRelatorioGeralXLS();"style="cursor: pointer;" ><span class="glyphicon glyphicon-download-alt"></span> Gerar Excel</button>
 	        <?
 	        $dir_relatorios = APPRAIZ . 'arquivos/obras2/relatorio/validacao';
 
@@ -317,7 +327,7 @@ if($_GET['download']){
 
 
 
-
+<!---
 <table class="tabela" align="center" bgcolor="#f5f5f5" cellspacing="1" cellpadding="3">
 
 
@@ -329,7 +339,9 @@ if($_GET['download']){
 
 	</td>
 </tr>
-</table>
+</table>-->
+
+
 <script type="text/javascript">
 var formulario = document.getElementById('filtro');
 

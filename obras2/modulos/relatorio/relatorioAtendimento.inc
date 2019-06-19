@@ -16,7 +16,7 @@ switch ($_REQUEST['ajax']){
 //Chamada de programa
 include  APPRAIZ."includes/cabecalho.inc";
 echo "<br>";
-monta_titulo('Relatório para Atendimento', '&nbsp;');
+
 
 ?>
 
@@ -100,54 +100,68 @@ $(function() {
 </style>
 <form method="post" name="formListaObra" id="formListaObra" action="obras2.php?modulo=relatorio/popupRelatorioAtendimento&acao=A">
     <input type="hidden" name="pesquisa" id="pesquisa" value="" />
-    <table align="center" bgcolor="#f5f5f5" border="0" class="tabela" cellpadding="3" cellspacing="1">
-        <tr>
-            <td class="SubTituloDireita" width="15%">ID da Obra:</td>
-            <td>
-                <?=campo_texto('obrid','N','S','',58,100,'','', '', '', '', 'id="obrid"', '', $_REQUEST['obrid']);?>
-            </td>
-        </tr>
+    <?php 
+        monta_titulo_relatorios('Relatório para Atendimento', '&nbsp;');
+    ?>
+    <div class="form-filters form-design">
 
-        <tr>
-            <td class="SubTituloDireita" width="15%">ID da Pré-Obra:</td>
-            <td>
-                <?=campo_texto('preid','N','S','',58,100,'','', '', '', '', 'id="preid"', '', $_REQUEST['preid']);?>
-            </td>
-        </tr>
-        <tr>
-            <td class="SubTituloDireita">Processo:</td>
-            <td>
-                <input type="text" style="text-align:right;" name="processo" size="59" maxlength="20" value="" onkeyup="this.value=mascaraglobal('#####.######/####-##',this.value);" onmouseover="MouseOver(this);" onfocus="MouseClick(this);this.select();" onmouseout="MouseOut(this);" onblur="MouseBlur(this);this.value=mascaraglobal('#####.######/####-##',this.value);" title="" class=" normal">
-        </tr>
-        <tr>
-            <td class="SubTituloDireita">Termo/Convênio:</td>
-            <td>
-                Número:&nbsp;
-                <input type="text" style="text-align:right;" name="convenio" size="31" maxlength="20" value="" onkeyup="this.value=mascaraglobal('####################',this.value);" onmouseover="MouseOver(this);" onfocus="MouseClick(this);this.select();" onmouseout="MouseOut(this);" onblur="MouseBlur(this);this.value=mascaraglobal('####################',this.value);" title="" class=" normal">                            Ano:&nbsp;
-                <input type="text" style="text-align:right;" name="ano_convenio" size="7" maxlength="4" value="" onkeyup="this.value=mascaraglobal('####',this.value);" onmouseover="MouseOver(this);" onfocus="MouseClick(this);this.select();" onmouseout="MouseOut(this);" onblur="MouseBlur(this);this.value=mascaraglobal('####',this.value);" title="" class=" normal">                        </td>
-        </tr>
-        <tr id="idMunicipio">
-            <td class="SubTituloDireita ">Municípios(s):</td>
-            <td class="td_municipio ">
-                <select name="muncod[]" class="chosen-select municipios" multiple data-placeholder="Selecione">
-                    <?php
-                    $municipio = new Municipio();
-                    foreach ($municipio->listaComboMulti() as $key) {
-                        ?>
-                        <option
-                                value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['muncod']) && in_array($key['codigo'], $_POST['muncod'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
-                    <?php } ?>
-                </select>
-            </td>
-            </td>
-        </tr>
-        <tr>
-            <td style="background-color:#DCDCDC" width="15%" colspan="2" align="center">
-                <input type="button" name="Gerar Relatório" value="Gerar Relatório" onclick="javascript:gerarRelatorio('visual');" /> 
-                <input type="button" name="Gerar Relatório" value="Visualizar XLS" onclick="javascript:gerarRelatorio('xls');" />
-            </td>
-        </tr>
-    </table>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-md-4">Id da Obra</div>
+                    <div class="col-lg-8">
+                         <?php echo campo_texto('obrid','N','S','',58,100,'','', '', '', '', 'id="obrid"', '', $_POST['obrid']);?>    
+                    </div> 
+                   
+                </div>
+                <div class="row">
+                    <div class="col-md-4">Municípios(s)</div>
+                    <div class="col-lg-8">
+                        <select name="muncod[]" class="chosen-select municipios" multiple data-placeholder="Selecione">
+                            <?php
+                            $municipio = new Municipio();
+                            foreach ($municipio->listaComboMulti() as $key) {
+                                ?>
+                                <option
+                                        value="<?php echo $key['codigo'] ?>" <?php if (isset($_POST['muncod']) && in_array($key['codigo'], $_POST['muncod'])) { ?> <?php echo "selected='selected'"; ?> <?php } ?>><?php echo $key["descricao"] ?></option>
+                            <?php } ?>
+                        </select>   
+                    </div> 
+                </div> 
+
+                   
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-md-4">ID da Pré-Obra</div>
+                    <div class="col-lg-8">
+                        <?php echo campo_texto('preid','N','S','',58,100,'','', '', '', '', 'id="preid"', '', $_POST['preid']);?>  
+                    </div> 
+                </div> 
+                 <div class="row">
+                    <div class="col-md-4">Termo/Convênio: </div>
+                    <div class="col-lg-8">
+                        Número:&nbsp;
+                        <input type="text" style="text-align:right;" name="convenio" size="28" maxlength="20" value="" onkeyup="this.value=mascaraglobal('####################',this.value);" onmouseover="MouseOver(this);" onfocus="MouseClick(this);this.select();" onmouseout="MouseOut(this);" onblur="MouseBlur(this);this.value=mascaraglobal('####################',this.value);" title="" class=" normal">                            
+                        Ano:&nbsp;
+                        <input type="text" style="text-align:right;" name="ano_convenio" size="7" maxlength="4" value="" onkeyup="this.value=mascaraglobal('####',this.value);" onmouseover="MouseOver(this);" onfocus="MouseClick(this);this.select();" onmouseout="MouseOut(this);" onblur="MouseBlur(this);this.value=mascaraglobal('####',this.value);" title="" class=" normal">       
+                    </div> 
+                </div> 
+                     
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-filters text-center">
+        <div class="col">
+
+            <button type="button" class="btn btn-success" value="Pesquisar" name="Gerar Relatório" onclick="javascript:gerarRelatorio('visual');">
+            <span class="glyphicon glyphicon-list-alt"></span> Pesquisar</button>
+            <button type="button" class="btn btn-success" value="Visualizar XLS" name="Gerar Relatório" onclick="javascript:gerarRelatorio('xls');">
+            <span class="glyphicon glyphicon-download-alt"></span> Gerar Excel</button>
+
+        </div>
+    </div> 
 </form>
 
 <script type="text/javascript">
