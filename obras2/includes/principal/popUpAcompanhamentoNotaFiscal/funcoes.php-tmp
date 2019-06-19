@@ -1,0 +1,1187 @@
+<?php
+
+/**
+ * @todo Comentar depois.
+ * @param $tipoFornecedor
+ * @param $arrObras
+ * @return bool|mixed|NULL|string
+ */
+function getSomatoriosNotasPagasOutrosContratos($tipoFornecedor, $arrObras, $dataNotaFiscal) {
+
+	if (is_array($arrObras) && !empty($arrObras)) {
+
+		global $db;
+
+		$strObrids = implode(",", $arrObras);
+
+		if ($tipoFornecedor === "ent") {
+			$sql = "
+                SELECT coalesce(SUM(ntm.ntmvlrpago), 0) totalcontratosanteriores
+                FROM
+                  obras2.notafiscal ntf
+                  INNER JOIN
+                  obras2.notamedicao ntm ON ntf.ntfid = ntm.ntfid AND ntm.ntmstatus = 'A'
+                  INNER JOIN
+                  obras2.medicaocontrato mec ON ntm.mecid = mec.mecid AND mec.mecstatus = 'A'
+                WHERE
+                  ntf.ntfstatus = 'A'
+                  --AND ntf.crtid IN
+                  AND mec.crtid IN
+                  (
+                    SELECT crt.crtid AS crtid
+                    FROM obras2.contrato crt
+                      INNER JOIN obras2.obrascontrato ocr ON (crt.crtid = ocr.crtid) OR (ocr.crtid = crt.crtidpai)
+                    WHERE ocr.ocrstatus = 'A'
+                          AND crt.crtstatus = 'A'
+                          AND crt.ttaid IS NULL
+                          AND ocr.obrid IN ({$strObrids})
+                  )
+                  AND ntf.ntfdtnota <= '{$dataNotaFiscal}';
+";
+
+		} elseif ($tipoFornecedor === "cex") {
+			$sql = "
+                SELECT coalesce(SUM(ntm.ntmvlrpago), 0) totalcontratosanteriores
+                FROM
+                  obras2.notafiscal ntf
+                  INNER JOIN
+                  obras2.notamedicao ntm ON ntf.ntfid = ntm.ntfid AND ntm.ntmstatus = 'A'
+                  INNER JOIN
+                  obras2.medicaocontrato mec ON ntm.mecid = mec.mecid AND mec.mecstatus = 'A'
+                WHERE
+                  ntf.ntfstatus = 'A'
+                  AND ntf.cceid IN (
+                    SELECT cce.cceid
+                    FROM obras2.contratoconstrutoraextra cce
+                      INNER JOIN obras2.construtoraextra cex ON cce.cexid = cex.cexid AND cex.cexstatus = 'A'
+                    WHERE cce.ccestatus = 'A'
+                      AND cce.cceid_pai ISNULL
+                      AND cce.ttaid ISNULL
+                      AND cex.obrid IN ({$strObrids})
+                  )
+                  AND ntf.ntfdtnota <= '{$dataNotaFiscal}';
+";
+		}
+
+		return $db->pegaUm($sql);
+	}
+}
+
+/**
+ * @todo Comentar depois.
+ * @param $tipoFornecedor
+ * @param $arrObras
+ * @return bool|mixed|NULL|string
+ */
+function getSomatorioTodosContratos($tipoFornecedor, $arrObras) {
+
+	if (is_array($arrObras) && !empty($arrObras)) {
+
+		global $db;
+
+		$strObrids = implode(",", $arrObras);
+
+		if ($tipoFornecedor === "ent") {
+			$sql = "
+                SELECT coalesce(sum(ocr.ocrvalorexecucao), 0) totalvalorcontratos
+                FROM
+                  obras2.obrascontrato ocr
+                  INNER JOIN obras2.contrato crt ON (ocr.crtid = crt.crtid) OR (ocr.crtid = crt.crtidpai)
+                WHERE
+                  crt.crtstatus = 'A'
+                  AND crt.ttaid ISNULL
+                  AND ocr.ocrstatus = 'A'
+                  AND ocr.obrid IN ({$strObrids})
+";
+			;
+			return $db->pegaUm($sql);
+
+		} elseif ($tipoFornecedor === "cex") {
+			$sql = "
+                SELECT
+                  coalesce(sum(cce.ccevalor), 0) totalvalorcontratos
+                FROM obras2.contratoconstrutoraextra cce
+                  INNER JOIN obras2.construtoraextra cex ON cce.cexid = cex.cexid AND cex.cexstatus = 'A'
+                WHERE cce.ccestatus = 'A'
+                      AND cce.cceid_pai ISNULL
+                      AND cce.ttaid ISNULL
+                      AND cex.obrid IN ({$strObrids})
+";
+
+			return $db->pegaUm($sql);
+		}
+	}
+}
+
+/**
+ * Função responsável por validar os dados inseridos no formulário de cadastro de notas.
+ * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+ * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+ * @param $arrDados
+ * @return array
+ */
+function validarDados($arrDados, $isAtualizacao = false) {
+
+	$arrRetorno = array("error" => false, "message" => null);
+
+	if (is_array($arrDados) && !empty($arrDados)) {
+
+		// Certas validações não são necessárias na tela de edição de nota fiscal.
+		$ignorarValidacao = false;
+		if ($isAtualizacao) {
+			if (!is_array($arrDados["dadosNotaFiscalMedicao"])) {
+				$ignorarValidacao = true;
+			}
+		}
+
+		// Verificando se a empresa contratada foi informada.
+		if (empty(trim($arrDados["empresacontratada"]))) {
+			$arrRetorno["error"]   = true;
+			$arrRetorno["message"] = "Informe o Fornecedor.";
+		}
+
+		// Verificando se o número da nota fiscal foi informado.
+		if (empty(trim($arrDados["numeroNota"]))) {
+			$arrRetorno["error"]   = true;
+			$arrRetorno["message"] = "Informe o Número da Nota Fiscal.";
+		}
+
+		// Verificando se a data da nota fiscal é uma data válida.
+		if (empty(trim($arrDados["dataNota"]))) {
+			$arrRetorno["error"]   = true;
+			$arrRetorno["message"] = "Informe a Data da Nota Fiscal.";
+		} else {
+			$arrDataNotaFiscal = explode("/", $arrDados["dataNota"]);
+			if (!checkdate($arrDataNotaFiscal[1], $arrDataNotaFiscal[0], $arrDataNotaFiscal[2])) {
+				$arrRetorno["error"]   = true;
+				$arrRetorno["message"] = "A Data da Nota Fiscal não tem formato válido.";
+			}
+		}
+
+		// Verificando se o valor da nota fiscal foi informado.
+		if (empty(trim($arrDados["valorNota"]))) {
+			$arrRetorno["error"]   = true;
+			$arrRetorno["message"] = "Informe o Valor da Nota Fiscal.";
+		} else {
+			if (!is_numeric($arrDados["valorNota"])) {
+				$arrRetorno["error"]   = true;
+				$arrRetorno["message"] = "O Valor da Nota Fiscal deve ser um número válido.";
+			}
+		}
+
+		// Verificando os dados que ligam medição e contrato/aditivo.
+		if (!$ignorarValidacao) {
+			if (!is_array($arrDados["dadosNotaFiscalMedicao"]) || (is_array($arrDados["dadosNotaFiscalMedicao"]) && empty($arrDados["dadosNotaFiscalMedicao"]))) {
+				$arrRetorno["error"]   = true;
+				$arrRetorno["message"] = "Problemas ao iniciar a gravação. Faltam dados para vincular a nota fiscal às medições.";
+			}
+		}
+
+		// Validando os dados para cada aditivo (Regra 16, TL02).
+		$arrValoresPagosNota = array();
+		if (is_array($arrDados["dadosNotaFiscalMedicao"]) && !empty($arrDados["dadosNotaFiscalMedicao"])) {
+			foreach ($arrDados["dadosNotaFiscalMedicao"] as $notaMed) {
+				$vlrPagoNota           = $notaMed->valorPagoNota;
+				$arrValoresPagosNota[] = (float) $vlrPagoNota;
+			}
+		} else {
+
+			$ntfid = $arrDados["ntfid"];
+
+			$execucaoFinanceira  = new ExecucaoFinanceira();
+			$arrValoresPagosNota = $execucaoFinanceira->getValoresPagosNotaMedicao($ntfid);
+		}
+
+		//$valorMedicao = $arrDados["vlrMedicao"];
+		$valorNotaFiscal       = $arrDados["valorNota"];
+		$somatorioVlrPagosNota = array_sum($arrValoresPagosNota);
+
+		// Verificando se o somatório dos valores pagos na nota fiscal é igual ao valor da nota fiscal.
+		//if (!$ignorarValidacao) {
+		if (round($somatorioVlrPagosNota, 2) != round($valorNotaFiscal, 2)) {
+			$arrRetorno["error"]   = true;
+			$arrRetorno["message"] = "O somatório dos valores pagos na nota fiscal deve ser igual ao Valor da Nota Fiscal.";
+		}
+		//}
+
+	} else {
+		$arrRetorno["error"]   = true;
+		$arrRetorno["message"] = "A nota fiscal não foi gravada, pois houve problemas com os dados informados.";
+	}
+
+	return $arrRetorno;
+}
+
+/**
+ * Função responsável por carregar o elemento select com as empresas contratadas.
+ * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+ * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+ * @return string
+ */
+function montaComboEmpresaContratada($obrid, $selectedValue = null) {
+
+	global $db;
+
+	$execucaoFinanceira = new ExecucaoFinanceira();
+	$arrObrids          = $execucaoFinanceira->retornaObrids($obrid);
+	$strObrids          = implode(",", $arrObrids);
+
+	/*
+	 * Na consulta é realizada uma concatenação dos IDs com os prefixos 'ent_' ou 'cex_'. Isso serve para identificar se
+	 * a empresa foi cadastrada como entidade ou como construtora extra (Cumprimento do Objeto).
+	 */
+	$sql = "
+        SELECT
+          'ent_' || ent.entid || '_' || c.crtid AS codigo,
+          '(' ||
+          (SELECT substr(cnpj, 1, 2) || '.' || substr(cnpj, 3, 3) || '.' || substr(cnpj, 6, 3) || '/' || substr(cnpj, 9, 4) ||
+                  '-' || substr(cnpj, 13) AS cnpj
+           FROM (SELECT cast(ent.entnumcpfcnpj AS VARCHAR) AS cnpj) a) || ') ' ||
+          CASE WHEN ent.entnome NOTNULL THEN
+            ent.entnome
+          ELSE
+            '-'
+          END
+          || ' (Contrato ' ||
+          CASE WHEN c.crtnumero NOTNULL THEN
+            '- nº ' || c.crtnumero || ' - '
+          ELSE
+            '- '
+          END ||
+          to_char(c.crtdtassinatura, 'DD/MM/YYYY') || ')' AS descricao
+        FROM obras2.obrascontrato ocr INNER JOIN obras2.contrato c ON (ocr.crtid = c.crtid) OR (ocr.crtid = c.crtidpai)
+          INNER JOIN entidade.entidade ent ON ent.entid = c.entidempresa
+        WHERE ocr.ocrstatus = 'A' AND c.crtstatus = 'A' AND ent.entstatus = 'A' AND c.ttaid IS NULL AND ocr.obrid IN ({$strObrids})
+
+        UNION ALL
+
+        SELECT
+          'cex_' || cex.cexid || '_' || cce.cceid AS codigo,
+          '(' ||
+          (
+            SELECT substr(cnpj, 1, 2) || '.' || substr(cnpj, 3, 3) || '.' ||
+                   substr(cnpj, 6, 3) || '/' || substr(cnpj, 9, 4) || '-' ||
+                   substr(cnpj, 13) AS cnpj
+            FROM (SELECT cast(cex.cexnumcnpj AS VARCHAR) AS cnpj) a
+          ) || ') ' || cex.cexrazsocialconstrutora || ' (Contrato - nº ' || cce.ccenumero || ' - ' || to_char(cce.ccedataassinatura, 'DD/MM/YYYY') ||
+          ')'                 AS descricao
+        FROM obras2.construtoraextra cex
+          INNER JOIN obras2.contratoconstrutoraextra cce ON cce.cexid = cex.cexid
+        WHERE cex.cexstatus = 'A'
+              AND cce.ccedataassinatura IS NOT NULL
+              AND cce.ttaid IS NULL
+              AND
+              cex.obrid IN ({$strObrids});
+";
+
+	if ($selectedValue) {
+		//        $arr = array("name" => "empresacontratada", "value" => $selectedValue);
+		return $db->monta_combo("empresaContratada", $sql, "S", "", "montaComboContratos", '', '', '', 'S', 'empresaContratada', '', $selectedValue);
+	}
+
+	return $db->monta_combo("empresaContratada", $sql, "S", "Selecione...", "montaComboContratos", '', '', '', 'S', 'empresaContratada');
+
+}
+
+/**
+ * Função responsável por carregar o elemento select com os contratos/aditivos de valor.
+ * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+ * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+ * @param $obrid
+ * @param $crtid
+ * @param $cceid
+ * @param null $medid
+ * @return string
+ */
+function montaComboContratosAditivos($obrid, $crtid, $cceid, $medid = null) {
+
+	global $db;
+
+	$arrContratosAditivos = carregarContratos($obrid, $crtid, $cceid, $medid);
+
+	return $db->monta_combo("contratos", $arrContratosAditivos, "S", "Selecione...", "", '', '', '', 'S', 'contratos');
+}
+
+/**
+ * @todo Verificar parâmetros.
+ * Função responsável por carregar uma lista com os contratos/aditivos de valor.
+ * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+ * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+ * @param $crtid Id do contrato original quando a empresa for de origem 'Entidade'.
+ * @param $cceid Id do contrato original quando a empresa for de origem 'Construtora extra'.
+ * @return array|mixed|NULL
+ */
+function carregarContratos($crtid, $cceid, $medid = null) {
+
+	global $db;
+
+	$arrContratos = array();
+
+	if (!$crtid && !$cceid) {
+		return $arrContratos;
+	}
+
+	if (ctype_digit($crtid) && !$cceid) {
+		$sql = "
+				SELECT
+					'crt_' || crt.crtid as codigo,
+					CASE WHEN ttaid IS NULL THEN
+						'Contrato Original' || ' - ' || to_char(crt.crtdtassinatura, 'DD/MM/YYYY')
+					WHEN ttaid = 2 THEN
+                        'Aditivo de Valor' || ' - ' || to_char(crt.crtdtassinaturaaditivo, 'DD/MM/YYYY')
+					ELSE
+						'Aditivo de Valor/Prazo' || ' - ' || to_char(crt.crtdtassinaturaaditivo, 'DD/MM/YYYY')
+					END as descricao
+				FROM
+					obras2.contrato crt
+				WHERE
+					(
+                        crt.crtid  = {$crtid}
+                        or
+                        (crt.crtidpai = (select crtidpai from obras2.contrato where crtid = {$crtid} order by crtid limit 1) AND ttaid in (2,3))
+                        or
+                        (crt.crtid = (select crtidpai from obras2.contrato where crtid = {$crtid} order by crtid limit 1) AND ttaid in (2,3))
+                        or
+                        (crt.crtidpai_execfinceira = {$crtid})
+                    ) AND crtstatus = 'A' order by descricao desc, crt.crtdtassinatura
+";
+	} elseif (ctype_digit($cceid) && !$crtid) {
+		$sql = "
+			SELECT
+				'cex_' ||cce.cceid AS codigo,
+				CASE WHEN cce.ttaid IS NULL THEN
+					'Contrato Original' || ' - ' || to_char(cce.ccedataassinatura, 'DD/MM/YYYY')
+				ELSE
+					'Aditivo de Valor' || ' - ' || to_char(cce.ccedataassinatura, 'DD/MM/YYYY')
+				END as descricao
+			FROM
+		  		obras2.contratoconstrutoraextra cce
+			WHERE
+				ccestatus = 'A'
+			AND
+			(
+				cce.cceid  = {$cceid}
+				or
+				(cce.cceid_pai = {$cceid}AND ttaid in (2,3))
+			)
+";
+	}
+
+	$arrContratos = $sql?$db->carregar($sql):false;
+	if (!$arrContratos) {
+		$arrContratos = array();
+	}
+
+	return $arrContratos;
+}
+
+/**
+ * Função responsável por carregar uma lista com as medições e suas respectivas referências.
+ * Função responsável por carregar o elemento select com os contratos ou aditivos de valor.
+ * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+ * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15250
+ * @param $crtid Id do contrato de uma entidade.
+ * @param $cceid Id do contrato da construtora extra'.
+ * @return array|mixed|NULL
+ */
+function carregarMedicao($crtidPrincipal, $cceidPrincipal, $crtid, $cceid, $acaoEditar = false) {
+
+	global $db;
+
+	$arrContratos = array();
+
+	if ((!$crtid && !$cceid) || (!$crtidPrincipal && !$cceidPrincipal)) {
+		return $arrContratos;
+	}
+
+	if (ctype_digit($crtidPrincipal) && !$cceidPrincipal) {
+		$filtro1 = "AND med.crtid = {$crtidPrincipal}";
+		$ligacao = "INNER JOIN obras2.contrato c ON mec.crtid = c.crtid AND c.crtstatus = 'A'";
+	} elseif (ctype_digit($cceidPrincipal) && !$crtidPrincipal) {
+		$filtro1 = "AND med.cceid = {$cceidPrincipal}";
+		$ligacao = "INNER JOIN obras2.contratoconstrutoraextra cce ON mec.cceid = cce.cceid AND cce.ccestatus = 'A'";
+	}
+
+	if (ctype_digit($crtid) && !$cceid) {
+		$filtro2 = "AND mec.crtid = {$crtid}";
+	} elseif (ctype_digit($cceid) && !$crtid) {
+		$filtro2 = "AND mec.cceid = {$cceid}";
+	}
+
+	$sql = "WITH totalpagomedicao AS (
+            SELECT
+              med.medid,
+              sum(ntm.ntmvlrpago) AS totalpago
+            FROM obras2.medicoes med
+              INNER JOIN obras2.medicaocontrato mec ON med.medid = mec.medid AND mec.mecstatus = 'A'
+              LEFT JOIN obras2.notamedicao ntm ON mec.mecid = ntm.mecid AND ntm.ntmstatus = 'A'
+            WHERE med.medstatus = 'A'
+{$filtro1}
+{$filtro2}GROUP BY med.medid
+            ORDER BY med.medid
+        )
+        SELECT
+          codigo,
+          descricao
+        FROM
+          (
+            SELECT
+              mec.mecid                        AS codigo,
+              med.mednummedicao                AS descricao,
+              cast(med.medvlrmedicao AS FLOAT) AS valortotalmedicao,
+              coalesce(tpm.totalpago, 0)       AS valorpagomedicao
+            FROM
+              obras2.medicoes med
+              INNER JOIN
+              obras2.medicaocontrato mec ON med.medid = mec.medid AND mec.mecstatus = 'A'
+{$ligacao}INNER JOIN
+              totalpagomedicao tpm ON tpm.medid = med.medid
+            WHERE
+              med.medstatus = 'A'
+{$filtro1}
+{$filtro2}
+          ) x \n";
+
+	if (!$acaoEditar) {
+		$sql .= "WHERE x.valorpagomedicao < x.valortotalmedicao;";
+
+	}
+
+	$arrMedicoes = $db->carregar($sql);
+	if (!$arrMedicoes) {
+		$arrMedicoes = array();
+	}
+
+	return $arrMedicoes;
+}
+
+/**
+ * @todo VERIFICAR USO
+ * Função responsável por salvar as medições dos contratos/aditivos.
+ * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+ * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+ * @param $obrid
+ * @param $arrDados
+ */
+function salvarNota($obrid, $arrDados) {
+
+	$arrDados["dadosNotaFiscalMedicao"] = json_decode(str_replace("\\", "", $arrDados["dadosNotaFiscalMedicao"]));
+
+	$arrDados["valorNota"] = str_replace(".", "", $arrDados["valorNota"]);
+	$arrDados["valorNota"] = str_replace(",", ".", $arrDados["valorNota"]);
+	$arrDados["valorNota"] = (float) $arrDados["valorNota"];
+
+	$msgRetorno = null;
+	if (!empty($_FILES["arquivoNota"]["name"])) {
+
+		// O Boletim de Medição deve ser um arquivo no formato PDF.
+		$arrMimeType = array("application/pdf", "application/x-pdf", "application/acrobat", "applications/vnd.pdf", "text/pdf", "text/x-pdf", "application/save", "application/force-download", "application/download", "application/x-download");
+
+		if (in_array($_FILES["arquivoNota"]["type"], $arrMimeType)) {
+
+			$validacao = validarDados($arrDados);
+
+			if ($validacao["error"] === true) {
+
+				$errorMessage = $validacao["message"];
+				echo "<script>alert('{$errorMessage}');window.close();</script>";
+
+				exit;
+
+			} else {
+
+				$empresaContratada     = $arrDados["empresacontratada"];
+				$arrEmpresaContratada  = explode("_", $empresaContratada);
+				$tipoEmpresaContratada = $arrEmpresaContratada[0];
+				$idEmpresaContratada   = $arrEmpresaContratada[1];
+				$idContrato            = $arrEmpresaContratada[2];
+
+				// A empresa contratada deve ser 'ent' (Entidade) ou 'cex' (Construtora Extra).
+				if ($tipoEmpresaContratada === "ent" || $tipoEmpresaContratada === "cex") {
+
+					//$medid = $arrDados["medid"];
+					$numeroNota       = $arrDados["numeroNota"];
+					$arrNotasMedicao  = $arrDados["dadosNotaFiscalMedicao"];
+					$descricaoArquivo = "nota_".$numeroNota."_".$empresaContratada;
+					$numeroNota       = $arrDados["numeroNota"];
+					$dataNota         = formata_data_sql($arrDados["dataNota"]);
+					$valorNota        = $arrDados["valorNota"];
+
+					foreach ($arrNotasMedicao as $notaMedicao) {
+
+						$valorTotalMedicaoNota = getValorPagoByMedicao((int) $notaMedicao->idMedicaoContrato);
+						$valorTotalMedicao     = getValorContratoMedicao((int) $notaMedicao->idMedicaoContrato);
+						$valorPagoNota         = (float) $notaMedicao->valorPagoNota;
+						$valorTotalMedicao     = (float) $valorTotalMedicao;
+						$total                 = $valorTotalMedicaoNota+$valorPagoNota;
+
+						if (round($total, 2) > round($valorTotalMedicao, 2)) {
+							echo "<script>
+                            alert('Atenção! \\nA soma dos valores declarados como pagos para a medição neste documento não pode ser maior que o valor total da Mediçao indicada.');
+                            window.close();
+                          </script>";
+							exit;
+						}
+					}
+
+					$usucpf = $_SESSION["usucpf"];
+
+					require_once (APPRAIZ."includes/classes/fileSimec.class.inc");
+					$fileSimec = new FilesSimec();
+					$fileSimec->setUpload($descricaoArquivo, null, false);
+					$arqid = $fileSimec->getIdArquivo();
+
+					if ($arqid) {
+
+						global $db;
+
+						$colunaIdContrato = $tipoEmpresaContratada === "ent"?"crtid":"cceid";
+						$colunaIdEmpresa  = $tipoEmpresaContratada === "ent"?"entid":"cexid";
+
+						$sql = "
+                          INSERT INTO obras2.notafiscal
+                            ({$colunaIdEmpresa},{$colunaIdContrato}, arqid, ntfnumnota, ntfdtnota, ntfvalornota, ntfusucpfinclusao, ntfdtinclusao)
+                          VALUES
+                            ({$idEmpresaContratada}, {$idContrato}, {$arqid}, {$numeroNota}, '{$dataNota}', {$valorNota}, '{$usucpf}', 'now()')
+                          RETURNING ntfid";
+
+						$ntfid = $db->pegaUm($sql);
+
+						if ($ntfid) {
+
+							$sql2 = "
+                              INSERT INTO obras2.notamedicao
+                                (ntfid, mecid, ntmvlrpago, ntmusucpfinclusao, ntmdtinclusao)
+                              VALUES \n";
+
+							if (!empty($arrNotasMedicao)) {
+								foreach ($arrNotasMedicao as $notaMedicao) {
+									$arrIdContrato = explode("_", $notaMedicao->idContrato);
+									//$idContrato = (int)$arrIdContrato[1];
+									$valorPagoNota = (float) $notaMedicao->valorPagoNota;
+									$mecid         = (int) $notaMedicao->idMedicaoContrato;
+
+									$sql2 .= "({$ntfid}, {$mecid}, {$valorPagoNota}, '{$usucpf}', 'now()'),";
+								}
+
+								$sql2 = rtrim($sql2, "\n,");
+
+								$db->executar($sql2);
+
+								if ($db->commit()) {
+									echo "<script>
+                                        alert('Informações gravadas com sucesso.');
+                                        window.opener.location.reload();
+                                    </script>";
+								}
+
+							} else {
+								$db->rollback();
+								echo "<script>
+                                    alert('Problemas ao gravar as informações. \\nVerifique os dados fornecidos.');
+                                    window.close();
+                                </script>";
+							}
+						} else {
+							$db->rollback();
+							echo "<script>
+                                alert('A nota fiscal não foi salva. \\nVerifique os dados fornecidos.');
+                                window.close();
+                            </script>";
+						}
+
+					} else {
+						echo "<script>
+                            alert('O arquivo da nota fiscal não foi salvo. \\nTente novamente mais tarde.');
+                            window.close();
+                          </script>";
+					}
+
+				} else {
+					echo "<script>
+                            alert('Problemas ao verificar o Fornecedor. \\nTente novamente mais tarde.');
+                            window.close();
+                          </script>";
+				}
+			}
+
+		} else {
+			$msgRetorno = "A Nota Fiscal deve ser um arquivo no formato PDF.";
+		}
+	} else {
+		$msgRetorno = "A Nota Fiscal não foi enviada.";
+	}
+	if (!empty($msgRetorno)) {
+		echo "<script>alert('{$msgRetorno}');window.close();</script>";
+
+		exit;
+	}
+}
+
+/**
+ * @todo VERIFICAR USO.
+ * Função responsável por alterar uma medição.
+ * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+ * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+ * @param $obrid
+ * @param $medid
+ * @param $arrDados
+ */
+function atualizarNota($obrid, $arrDados) {
+
+	$arrDados["dadosNotaFiscalMedicao"] = json_decode(str_replace("\\", "", $arrDados["dadosNotaFiscalMedicao"]));
+	$arrDados["notasRemovidas"]         = json_decode(str_replace("\\", "", $arrDados["notasRemovidas"]));
+
+	$arrDados["valorNota"] = str_replace(".", "", $arrDados["valorNota"]);
+	$arrDados["valorNota"] = str_replace(",", ".", $arrDados["valorNota"]);
+	$arrDados["valorNota"] = (float) $arrDados["valorNota"];
+
+	$msgRetorno = null;
+
+	$validacao = validarDados($arrDados, true);
+
+	if ($validacao["error"] === true) {
+		$errorMessage = $validacao["message"];
+		echo "<script>alert('{$errorMessage}');window.close();</script>";
+
+		exit;
+
+	} else {
+
+		$arqid = null;
+
+		$ntfid                = $arrDados["ntfid"];
+		$empresaContratada    = $arrDados["empresacontratada"];
+		$arrEmpresaContratada = explode("_", $empresaContratada);
+
+		$tipoEmpresaContratada       = $arrEmpresaContratada[0];
+		$idEmpresaContratada         = $arrEmpresaContratada[1];
+		$idContratoEmpresaContratada = $arrEmpresaContratada[2];
+		$arrContratos                = explode("_", $arrDados["contratos"]);
+		$tipoContrato                = null;
+		if ($tipoEmpresaContratada == "ent") {
+			$tipoContrato = "crt";
+		} elseif ($tipoEmpresaContratada == "cex") {
+			$tipoContrato = "cce";
+		}
+
+		$idContrato        = $arrContratos[1];
+		$numeroNota        = $arrDados["numeroNota"];
+		$valorNota         = $arrDados["valorNota"];
+		$dataNota          = formata_data_sql($arrDados["dataNota"]);
+		$descricaoArquivo  = "ntf_".$numeroNota."_".$empresaContratada;
+		$usucpf            = $_SESSION["usucpf"];
+		$arrNotasMedicao   = $arrDados["dadosNotaFiscalMedicao"];
+		$arrNotasRemovidas = $arrDados["notasRemovidas"];
+
+		if (is_array($arrNotasMedicao) && !empty($arrNotasMedicao)) {
+			foreach ($arrNotasMedicao as $notaMedicao) {
+
+				$valorTotalMedicaoNota = getValorPagoByMedicao((int) $notaMedicao->idMedicaoContrato, $ntfid);
+				$valorTotalMedicao     = getValorContratoMedicao((int) $notaMedicao->idMedicaoContrato);
+				$valorPagoNota         = (float) $notaMedicao->valorPagoNota;
+
+				if (($valorTotalMedicaoNota+$valorPagoNota) > $valorTotalMedicao) {
+					echo "<script>
+                            alert('Atenção! \\nA soma dos valores declarados como pagos para a medição neste documento não pode ser maior que o valor total da Mediçao indicada.');
+                            window.close();
+                          </script>";
+					exit;
+				}
+			}
+		}
+
+		if ($_POST["arqidOld"] && ctype_digit($_POST["arqidOld"])) {
+
+			if (!empty($_FILES["arquivoNota"]["name"])) {
+
+				// O Boletim de Medição deve ser um arquivo no formato PDF.
+				$arrMimeType = array("application/pdf", "application/x-pdf", "application/acrobat", "applications/vnd.pdf", "text/pdf", "text/x-pdf", "application/save", "application/force-download", "application/download", "application/x-download");
+				if (in_array($_FILES["arquivoNota"]["type"], $arrMimeType)) {
+
+					require_once (APPRAIZ."includes/classes/fileSimec.class.inc");
+					$fileSimec = new FilesSimec();
+					$fileSimec->setUpload($descricaoArquivo, null, false);
+					$arqid = $fileSimec->getIdArquivo();
+
+					if (!$arqid) {
+						echo "<script>
+                            alert('O arquivo da Nota Fiscal não foi salvo. \\nTente novamente mais tarde.');
+                            window.close();
+                          </script>";
+					}
+
+				} else {
+					echo "<script>
+                        alert('A Nota Fiscal deve ser um arquivo no formato PDF.');
+                        window.close();
+                      </script>";
+				}
+			} else {
+				echo "<script>
+                        alert('A Nota Fiscal não foi enviada.');
+                        window.close();
+                      </script>";
+			}
+		}
+
+		$colunaEmpresaNota  = $tipoEmpresaContratada === "ent"?"entid":"cexid";
+		$colunaContratoNota = $tipoContrato === "crt"?"crtid":"cceid";
+
+		global $db;
+
+		// Atualizando os dados da nota.
+		$sql1 = "
+        UPDATE obras2.notafiscal
+        SET ";
+
+		if ($arqid && ctype_digit($arqid)) {
+			$sql1 .= "arqid = {$arqid},";
+		}
+
+		if ($colunaEmpresaNota === "entid") {
+			$sql1 .= "cexid = NULL,";
+		} else {
+			$sql1 .= "entid = NULL,";
+		}
+
+		if ($colunaContratoNota === "crtid") {
+			$sql1 .= "cceid = NULL,";
+		} else {
+			$sql1 .= "crtid = NULL,";
+		}
+
+		$sql1 .= "
+{$colunaEmpresaNota} = {$idEmpresaContratada},
+{$colunaContratoNota} = {$idContratoEmpresaContratada},
+          ntfnumnota = {$numeroNota},
+          ntfdtnota = '{$dataNota}',
+          ntfvalornota = {$valorNota}
+        WHERE ntfid = {$ntfid}";
+
+		$db->executar($sql1);
+
+		if (is_array($arrNotasRemovidas) && !empty($arrNotasRemovidas)) {
+
+			// Removendo as notas que o usuário solicitou.
+			$strntmid = implode(",", $arrNotasRemovidas);
+			$sql2     = "UPDATE obras2.notamedicao SET ntmstatus = 'I', ntmdtinativacao = NOW(), ntmcpfinativacao='{$usucpf}' WHERE ntmid IN ({$strntmid});";
+
+			$db->executar($sql2);
+
+		}
+
+		// Vinculando a nota fiscal as novas medições.
+		if (is_array($arrNotasMedicao) && !empty($arrNotasMedicao)) {
+			$sql3 = "";
+			foreach ($arrNotasMedicao as $notaMedicao) {
+				if (!$notaMedicao->ntmid) {// Se for novo registro.
+					$mecid        = $notaMedicao->idMedicaoContrato;
+					$vlr          = $notaMedicao->valorPagoNota;
+					$arrContratos = explode("_", $notaMedicao->idContrato);
+					$idContrato   = $arrContratos[1];
+					$sql3 .= "INSERT INTO obras2.notamedicao (ntfid, mecid, ntmvlrpago, ntmusucpfinclusao, ntmdtinclusao) VALUES ({$ntfid}, {$mecid}, {$vlr}, '{$usucpf}', 'now()');\n";
+
+				}
+			}
+			$db->executar($sql3);
+		}
+
+		if ($db->commit()) {
+			echo "<script>
+                     alert('Informações gravadas com sucesso.');
+                     window.opener.location.reload();
+                  </script>";
+			exit;
+		}
+
+		echo "<script>alert({$msgRetorno})</script>";
+		exit;
+	}
+}
+
+/**
+ * @todo Comentar depois.
+ * @param $mecid
+ * @param $ntfid
+ * @return bool|int|mixed|NULL|string
+ */
+function getValorPagoByMedicao($mecid, $ntfid = '') {
+
+	global $db;
+
+	$totalPago = 0;
+
+	if (($ntfid != '') && (ctype_digit($ntfid))) {
+		$filtro = 'AND ntm.ntfid NOT IN ('.$ntfid.')';
+	} else {
+		$filtro = '';
+	}
+
+	if ((ctype_digit($mecid))) {
+
+		$sql = "SELECT
+              coalesce(sum(ntm.ntmvlrpago), 0)
+            FROM obras2.notamedicao ntm
+            WHERE ntm.ntmstatus = 'A'
+            AND ntm.mecid = {$mecid}
+{$filtro};
+";
+
+		$retorno = $db->pegaUm($sql);
+
+		if ($retorno) {
+			$totalPago = $retorno;
+		}
+
+	}
+
+	return $totalPago;
+}
+
+function getValorContratoMedicao($mecid) {
+	global $db;
+
+	$sql = "SELECT mecvlrreferencia FROM obras2.medicaocontrato WHERE mecid = {$mecid}";
+
+	$totalPago = $db->pegaUm($sql);
+
+	$totalPago = $totalPago?$totalPago:0;
+
+	return $totalPago;
+}
+
+/**
+ * @todo VERIFICAR USO.
+ * Função responsável por pesquisar os dados da medição.
+ * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+ * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+ * @param $obrid
+ * @param $medid
+ * @return array|mixed|NULL
+ */
+function getDadosMedicao($obrid, $medid) {
+
+	global $db;
+
+	$sql = "
+        SELECT
+          med.obrid,
+          med.medid,
+          CASE WHEN (med.entid IS NOT NULL) AND (med.cexid IS NULL)
+            THEN 'ent'
+          WHEN (med.entid IS NULL) AND (med.cexid IS NOT NULL)
+            THEN 'cex'
+          ELSE NULL END                              AS medtipoempresacontratada,
+          CASE WHEN (med.entid IS NOT NULL) AND (med.cexid IS NULL)
+            THEN med.entid
+          WHEN (med.entid IS NULL) AND (med.cexid IS NOT NULL)
+            THEN med.cexid
+          ELSE NULL END                              AS medidempresacontratada,
+          med.obrid,
+          med.arqid,
+          med.mednummedicao,
+          to_char(med.meddtmedicao, 'DD/MM/YYYY')    AS meddtmedicao,
+          to_char(med.meddtinicioexec, 'DD/MM/YYYY') AS meddtinicioexec,
+          to_char(med.meddtfimexec, 'DD/MM/YYYY')    AS meddtfimexec,
+          med.medvlrmedicao
+        FROM obras2.medicoes med
+        WHERE
+          med.medstatus = 'A'
+          AND med.medid = {$medid}
+          AND med.obrid = {$obrid};
+";
+
+	$arrMedicao = $db->carregar($sql);
+
+	$retorno = !$arrMedicao?array():$arrMedicao;
+
+	return $retorno;
+}
+
+/**
+ * Função responsável por pesquisar os dados das medições de determinada nota.
+ * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+ * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15250
+ * @param $medid
+ * @return array|mixed|NULL
+ */
+function getDadosNotaMedicao($ntfid) {
+
+	global $db;
+
+	$arrDadosNotaMedicao = array();
+
+	if (ctype_digit($ntfid)) {
+
+		$sql = "
+        SELECT
+          ntm.ntmid,
+          ntm.ntfid,
+          to_char(ntf.ntfdtnota, 'DD/MM/YYYY') AS ntfdtnota,
+          ntm.mecid,
+          med.mednummedicao,
+          to_char(med.meddtmedicao, 'DD/MM/YYYY') AS meddtmedicao,
+          to_char(med.meddtinicioexec, 'DD/MM/YYYY') AS meddtinicioexec,
+          to_char(med.meddtfimexec, 'DD/MM/YYYY') AS meddtfimexec,
+          med.medvlrmedicao,
+          ntm.ntmvlrpago,
+          med.medid,
+          CASE WHEN med.crtid NOTNULL THEN
+            'crt_' || med.crtid
+          ELSE
+            'cce_' || med.cceid
+          END as contrato
+        FROM
+          obras2.notafiscal ntf
+        INNER JOIN
+          obras2.notamedicao ntm USING (ntfid)
+        INNER JOIN
+          obras2.medicaocontrato mec USING (mecid)
+        INNER JOIN
+          obras2.medicoes med USING (medid)
+        WHERE
+          ntf.ntfstatus = 'A'
+        AND
+          ntm.ntmstatus = 'A'
+        AND
+          med.medstatus = 'A'
+        AND
+          mec.mecstatus = 'A'
+        AND
+          ntf.ntfid = {$ntfid};
+";
+
+		$result = $db->carregar($sql);
+
+		if (is_array($result) && !empty($result)) {
+			$arrDadosNotaMedicao = $result;
+		}
+	}
+
+	return $arrDadosNotaMedicao;
+}
+
+/**
+ * @todo. Comentar.
+ * @param $ntfid
+ * @return mixed
+ */
+function getDadosNotaFiscal($ntfid) {
+
+	global $db;
+
+	$arrDadosNotaFiscal = array();
+
+	if (ctype_digit($ntfid)) {
+
+		$sql = "
+          SELECT
+              CASE
+              WHEN ntf.entid NOTNULL AND ntf.cexid ISNULL
+                THEN 'ent'
+              WHEN ntf.entid ISNULL AND ntf.cexid NOTNULL
+                THEN 'cex'
+              END AS tipoempresa,
+              CASE
+              WHEN ntf.entid NOTNULL AND ntf.cexid ISNULL
+                THEN ntf.entid
+              WHEN ntf.entid ISNULL AND ntf.cexid NOTNULL
+                THEN ntf.cexid
+              END AS idempresa,
+              CASE
+              WHEN ntf.crtid NOTNULL AND ntf.cceid ISNULL
+                THEN 'crt'
+              WHEN ntf.crtid ISNULL AND ntf.cceid NOTNULL
+                THEN 'cce'
+              END AS tipocontrato,
+              CASE
+              WHEN ntf.crtid NOTNULL AND ntf.cceid ISNULL
+                THEN ntf.crtid
+              WHEN ntf.crtid ISNULL AND ntf.cceid NOTNULL
+                THEN ntf.cceid
+              END AS idcontrato,
+              ntf.arqid,
+              ntf.ntfnumnota,
+              to_char(ntf.ntfdtnota, 'DD/MM/YYYY') AS ntfdtnota,
+              ntf.ntfvalornota,
+              xx.obrid
+          FROM obras2.notafiscal ntf
+            INNER JOIN (
+                           SELECT
+                             med.obrid,
+                             ntf.ntfid
+                           FROM obras2.notafiscal ntf
+                             INNER JOIN obras2.notamedicao ntm USING (ntfid)
+                             INNER JOIN obras2.medicaocontrato mec USING (mecid)
+                             INNER JOIN obras2.medicoes med USING (medid)
+                           WHERE
+                             ntf.ntfstatus = 'A'
+                             AND
+                             ntm.ntmstatus = 'A'
+                             AND
+                             med.medstatus = 'A'
+                             AND
+                             ntf.ntfid = {$ntfid}
+                           GROUP BY med.obrid, ntf.ntfid
+                         ) xx ON xx.ntfid = ntf.ntfid
+          WHERE
+            ntf.ntfstatus = 'A'
+            AND
+            ntf.ntfid = {$ntfid};
+";
+
+		$result = $db->carregar($sql);
+
+		if (is_array($result) && !empty($result)) {
+			$arrDadosNotaFiscal = $result;
+		}
+	}
+
+	return $arrDadosNotaFiscal;
+}
+
+/**
+ * @todo COMENTAR.
+ * @param $medid
+ * @param $valor
+ * @param $obrid
+ * @param $dataNota
+ * @param $valorObj
+ * @return array
+ */
+function calculaPerc($medid, $valor, $obrid, $dataNota, $valorObj) {
+
+	global $db;
+
+	$execucaoFinanceira = new ExecucaoFinanceira();
+	$arrObrids          = $execucaoFinanceira->retornaObrids($obrid);
+
+	$strObrids = implode(",", $arrObrids);
+
+	$valor = str_replace(".", "", $valor);
+	$valor = str_replace(",", ".", $valor);
+
+	$dataNota = formata_data_sql($dataNota);
+
+	$sqlMedFisica = "WITH vtotal AS (SELECT DISTINCT ON (med.medid)
+              med.medid,
+              CASE WHEN mec.cceid ISNULL AND mec.crtid NOTNULL THEN
+                  (SELECT crtvalorexecucao FROM obras2.contrato WHERE crtstatus = 'A' AND ttaid ISNULL AND crtid = mec.crtid)
+                ELSE
+                  (SELECT ccevalor FROM obras2.contratoconstrutoraextra WHERE ccestatus = 'A' AND cceid_pai ISNULL AND ttaid ISNULL AND cceid = mec.cceid)
+              END as valorcontrato
+            FROM
+              obras2.medicoes med
+            INNER JOIN
+              obras2.medicaocontrato mec ON med.medid = mec.medid AND mec.mecstatus = 'A'
+            WHERE
+              medstatus = 'A'
+            AND med.medid = {$medid})
+              SELECT ({$valor}*100)/vtotal.valorcontrato as percentfisica
+              FROM vtotal;
+";
+
+	$medicaoFisica = $db->pegaUm($sqlMedFisica);
+
+	$sqlMedAcumulada = "WITH v as (
+                          SELECT
+                            c.crtvalorexecucao AS valorcontrato,
+                            c.crtid as crtid,
+                            NULL as cceid
+                          FROM obras2.obrascontrato ocr INNER JOIN obras2.contrato c ON (ocr.crtid = c.crtid) OR (ocr.crtid = c.crtidpai)
+                            INNER JOIN entidade.entidade ent ON ent.entid = c.entidempresa
+                          WHERE ocr.ocrstatus = 'A' AND c.crtstatus = 'A' AND ent.entstatus = 'A' AND c.ttaid IS NULL AND ocr.obrid IN ({$strObrids})
+                          GROUP BY c.crtid, valorcontrato
+
+                          UNION ALL
+
+                          SELECT
+                            cce.ccevalor AS valorcontrato,
+                            NULL as crtid,
+                            cce.cceid as cceid
+                          FROM obras2.construtoraextra cex
+                            INNER JOIN obras2.contratoconstrutoraextra cce ON cce.cexid = cex.cexid
+                          WHERE cex.cexstatus = 'A'
+                                AND cce.ccedataassinatura IS NOT NULL
+                                AND cce.ttaid IS NULL
+                                AND
+                                cex.obrid IN ({$strObrids})
+                          GROUP BY cce.cceid, valorcontrato
+                        ),
+
+                        x AS (SELECT
+                          sum(ntm.ntmvlrpago) AS vlrpago,
+                          1 as codigo
+                        FROM v
+                        LEFT JOIN
+                          obras2.notamedicao ntm ON v.cceid = ntm.cceid OR v.crtid = ntm.crtid
+                        LEFT JOIN
+                          obras2.notafiscal ntf ON ntm.ntfid = ntf.ntfid
+                        WHERE
+                          ntf.ntfdtnota <= '{$dataNota}'
+                        ),
+
+                        y as (
+                            SELECT
+                             sum(v.valorcontrato) as vlrcontrato,
+                             1 as codigo
+                            FROM v
+                          )
+
+                        SELECT
+                            x.vlrpago as valorpago,
+                            y.vlrcontrato as valortotal
+                        FROM
+                          x
+                        INNER JOIN y ON x.codigo = y.codigo;
+";
+
+	$arrMedAculumada = $db->carregar($sqlMedAcumulada);
+	$arrMedAculumada = $arrMedAculumada[0];
+	$valorFinal      = $arrMedAculumada['valorpago']+$valor+$valorObj;
+
+	$medicaoAcumulada = ($valorFinal*100)/$arrMedAculumada['valortotal'];
+
+	if (!empty($medicaoFisica) && !empty($medicaoAcumulada)) {
+
+		$resposta = array(
+			"medicaoFisica"    => number_format($medicaoFisica, 2, ",", "."),
+			"medicaoAcumulada" => number_format($medicaoAcumulada, 2, ",", ".")
+		);
+
+	} else {
+
+		$resposta = array(
+			"medicaoFisica"    => "",
+			"medicaoAcumulada" => ""
+		);
+	}
+
+	return $resposta;
+
+}
+
+/**
+ * @todo Comentar
+ * @param $mecid
+ * @return array|bool|mixed|NULL
+ */
+function getIdContratoNotaMedicao($mecid) {
+
+	global $db;
+
+	$sql = "
+    SELECT
+      mec.crtid,
+      mec.cceid
+    FROM  obras2.medicaocontrato mec
+    WHERE
+    mec.mecstatus = 'A'
+    AND mec.mecid = {$mecid};
+";
+
+	$retorno = $db->pegaLinha($sql);
+	return $retorno;
+
+}

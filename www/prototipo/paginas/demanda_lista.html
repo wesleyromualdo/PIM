@@ -1,0 +1,224 @@
+<div class="ibox" id="ibox-detalhe">
+<h1 class="left">Pesquisar Demandas</h1>
+
+            <div class="ibox-content">
+                <form method="post" name="formulario-entidade" id="formulario-entidade">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Numero da Demanda:
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="nr_demanda" value="" class="form-control">
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Tipo Portifólio:
+                                </label>
+                                <div class="col-sm-8">
+                                    <select class="form-control chosen-select ">
+                                        <option value="">Obras e Instalações</option>
+                                        <option value="">Documentos</option>
+                                    </select>
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Entidade:
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="nr_demanda" placeholder="" class="form-control cnpj">
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" id="tipo_portfolio_row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Periodo:
+                                </label>
+                                <div class="col-sm-4">
+                                    <div class='input-group ' id='datetimepi'>
+                                    <input type='text' class="form-control" />
+                                    <span class="input-group-addon">
+                                            <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class='input-group ' id='datetimepi'>
+                                        <input type='text' class="form-control" />
+                                        <span class="input-group-addon">
+                                                <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label class="col-sm-4 control-label">
+                                    Portifólio:
+                            </label>
+                            <div class="col-sm-8">
+                                <select name="status" id="status" class="form-control chosen-select">
+                                    <option value="">Recapeamento Asfáltico</option>
+                                    <option value="">Reforma Elétrica</option>
+                                    <option value="">Instalação Elétrica</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row" id="portfolio_row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Status:
+                                </label>
+                                <div class="col-sm-8">
+                                    <select name="status" id="status" class="form-control chosen-select">
+                                        <option value="">Aguardando assinatura de convênio</option>
+                                        <option value="">Solicitadas</option>
+                                        <option value="">Em análise do SDR</option>
+                                        <option value="">Em análise da Secretaria</option>
+                                        <option value="">Recurso Indisponível</option>
+                                        <option value="">Aguardando Visita</option>
+
+                                    </select>
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <div class="ibox-footer">
+                <div class="center">
+                    <button type="submit" class="btn btn-primary btn-pesquisar" style="width: 200px;"><i class="fa fa-search"></i> Pesquisar
+                    </button> &nbsp;
+                    <div class="btn btn-info" id="cadastrar_demanda" style="width: 200px;"><i class="fa fa-plus-circle"></i> Cadastrar Demanda
+                    </div>
+                </div>
+                    
+            </div>
+
+            <script>
+                $(document).ready(function() {
+                    $('#cadastrar_demanda').click(function(e) {
+                        loadPage('cadastrar_demanda.html', 'ibox-content');
+                    });
+                });
+            </script>
+
+            <div id="wf">
+
+            </div>
+
+
+            <div id="ibox-content" class="ibox-content tb_render_container">
+                <table id="tb_render" class="table hide table table-striped table-bordered table-hover table-condensed tabela-listagem  " >
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Id</th>
+                            <th>Demandate</th>
+                            <th>Tipo Portifólio</th>
+                            <th>Portifólio</th>
+                            <th>Valor</th>
+                            <th>Situação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+
+
+        <script>
+            $(document).ready(function() {
+
+                $('.btn-pesquisar').click(function(e) {
+                    event.preventDefault();
+
+
+                       var arr = ['PM PRE PRUDENTE','PM ARCO-IRIS','PM JAGUARIUNA'];
+
+                       var arrSt = ['PM aprovado ','PM aprovado ','aprovado '];
+
+                       var arrSituacao = ['Aguardando assinatura do convênio','Aguardando assinatura do convênio','Aguardando assinatura do convênio'];
+
+
+                                lista = function (){
+                                    html = '';
+                                    for (i =0; i<arr.length; i++){
+
+                                        var imp =  i%2==0 ?'Obras e Instalações':'Aquisição';
+
+                                        html += '<tr>'+
+                                        '<td class="text-center" style="width:33px"><span onclick="openAnalise('+i+')" class="btn btn-primary btn-sm glyphicon glyphicon-eye-open"></span></td>' +
+                                        '<td style="width:33px">' + i + '</td><td id="'+'demandante_'+i+'">' + arr[i] + '</td><td id="'+'tipo_'+i+'">' + imp + '</td><td id="'+'portfolio_'+i+'">' + arrSt[i] + '</td><td id="'+'valor_'+i+'">R$ ' + getRandomArbitrary(1, i+10)  + '</td><td id="situacao_'+i+'">'+arrSituacao[i]+'</td></tr>';
+                                    }
+
+                                    $("#tb_render tbody").html(html);
+                                    $("#tb_render").removeClass('hide');
+                                    $('.tb_render_container').removeClass('hide');
+                                }
+
+                                lista();
+
+                });
+
+                lista();
+
+                $(".chosen-select").chosen();
+            });
+
+            function openAnalise(idx)
+            {
+              var demandante = $('#demandante_'+idx).html();
+              var tipo = $('#tipo_'+idx).html();
+              var portfolio = $('#portfolio_'+idx).html();
+              var valor = $('#valor_'+idx).html();
+              var situacao = $('#situacao_'+idx).html();
+
+              appendToDiv('demanda_detalhe.html', 'ibox-detalhe');
+
+              $('#ibox-detalhe').html('');
+
+
+              setTimeout(function() {
+                dw();
+                $('#txt_demandante').html(demandante);
+                $('#txt_tipo').html(tipo);
+                $('#txt_portfolio').html(portfolio);
+                $('#txt_valor').html(valor);
+                $('#workflow_estado_atual').html(situacao);
+              }, 200);
+
+            }
+        </script>

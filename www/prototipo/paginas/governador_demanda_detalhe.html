@@ -1,0 +1,125 @@
+<style type="text/css">
+  
+  .ibox-content {
+      clear: both;
+      border-top: none;
+  }
+
+
+  .bt-assinar, .btn-publicar {
+    font-size:14pt;
+  }
+
+
+
+</style>
+<div class="ibox position-relative" id="ibox-governador">
+
+      <div class="ibox-title">
+          <div class="row">
+              <div class="col-12">
+                  <h1>Demanda N° 00248 - Recapeamento asfáltico</h1>
+              </div>
+              <div class="col-sm-4 mb-4">
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-4 bold">Demandante:</div>
+                  <div class="col-sm-8 text-right" id="txt_demandante"></div>
+                </div>
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-4 bold">Tipo:</div>
+                  <div class="col-sm-8 text-right" id="txt_tipo"></div>
+                </div>
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-4 bold">Portfólio:</div>
+                  <div class="col-sm-8 text-right" id="txt_portfolio"></div>
+                </div>
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-4 bold">Valor:</div>
+                  <div class="col-sm-8 text-right" id="txt_valor"></div>
+                </div>
+              </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+
+                </div>
+              </div>
+
+              <div style="clear:both"></div>
+          </div>
+        
+
+      <div class="ibox-title">
+          <div class="row m-b-md">
+              <div class="col-12">
+                  <h1>Convênio N° 8561445661</h1>
+              </div>
+              <div class="col-sm-6 mb-6">
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-5 bold">Regional:</div>
+                  <div class="col-sm-7 text-right" id="txt_demandante"></div>
+                </div>
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-5 bold">Valor da Autorização:</div>
+                  <div class="col-sm-7 text-right" id="txt_tipo"></div>
+                </div>
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-5 bold">Contrapartida:</div>
+                  <div class="col-sm-7 text-right" id="txt_portfolio"></div>
+                </div>
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-5 bold">Total Convênio:</div>
+                  <div class="col-sm-7 text-right" id="txt_valor"></div>
+                </div>
+              </div>
+              <div class="col-sm-6 mb-6">
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-5 bold">Resumo da descrição do Objeto:</div>
+                  <div class="col-sm-7 text-right" id="txt_demandante"></div>
+                </div>
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-5 bold">Vigência do Convênio:</div>
+                  <div class="col-sm-7 text-right" id="txt_portfolio"></div>
+                </div>
+                <div class="row border-bottom p-1">
+                  <div class="col-sm-5 bold">N° da Lei:</div>
+                  <div class="col-sm-7 text-right" id="txt_valor"></div>
+                </div>
+              </div>
+          </div>
+        <div class="row">
+
+            <div class="col-12"> 
+              <ul class="nav nav-tabs nav-custom">
+                            <li class="governador-btn active" onclick="javascript: loadAnalise(this); " data-id="aprovar"><a href="#">Aprovar Reserva</a></li>
+                            <li class="governador-btn" onclick="javascript: loadConvenio(this); " data-id="assinar"><a href="#">Assinar Convênio</a></li> 
+                        </ul>
+            </div>  
+            <div style="clear:both"></div>
+        </div>
+      </div>
+
+  <div class="ibox-content position-relative" id="governador-container">
+
+  </div>
+
+</div>
+  <script>
+    $(document).ready(function() {
+      appendToDiv('governador_demanda_detalhe_aprovar.html', 'governador-container');
+
+      $('.governador-btn').click(function() {
+        $('.governador-btn').removeClass('active')
+        $(this).addClass('active')
+        var id = $(this).data('id');
+
+        $('#governador-container').html('');
+
+        appendToDiv('governador_demanda_detalhe_'+id+'.html', 'governador-container');
+
+      });
+    });
+  </script> 
+
+</div>

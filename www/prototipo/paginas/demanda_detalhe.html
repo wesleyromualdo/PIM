@@ -1,0 +1,90 @@
+
+<script>
+    $(document).ajaxComplete(function () {
+        $(".chosen-select").chosen();
+    });
+</script>
+
+<div class="ibox">
+  <div class="ibox-title">
+    <div class="row">
+      <div class="col-10">
+        <h2>Demanda N° 00248 - Recapeamento asfáltico</h2>
+      </div>
+      <div id="wf" class="col-2" style="position: relative;"></div>
+      <div class="col-sm-4 mb-4">
+        <div class="row border-bottom p-1">
+          <div class="col-sm-4 bold">Demandante:</div>
+          <div class="col-sm-8 text-right" id="txt_demandante"></div>
+        </div>
+        <div class="row border-bottom p-1">
+          <div class="col-sm-4 bold">Tipo:</div>
+          <div class="col-sm-8 text-right" id="txt_tipo"></div>
+        </div>
+        <div class="row border-bottom p-1">
+          <div class="col-sm-4 bold">Portfólio:</div>
+          <div class="col-sm-8 text-right" id="txt_portfolio"></div>
+        </div>
+        <div class="row border-bottom p-1">
+          <div class="col-sm-4 bold">Valor:</div>
+          <div class="col-sm-8 text-right" id="txt_valor"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row p-1">
+      <div class="alert alert-danger" role="alert" id="cadin_alerta"></div>
+      <script>
+          $(document).ready(function() {
+              appendToDiv('cadin_alerta.html', 'cadin_alerta');
+          });
+      </script>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-10">
+      <ul class="nav nav-tabs nav-custom">
+        <li class="active" onclick="javascript: loadAnalise(this); "><a href="#">Análise</a></li>
+        <li onclick="javascript: loadConvenio(this); "><a href="#">Convênio</a></li>
+      </ul>
+      <div class="ibox float-e-margins">
+        <div class="ibox-content" id="demanda-ibox-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+    var loadAnalise = function(aba){
+        $('li').removeClass('active');
+        $(aba).addClass('active');
+
+        $('#demanda-ibox-content').html('');
+        appendToDiv('demanda_detalhe_analise.html', 'demanda-ibox-content');
+    }
+
+    var loadConvenio = function(aba){
+
+        $('li').removeClass('active');
+        $(aba).addClass('active');
+
+        $('#demanda-ibox-content').html('');
+        appendToDiv('demanda_detalhe_convenio.html', 'demanda-ibox-content');
+    }
+
+    $(document).ready(function(){
+
+        loadAnalise($('.active'));
+
+        $('.btn-salvar').click(function(e){
+
+            event.preventDefault();
+            alertaSucesso()
+        });
+
+        appendToDiv('demanda_workflow.html', 'wf');
+
+    });
+
+</script>

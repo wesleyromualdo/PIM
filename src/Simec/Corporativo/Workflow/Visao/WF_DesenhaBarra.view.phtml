@@ -1,0 +1,76 @@
+<div class="panel panel-default js-container-barra-wf" dado-identificacao="<?php echo $dadoDocumento['docid'] ?>">
+	<div class="panel-heading"><?php echo $dadoDocumento['titulo_caixa_workflow']; ?></div>
+	<div class="panel-body">
+		<dl>
+			<dd>Estado atual</dd>
+			<dt><?php echo $dadoDocumento['esddsc']; ?></dt>
+		</dl>
+		<hr style="margin-top: 5px">
+		<?php
+		$nenhumaAcao = true;
+		foreach ($dadoDocumento['todas_acoes_permitidas_perfil'] as $acao) {
+		    if ($acao['resultado_validacao_condicao'] === true) {
+		        $nenhumaAcao = false;
+		?>
+        		<div style="white-space: nowrap; width: 90%" class="js-div-externa-acao" dado-identificacao="<?php echo $dadoDocumento['docid'] .'_'. $acao['aedid']; ?>">
+        			<button type="button" href="#" 
+        				style="white-space: normal !important; margin-bottom: 5px; width: 100%; font-size: 10px; padding: 5px !important"
+        				class="btn"
+        				onclick="$WfSimec.executarAcao(this);">
+        				<span class="glyphicon"></span> <?php echo $acao['aeddscrealizar']; ?>
+        			</button>
+        			<?php 
+        			if (trim($acao['aeddescregracondicao'])) {
+        			?>
+        			<span onclick="$WfSimec.abirModalInformacao(this);" style="color: #428bca; cursor: pointer" class="glyphicon glyphicon-info-sign"></span>
+        			<?php 
+        			}
+        			?>
+        		</div>
+		<?php 
+		    } elseif ($acao['aedvisivel'] == 't') {
+		        $nenhumaAcao = false;
+		?>    
+				<div style="white-space: nowrap; width: 90%" class="js-div-externa-acao" dado-identificacao="<?php echo $dadoDocumento['docid'] .'_'. $acao['aedid']; ?>">
+        			<button type="button" class="btn btn-default" 
+        					data-toggle="popover" 
+        					style="white-space: normal !important; margin-bottom: 5px; width: 100%; font-size: 10px; padding: 5px !important"
+        					onclick="$WfSimec.executarAcao(this);">
+        				<span class="glyphicon"></span> <?php echo $acao['aeddscrealizar']; ?>
+        			</button>
+        			<?php 
+        			if (trim($acao['aeddescregracondicao'])) {
+        			?>
+        			<span onclick="$WfSimec.abirModalInformacao(this);" style="color: #428bca; cursor: pointer" class="glyphicon glyphicon-info-sign"></span>
+        			<?php 
+        			}
+        			?>
+        		</div>
+		<?php    
+		    }
+		}
+		
+		if ($nenhumaAcao) {
+		?>    
+    		<span class="badge" style="white-space: normal !important; width: 100%">
+    		Nenhuma ação disponível para o documento.
+    		</span>
+    	<?php	
+		}
+		?>
+		<div style="margin-top: 7px">
+			<button style="width: 100%; font-size: 10px; padding: 5px !important;" onclick="$WfSimec.abrirModalHistorico(this);" type="button" class="btn btn-info">
+				<span class="glyphicon glyphicon-time" aria-hidden="true"></span> Histórico
+			</button>
+		</div>
+	</div>
+</div>
+
+<?php 
+if ($isAjax == false && $templateUnicaVez != true) {
+    $this->showPartial('src/Simec/Corporativo/Workflow/Visao/partialModalWorkflow');
+    $this->showPartial('src/Simec/Corporativo/Workflow/Visao/partialModalComentarioWorkflow');
+    $this->showPartial('src/Simec/Corporativo/Workflow/Visao/partialModalHistoricoWorkflow');
+    $this->showPartial('src/Simec/Corporativo/Workflow/Visao/partialModalInformacaoWorkflow');
+}
+?>

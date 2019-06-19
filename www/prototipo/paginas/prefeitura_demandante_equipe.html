@@ -1,0 +1,154 @@
+<div class="ibox-content-round-gray ibox-content">
+    <div class="row">
+        <div class="col-md-3 colunaMenu noprint">
+            <div class="space-25"></div>
+                <div id="menuDirigentes">
+                    <h5>INFORMAÇÕES</h5>
+					<div class="nav flex-column nav-pills" aria-orientation="vertical">
+						<span class="nav-link" data-toggle="pill" aria-selected="false" onclick = "loadPage('prefeitura_demandante_prefeitura.html', 'ibox-content')">Prefeitura</span>
+						<span class="nav-link" data-toggle="pill" aria-selected="false" onclick = "loadPage('prefeitura_demandante_prefeito.html', 'ibox-content')">Prefeito</span>
+						<span class="nav-link active" data-toggle="pill" aria-selected="true" onclick = "loadPage('prefeitura_demandante_equipe.html', 'ibox-content')">Equipe Local</span>
+					</div>
+					<!--
+                    <div class="menuUnidade pointer" tipo="prefeitura" onclick = "loadPage('prefeitura_demandante_prefeitura.html', 'ibox-content')">
+                        <span class="fa fa-check iconUnidade"  style="color:green !important;background-color: transparent;"></span> Prefeitura
+                    </div>
+                    <div class="menuUnidade pointer " tipo="prefeito" onclick = "loadPage('prefeitura_demandante_prefeito.html', 'ibox-content')" >
+                        <span class="fa fa-check iconUnidade"  style="color:green !important;background-color: transparent;"></span> Prefeito
+                    </div>
+                    <div class="menuUnidade pointer menuSelecionado" tipo="equipe" onclick = "loadPage('prefeitura_demandante_equipe.html', 'ibox-content')">
+                        <span class="fa fa-check iconUnidade" style="color:green !important;background-color: transparent;"></span> Equipe Local
+                    </div>
+					-->
+                </div>
+
+        </div>
+        <div class="col-md-9 colunaForm" id="print_area">
+
+            <input type="hidden" name="inuid" id="inuid" value="">
+
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Equipe Local - Integrantes</h3>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-success novo  pull-left" data-toggle="modal" data-target="#modal">
+                                <i class="fa fa-plus-square-o"></i> Inserir Integrante
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="listaEquipe" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>E-mail</th>
+                                    <th>CPF</th>
+                                </tr>
+                            </thead> 
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="ibox-footer">
+                    <div class="row">
+                        <div class="col-lg-6 text-left">
+                            <button type="button" class="btn btn-success previous">Anterior</button>
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            <button type="button" class="btn btn-success next">Próximo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ibox float-e-margins animated modal" id="modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form method="post" name="formEquipe" id="formEquipe" class="form form-horizontal">
+                        <div class="modal-content animated flipInY">
+                            <div class="ibox-title" tipo="integrantes">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <h3>Novo Integrante </h3>
+                            </div>
+                            <div class="ibox-content">
+
+
+                              <div class="form-group">
+                                <label for="nome">Nome</label>
+                                <input type="text" class="form-control" id="nome" placeholder="nome completo">
+                              </div> 
+
+                              <div class="form-group">
+                                <label for="email">E-mail</label>
+                                <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                              </div> 
+
+                              <div class="form-group">
+                                <label for="cpf">CPF:</label>
+                                <input type="email" class="form-control" id="cpf" placeholder="">
+                              </div> 
+
+
+
+                            </div>
+                            <div class="ibox-footer">
+                                <div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
+                                    <button type="submit" class="btn btn-success btn-salvar" >
+                                        <i class="fa fa-plus-square-o"></i> Salvar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="ibox collapsed">
+                <div class="ibox-title">
+                    <h5>Equipe Local - Histórico Modificações</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            </script>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $('.btn-salvar').click(function(evt){
+            evt.preventDefault()
+
+            alertaSucesso();
+            return false;
+        });
+
+        arr =  ['jose', 'maria', 'joao', 'tiago juliano', 'leonardo'];
+
+        lista = function (){
+            html = '';
+            for (i =0; i<=arr.length; i++){ 
+                html += '<tr><td>' + arr[i] + '</td><td>' +arr[i]+ '@sp.gov.br </td><td>' + getRandomArbitrary(1000000000, 999999999) + '</td></tr>';
+            }
+            $("#listaEquipe tbody").html(html);
+        }
+
+        lista();
+
+
+
+    })
+</script>

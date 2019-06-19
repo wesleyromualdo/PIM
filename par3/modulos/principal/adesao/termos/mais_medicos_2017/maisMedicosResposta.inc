@@ -1,0 +1,344 @@
+<?php
+include_once 'programas/_funcoes_maismedicos.php';
+
+#pega o nome do municipio
+$municipio = $controleUnidade->pegarMunicipio($_REQUEST['inuid']);
+
+$termoAceite = $db->pegaUm("SELECT tcrid 
+                                 FROM maismedicomec.termocompromissoresidencia 
+                                 WHERE prgid = {$_REQUEST['prgid']} 
+                                 AND muncod = '{$muncod}' 
+                                 AND tcraceite = 'A'");
+if(!$termoAceite){
+    $termo = $db->pegaLinha("SELECT tcrid, tcraceite FROM maismedicomec.termocompromissoresidencia WHERE prgid = {$_REQUEST['prgid']} AND muncod = '{$muncod}'");
+    $termoAceite = ($termo['tcraceite'] == 'N') ? $termo['tcrid'] : $termoAceite;
+}
+
+$somenteLeitura = false;
+
+if ($_REQUEST['prgid']) {
+    $modelProadesao = new Par3_Model_Proadesao();
+    $proadesaoDados = $modelProadesao->pegarAdesaoPorPrograma($_REQUEST['prgid']);
+    $dtFinal = (int)str_replace('-', '', $proadesaoDados['pfadatafinal']);
+    $dtAtual = (int)str_replace('-', '', date('Y-m-d'));
+    $somenteLeitura = ($dtFinal > 0 && ($dtAtual > $dtFinal)) && !$boolAbaAnexo ? true : false;
+}
+
+if ($_REQUEST['requisicao'] == 'excluir') {
+    header('content-type: text/html; charset=utf-8');
+    excluirDoc($_REQUEST['arquivo']);
+    exibeAnexos($termoAceite, 30);
+    exit();
+}
+
+if ($_REQUEST['requisicao'] == 'downloadArquivo') {
+    downloadArquivo($_REQUEST['arqid']); #DOWNLOAD ARQUIVOS
+}
+
+if ($_REQUEST['requisicao'] == 'cadastrarDoc') {
+    salvarArquivosAdesao($_POST, $_FILES);
+    echo "<script>window.location.href = 'par3.php?modulo=principal/adesao/termo&acao=A&prgid={$_REQUEST['prgid']}&inuid={$_REQUEST['inuid']}&aba=resposta';</script>";
+    exit;
+}
+
+if ($_REQUEST['requisicao'] == 'excluiDocumento') {
+    deletarArquivosAdesao($_POST);
+}
+
+if ($_REQUEST['requisicao'] == 'acSalvarRecurso') {
+    salvarRecurso($_POST);
+    exit;
+}
+
+if ($_GET['download'] == 'S') {
+    $file = new FilesSimec();
+    $arquivo = $file->getDownloadArquivo($_GET['arqid']);
+    echo "<script>window.location.href = 'par3.php?modulo=principal/adesao/termo&acao=A&prgid={$_REQUEST['prgid']}&inuid={$_REQUEST['inuid']}&aba=documentos';</script>";
+    exit;
+}
+
+if ($_SESSION['par']['rqmid']) {
+    $docid = pgMaisMedicosCriarDocumento($_SESSION['par']['rqmid']);
+}
+
+$arrayPerfil = pegaArrayPerfil($_SESSION['usucpf']);
+?>
+
+<script type="text/javascript" language="javascript">
+
+    $(document).ready(function () {
+        function verificaExtensaoArquivo(fname) {
+            var extensao = ['pdf','jpg','jpge','bmp','gif','png','xls','xlsx'];
+            var cont = 0;
+            $(extensao).each(function(i,val){
+               if(cont == 0){
+                  var nome = (fname.substring(fname.lastIndexOf("."))).toLowerCase();
+                  if(nome == '.'+val){
+                      cont = 1;
+                  }
+               }
+            });
+            if(cont == 0){
+                return false;
+            }
+            return true;
+        }
+
+        //CONTROLA A EXTENSÃO DOS ARQUIVOS E OS RESPECTIVOS NOMES QUE APARECEM NO CAMPO DE TEXTO
+        $(':file').on('change', function () {
+            var erro = false;
+            var names = [];
+            if ($('#arquivoDoc').val() != '') {
+                for (var i = 0; i < $(this).get(0).files.length; ++i) {
+                    nome = $(this).get(0).files[i].name.toLowerCase();
+
+                    if (verificaExtensaoArquivo(nome)) {
+                        names.push($(this).get(0).files[i].name);
+                    } else {
+                        erro = true;
+                    }
+                }
+                $(this).parents('.input-group').find(':text').val(names);
+
+                if (erro) {
+                    $('[name=arquivoDoc]').val('');
+                    alert("Apenas arquivos do tipo PDF, Excel e Imagens serão incluídos!");
+                }
+            } else {
+                alert('Selecione o tipo do arquivo');
+            }
+        });
+
+
+        <?php if ($_SESSION['maismedicomec']['msg'] != ''){ ?>
+        alert('<?php echo $_SESSION['maismedicomec']['msg']; ?>');
+        <?php unset($_SESSION['maismedicomec']['msg']); } ?>
+
+        $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+            if (input.length) {
+                input.val(log);
+            } else {
+                if (log) alert(log);
+            }
+        });
+    });
+
+    function apagaDocumento(id) {
+        var txt;
+        var r = confirm("Tem Certeza que deseja apagar o arquivo?");
+        if (r == true) {
+            $('[name=idDocumento]').val(id);
+            $("#requisicao").val('excluiDocumento');
+            $("#formArquivos").submit();
+        } else {
+            alert('o registro não foi apagado');
+        }
+    }
+
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
+    });
+
+
+    function downloadDocumento(id, arqid) {
+        var pathArray = location.search.substring(1).split('&');
+        window.location.href = 'par3.php?modulo=principal/adesao/termo&acao=A&prgid=<?php echo $_REQUEST['prgid']; ?>&inuid=<?php echo $_REQUEST['inuid']; ?>&aba=anexos&requisicao=downloadArquivo&arqid=' + arqid;
+    }
+
+    function validarDocumentoDoc() {
+        var erro = 0;
+
+        if ($('[name=arquivoDoc]').val() == '') {
+            alert('O campo "Arquivo" é obrigatório!');
+            $('[name=arquivoDoc]').focus();
+            erro = 1;
+            return false;
+        }
+        if ($('[name=tpaid]').val() == '') {
+            alert('O campo "Tipo de Arquivo" é obrigatório!');
+            $('[name=tpaid]').focus();
+            erro = 1;
+            return false;
+        }
+        if ($('[name=arqdescricaoDoc]').val() == '') {
+            alert('O campo "Descrição" é obrigatório!');
+            $('[name=arqdescricao]').focus();
+            erro = 1;
+            return false;
+        }
+
+        if (erro == 0) {
+            $("#requisicao").val('cadastrarDoc');
+            $("#formArquivos").submit();
+        }
+    }
+</script>
+
+<style type="text/css">
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        background: red;
+        cursor: inherit;
+        display: block;
+    }
+
+    input[readonly] {
+        background-color: white !important;
+        cursor: text !important;
+    }
+
+    fieldset {
+        border: 0px !important;
+    }
+
+    .note-toolbar {
+        border-top: 1px solid !important;
+        border-top-color: #696969 !important;
+
+        border-right: 1px solid !important;
+        border-right-color: #696969 !important;
+
+        border-left: 1px solid !important;
+        border-left-color: #696969 !important;
+    }
+
+    .ibox-title {
+        background-color: #F8F8FF;
+    }
+
+    .ibox-content {
+        background-color: #F8F8FF;
+    }
+</style>
+<?php
+$arPerfilAbaAnexo = [ PAR3_PERFIL_DIRIGENTE_MUNICIPAL, PAR3_PERFIL_PREFEITO];
+$booMunicipio = (boolean)array_intersect($arPerfilAbaAnexo, $arrayPerfil);
+$habilitado = true;
+$data = date('Y-m-d');
+$data =  (int) str_replace('-','', $data);
+if($data > 20180302){
+    $habilitado = false;
+}
+?>
+<div class="ibox">
+    <div class="ibox-title">
+        <div class="row">
+            <div class="col-md-12">
+                <h3> Recurso do município - <b><?php echo mb_strtoupper($municipio,'ISO-8859-1'); ?></b></h3>
+            </div>
+        </div>
+       <?php if(!$booMunicipio){ ?>
+        <form id="formArquivos" method="POST" name="formArquivos"
+              enctype="multipart/form-data">
+            <input type="hidden" name="inuid" id="inuid" value="<?php echo $_REQUEST['inuid']; ?>"/>
+            <input type="hidden" name="tenid" id="tenid" value="<?php echo $tenid; ?>"/>
+            <input type="hidden" name="tcrid" id="tcrid" value="<?php echo $termoAceite; ?>"/>
+            <input type="hidden" name="tpaid" id="tpaid" value="29"><!-- Não remover -->
+            <input type="hidden" name="tipoArquivo" id="tipoArquivo" value="30"><!-- Não remover -->
+            <input type="hidden" id="aba" name="aba" value="resposta"/>
+            <input type="hidden" id="idDocumento" name="idDocumento" value=""/>
+            <input type="hidden" id="requisicao" name="requisicao" value=""/>
+            <div class="ibox-content">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 col-md-3 col-lg-3 control-label">
+                            Anexar arquivo:
+                            <span class="campo-obrigatorio" title="Campo obrigatório">*</span>
+                        </label>
+                        <div class="col-sm-9 col-md-9 col-lg-9">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <span class="btn btn-primary btn-file">Buscar Arquivo
+                                        <input type="file" <?=($habilitado)? '' : 'disabled="disabled"';?> id="arquivoDoc" name="arquivoDoc"
+                                               style="display:inline">
+                                    </span>
+                                </span>
+                                <input type="text" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix">&emsp;</div>
+                <div class="form-group">
+                    <label for="exampleInputFile"></label>
+                    <?php echo $simec->textarea('arqdescricaoDoc', 'Descrição do arquivo', '', array('required',($habilitado? '': 'disabled="disabled"'), 'rows' => '3', 'placeHolder' => 'Informe aqui a descrição do arquivo', 'maxlengh' => 600)); ?>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-lg-4">&nbsp;</div>
+                <div class="col-lg-4 text-center">
+                    <?php
+                    if ( !Par3_Model_UsuarioResponsabilidade::perfilConsulta() && !$somenteLeitura && $habilitado) {
+                        $attr = Par3_Model_UsuarioResponsabilidade::permissaoEscrita($disabled, $disabledForm);
+                        ?>
+                        <button class="btn btn-success salvar" onclick="validarDocumentoDoc()">
+                            <i class="fa fa-save"></i> Salvar Resposta
+                        </button>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <div class="col-lg-4">&nbsp;</div>
+            </div>
+        </form>
+       <?php } ?>
+        <div>&ensp;</div>
+        <div id="div_documento"><?php exibeAnexos( $termoAceite, 30, true ); ?></div>
+        <div>&ensp;</div>
+        <div>&ensp;</div>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+    <?php if(in_array(PAR_PERFIL_CONSULTA_MUNICIPAL, $arrayPerfil)
+    || in_array(PAR_PERFIL_CONTROLE_SOCIAL_MUNICIPAL, $arrayPerfil)
+    || in_array(PAR_PERFIL_PREFEITO, $arrayPerfil)
+    || in_array(PAR_PERFIL_AVAL_INSTITUCIONAL_MM, $arrayPerfil)
+    || $somenteLeitura ){
+    ?>
+    jQuery("input,select,textarea").not('#chosen-sistema').attr('disabled', 'disabled');
+    jQuery('a[title="Apagar"]').parent().remove();
+    jQuery('input').removeAttr('readonly');
+    setTimeout(function () {
+        jQuery('.chosen-disabled)').children().css('background-color', '#EEEEEE');
+    }, 200);
+    <?php } ?>
+    <?php if(!$booMunicipio || $habilitado){ ?>
+    jQuery('a[title="Apagar"]').each(function(){
+        jQuery(this).parent().next().attr('colspan','2');
+        jQuery(this).parent().remove();
+    });
+    <?php } ?>
+    
+    function modalRecurso( aacmid, aqmdescricao, dscrecurso ) {
+        $('#conteudo_modal').find('[name=aacmid]').val( aacmid ) ;
+        $('#conteudo_modal').find('[name=analise]').val( aqmdescricao ) ;
+        $('#conteudo_modal').find('[name=dscrecurso]').val( dscrecurso ) ;
+        $('#modalRecurso').modal();
+    }
+
+    function salvarRecurso() {
+        $('#formRecurso').submit();
+    }
+</script>

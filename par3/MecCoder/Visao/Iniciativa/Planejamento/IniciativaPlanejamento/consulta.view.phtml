@@ -1,0 +1,394 @@
+<?php
+    require_once APPRAIZ . 'par3/modulos/principal/detalheProcesso.inc';
+    require APPRAIZ . 'includes/cabecalho.inc';
+?>
+
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="ibox float-e-margins">
+            <input type="hidden" name="menu" id="menu" value="<?= $_REQUEST['menu']; ?>"/>
+            <input type="hidden" id="inuid" value="<?= $_REQUEST['inuid']; ?>"/>
+
+            <div class="ibox-title">
+                <h5 style="font-size: 18px; font-weight: normal;"><?= $controleUnidadeNome; ?></h5>
+            </div>
+            <div class="ibox-content">
+                <?php if($_REQUEST['requisicao'] != 'analisarPlanejamento') include APPRAIZ . 'par3/modulos/principal/planoTrabalho/cabecalhoUnidade.inc'; ?>
+                <div class="ibox-content-round-gray ibox-content">
+
+                    <div class="tabs-container">
+                        <div class="tab-content">
+                            <script src="js/par3.js"></script>
+                            <input type="hidden" id="itrid" name="itrid" value="<?= $itrid; ?>">
+                            <div class="wrapper wrapper-content animated fadeIn">
+                                <div class="row">
+                                    <?= $insereAbas; ?>
+
+                                    <style>
+                                        .btn-info {
+                                            background-color: #1c84c6;
+                                            border-color: #1c84c6;
+                                        }
+                                        .navbar-listagem {
+                                            margin-top: 0px;
+                                            float: right;
+                                            width: 500px;
+                                        }
+                                    </style>
+                                    <div class="ibox">
+                                        <div class="ibox-title">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h3 class="center">Buscar Iniciativas</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <div class="row">
+                                                <form name="form-filtro" id="form-filtro" class="form-horizontal">
+                                                    <input type="hidden" id="aba" name="aba" value="consulta"/>
+                                                    <div class="row">
+                                                        <div class="col-md-offset-2 col-md-8 center">
+                                                            <?= $this->showPartial('/par3/MecCoder/Visao/Partial/selectCiclo'); ?>
+                                                            <!--filtros-->
+                                                            <div class="ibox float-e-margins">
+                                                                <div class="ibox-content" id="div-avancado" style="display: none;">
+                                                                    <div class="form-group">
+                                                                        <label class="col-md-offset-1 col-lg-offset-1 col-sm-2 control-label">C�digo:</label>
+                                                                        <div class="col-md-5  col-md-5 col-lg-5">
+                                                                            <input type="number" name="codigo" id="codigo" class="form-control"/>
+                                                                        </div>
+                                                                    </div>
+                                                                    <?= $this->showPartial('/par3/MecCoder/Visao/Partial/selectDimensao'); ?>
+                                                                    <div id="div-descricao">
+                                                                        <div class="form-group " >
+                                                                            <label for="inddsc" class="col-sm-3 col-md-3 col-lg-3 control-label">Descri��o: </label>
+                                                                            <div class="col-sm-7 col-md-7 col-lg-7 ">
+                                                                                <input name="inddsc" id="inddsc" type="text" value="" class="form-control" maxlength="255" placeholder="Informe Descri��o da Iniciativa" />
+                                                                            </div>
+                                                                            <div style="clear:both"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <?= $this->showPartial('/par3/MecCoder/Visao/Partial/selectSituacao'); ?>
+                                                                </div>
+                                                                <div class="ibox-title">
+                                                                    <div class="ibox-tools">
+                                                                        <a id="btn-avancado-planejamento">Op��es Avan�adas <i id="icone-avancado" class="fa fa-chevron-down"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="ibox-footer">
+                                                <div class="center">
+                                                    <button type="button" class="btn btn-primary" id="pesquisar-planejamento-iniciativa"><i class="fa fa-search"></i>Pesquisar</button>
+                                                    <button type="button" class="btn btn-success" id="btn-incluir"><i class="fa fa-plus"></i> Incluir</button>
+                                                    |
+                                                    <button type="submit" class="btn btn-primary xls" style="width:110px;"><i class="fa fa-file-excel-o"></i> Gerar Excel</button>
+                                                    <button type="button" class="btn btn-warning" style="width:110px;" id="imprimir"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                                    |
+                                                    <button type="reset" class="btn btn-success" id="limpar"><i class="fa fa-eraser"></i> Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <div id="planejamentoIniciativaListagem" style="overflow: scroll;">
+                                                <?php $controleIniciativaPlanejamento->listar($_REQUEST)?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div id="div-impressao" style="display: none">
+                                        <div id="div_cabecalho" class="row col-lg-offset-2">
+                                            <table width="92%" border="0" cellpadding="0" cellspacing="0" style="text-align:center;">
+                                                <tr bgcolor="#ffffff">
+                                                    <td valign="top" width="50" rowspan="2">
+                                                        <img src="../imagens/brasao.gif" width="45" height="45" border="0">
+                                                    </td>
+                                                    <td nowrap align="left" valign="middle" height="1" style="padding:5px 0 0 0;">
+                                                        MEC/FNDE <br>
+                                                        Relat�rio Descri��o de Iniciativas<br>
+                                                    </td>
+                                                    <td align="right" valign="middle" height="1" style="padding:5px 0 0 0;">
+                                                        Impresso por: <b> <?= $_SESSION['usunome']; ?></b><br/>
+                                                        Hora da Impress�o: <?= date('d/m/Y - H:i:s'); ?><br/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <hr style="color:black; width:95%; margin-left:-18px;">
+                                        </div>
+                                        <div class="clearfix" style="margin-bottom:10px;"></div>
+                                        <div id="impressao-content">
+                                        </div>
+                                    </div>
+
+                                    <!--modal-->
+                                    <div class="ibox float-e-margins animated modal" id="modalListarAnalise" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog" style="width:1500px;">
+                                            <div class="modal-content">
+                                                <div class="ibox-title">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                                                aria-hidden="true">&times;</span></button>
+                                                    <h3 id="modal_titulo">Hist�rico de An�lise da Iniciativa</h3>
+                                                </div>
+                                                <div class="ibox-footer" align="left">
+                                                    <label class="col-sm-1 col-md-1 col-lg-1 control-label">Iniciativa: </label>
+                                                    <div class="">
+                                                        <span id="iniciativaSpan"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="ibox-content">
+                                                    <div id="planejamentoIniciativaListagem">
+                                                        <?php//$Analise->listarAnalises($_REQUEST)?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- fecha modal -->
+                                    <script type="text/javascript">
+
+                                        $("#limpar").click(function(){
+                                            //$('#cicid').prop('selected', 0);
+                                            $('#cicid').val('').trigger('chosen:updated');
+                                            $('#codigo').val('');
+                                            $('#dimid').val('').trigger('chosen:updated');
+                                            $('#inddsc').val('').trigger('chosen:updated');
+                                            $('#situacao').val('').trigger('chosen:updated');
+                                            $('#pesquisar-planejamento-iniciativa').click();
+                                        });
+
+                                        //mostra/esconde ibox
+                                        jQuery("#btn-avancado-planejamento").click(function () {
+                                            $('#div-avancado').slideToggle();
+                                            //chevron up/down
+                                            $('#icone-avancado').toggleClass(function () {
+                                                if ($('#icone-avancado').is(".fa-chevron-down")) {
+                                                    $('#icone-avancado').removeClass('fa-chevron-down');
+                                                    return 'fa-chevron-up';
+                                                } else {
+                                                    $('#icone-avancado').removeClass('fa-chevron-up');
+                                                    return 'fa-chevron-down';
+                                                }
+                                            });
+                                        });
+
+                                        $(".xls").on("click", function (evt) {
+                                            evt.preventDefault();
+                                            var baseUrl = window.location.href.split('?').shift();
+                                            var oldParams = getQueryVariables();
+                                            oldParams.requisicao = 'xls';
+                                            var newParams = decodeURIComponent( jQuery.param(oldParams) + '&' + $("#form-filtro").serialize() + '&' + $('.form-listagem').serialize() );
+                                            var newUrl = baseUrl + '?' + newParams;
+                                            window.location.assign(newUrl);
+                                        });
+
+                                        $("#imprimir").on("click", function (evt) {
+                                            evt.preventDefault();
+                                            var baseUrl = window.location.href.split('?').shift();
+                                            var oldParams = getQueryVariables();
+                                            oldParams.requisicao = 'imprimir';
+                                            var newParams = decodeURIComponent( jQuery.param(oldParams) + '&' + $("#form-filtro").serialize() + '&' + $('.form-listagem').serialize() );
+                                            var newUrl = baseUrl + '?' + newParams;
+                                            var action = '&requisicao=imprimir&' + $("#form-filtro").serialize() + '&' + $('.form-listagem').serialize();
+
+                                            $.ajax({
+                                                type: "POST",
+                                                url: newUrl,
+                                                data: action,
+                                                async: false,
+                                                success: function (resp) {
+                                                    $("#impressao-content").html(resp);
+                                                    var container = $("#impressao-content");
+                                                    var table = container.find('table');
+                                                    var th = container.find('th');
+                                                    var td = container.find('td');
+                                                    table.css('width', '100%');
+                                                    table.css('border-collapse', 'collapse');
+                                                    container.find(".popover,button,.modal").remove();
+                                                    container.find("table,td,th").css('border', '1px solid black');
+                                                    container.find('tr:even').css('background-color', 'silver');
+                                                    th.css('height', '50px');
+                                                    td.css('text-align', 'center');
+                                                    var w = window.open();
+                                                    w.document.write($('#div-impressao').html());
+                                                    w.document.title = "Relat�rio - Iniciativa Planejamentos - <?php echo $nomeInstrumento; ?>";
+                                                    w.print();
+                                                    w.close();
+                                                    $("#impressao-content").html("");
+                                                    atualizarListagem($("#form-filtro").serialize() + '&' + $('.form-listagem').serialize());
+                                                    return true;
+                                                }
+                                            });
+                                        });
+
+                                        $("#pesquisar-planejamento-iniciativa").click(function (evt) {
+                                            evt.preventDefault();
+                                            var pesquisar = jQuery(this).button('loading');
+
+                                            var baseUrl = window.location.href.split('?').shift();
+                                            var oldParams = getQueryVariables();
+                                            oldParams.requisicao = 'pesquisar';
+                                            var newParams = decodeURIComponent( jQuery.param(oldParams) + '&' + $("#form-filtro").serialize() );
+                                            var newUrl = baseUrl + '?' + newParams;
+                                            $.ajax({
+                                                url: newUrl,
+                                                type: 'post',
+                                                success: function(resp){
+                                                    pesquisar.button('reset');
+                                                    $("#planejamentoIniciativaListagem").html(resp);
+
+                                                }
+                                            });
+                                        });
+
+                                        function atualizarListagem(params = '') {
+                                            if (params) {
+                                                params = '&' + params;
+                                            }
+                                            var caminho = window.location.href;
+                                            var action = '&requisicao=pesquisar' + params;
+                                            console.log(caminho);
+                                            $.ajax({
+                                                type: "GET",
+                                                url: caminho,
+                                                data: action,
+                                                async: false,
+                                                success: function (form) {
+                                                    $('#planejamentoIniciativaListagem').html(form);
+                                                    return false;
+                                                }
+                                            });
+                                        }
+// /*
+                                        function removerIniciativaPlanejamento(id)
+                                        {
+                                            swal({
+                                                title: "Remover Iniciativa",
+                                                text: "Tem certeza que deseja remover esta Iniciativa do Planejamento?",
+                                                html: true,
+                                                type: "warning",
+                                                showCancelButton: true,
+                                                cancelButtonText: "N�o",
+                                                confirmButtonText: "Sim",
+                                                closeOnConfirm: false
+                                            }, function (isConfirm) {
+                                                if (isConfirm) {
+                                                    var caminho = window.location.href;
+                                                    var action = '&requisicao=remover&aba=consulta&inpid=' + id;
+                                                    $.ajax({
+                                                        type: "POST",
+                                                        url: caminho,
+                                                        data: action,
+                                                        async: false,
+                                                        success: function (resp) {
+                                                            $("#modal_modalidade").modal("hide");
+                                                            $("#modal_modalidade").find("input").val("");
+                                                            if(resp == 'erroIniciativa'){
+                                                                swal("Erro.", "Esta iniciativa n�o pode ser mais excluida!", "error");
+                                                                return false;
+                                                            }if(resp == 'erroObras') {
+                                                                swal("Erro.", "N�o � poss�vel excluir iniciativa que possui Obra tramitada.", "error");
+                                                                return false;
+                                                            }if(resp == 'erroEmenda') {
+                                                                swal("Erro.", "N�o � poss�vel excluir iniciativa pois possui indica��o de emenda.", "error");
+                                                                return false;
+                                                            }if(resp != 'sucesso') {
+                                                                msgSuccess(caminho,"Iniciativa removida com sucesso");
+                                                                return false;
+                                                            }
+                                                            swal("Erro.", "Ocorreu um erro ao remover a Iniciativa.", "error");
+                                                        }
+                                                    });
+                                                }
+                                            })
+                                        }
+
+                                        function editarIniciativaPlanejamento(id)
+                                        {
+                                            window.location.assign("<?= $caminho; ?>&requisicao=cadastro&aba=cadastro&inpid="+id);
+                                        }
+// */
+                                        $('#btn-incluir').click(function(){
+                                            window.location = '<?= $caminho.'&requisicao=cadastro&aba=cadastro'; ?>' ;
+                                        });
+
+                                        function listarAnalise(id){
+                                            $("#iniciativaSpan").html('('+id+') - ');
+                                            $("#modalListarAnalise").modal('show');
+                                        }
+
+
+                                    </script>
+
+
+
+
+
+                                    <div class="ibox float-e-margins">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-form" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="ibox-title">
+            <h5 id="html_modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div id="html_modal-form"></div>
+    </div>
+
+    <div id="modal-form-large" class="modal fade" aria-hidden="true">
+        <div class="ibox-title">
+            <h5 id="html_modal-title-large"></h5>
+            <button type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div id="html_modal-form-large"></div>
+    </div>
+</div>
+<script>
+    function popupGuia(acao, tipo, id, itrid) {
+        var titulo = 'Gerenciar dimens�o';
+
+        switch (tipo) {
+            case 'area':
+                titulo = 'Gerenciar �rea';
+                break;
+            case 'indicador':
+                titulo = 'Gerenciar indicador';
+                break;
+            case 'criterio':
+                titulo = 'Gerenciar componentes do indicador';
+                break;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: 'par3.php?modulo=principal/configuracao/popupGuia&acao=A',
+            data: '&acaoGuia=' + acao + '&tipoGuia=' + tipo + '&codigo=' + id + '&itrid=' + itrid,
+            async: false,
+            success: function (resp) {
+                $('#html_modal-form').html(resp);
+                $('#html_modal-title').html(titulo);
+                $('#modal-form').modal();
+            }
+        });
+    }
+</script>

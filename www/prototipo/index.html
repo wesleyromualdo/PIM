@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Sem papel - Governo do Estado de São Paulo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8895-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="./Sem papel - Prototipo_files/summernote-bs3.css" rel="stylesheet">
+    <!-- Fonts  -->
+    <link href="./Sem papel - Prototipo_files/font-awesome.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/glyphicons.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/inconsolata.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/opensans.css" rel="stylesheet">
+
+    <!-- Mainly scripts -->
+    <script src="./Sem papel - Prototipo_files/jquery-3.1.1.min.js.download"></script>
+    <script src="./Sem papel - Prototipo_files/popper.min.js.download"></script>
+    <script src="./Sem papel - Prototipo_files/bootstrap.min.js.download"></script>
+    <script src="./Sem papel - Prototipo_files/jquery-ui.min.js.download"></script>
+
+    <!-- Data picker -->
+    <script src="./Sem papel - Prototipo_files/bootstrap-datepicker.js.download"></script>
+    <script src="./Sem papel - Prototipo_files/bootstrap-datepicker.pt-BR.js.download"></script>
+
+    <!-- jQuery UI custom -->
+    <script src="./Sem papel - Prototipo_files/jquery-ui.custom.min.js.download"></script>
+
+    <!-- Sweet Aler -->
+    <script src="./Sem papel - Prototipo_files/sweetalert.min.js.download"></script>
+
+    <script src="./Sem papel - Prototipo_files/jquery.bootstrap-touchspin.min.js.download"></script>
+    <link href="./Sem papel - Prototipo_files/bootstrap.css" rel="stylesheet" media="all">
+
+    <!-- Highcharts -->
+    <script language="javascript" src="./Sem papel - Prototipo_files/highcharts.js.download"></script>
+    <script language="javascript" src="./Sem papel - Prototipo_files/highcharts-more.js.download"></script>
+    <script language="javascript" src="./Sem papel - Prototipo_files/solid-gauge.src.js.download"></script>
+
+    <!-- Toastr style -->
+    <link href="./Sem papel - Prototipo_files/toastr.min.css" rel="stylesheet">
+
+    <!-- Gritter -->
+    <link href="./Sem papel - Prototipo_files/jquery.gritter.css" rel="stylesheet">
+
+    <link href="./Sem papel - Prototipo_files/animate.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/style.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/jquery-ui.theme.min.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/jquery-ui.min.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/custom.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/chosen.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/jquery.gritter(1).css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/jquery.nouislider.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/datepicker3.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/switchery.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/bootstrap-tour.min.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/summernote.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/sweetalert.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/bootstrap-switch.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/nanoscroller.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/jquery.bootstrap-touchspin.min.css" rel="stylesheet">
+    <link href="./Sem papel - Prototipo_files/simec.css" rel="stylesheet" media="all">
+
+    <link href="./Sem papel - Prototipo_files/print.css" rel="stylesheet" media="print">
+    <script data-pace-options="{ &quot;ajax&quot;: false }"
+            src="./Sem papel - Prototipo_files/pace.min.js.download"></script>
+ 
+            <script src="https://kit.fontawesome.com/4a55ad75c3.js"></script>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: 0.85rem;
+
+        }
+
+        body.fixed-nav #wrapper .navbar-static-side, body.fixed-nav #wrapper #page-wrapper {
+            margin-top: 68px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #DCDCDC;
+            font-size: 13px;
+            color: #676a6c;
+            overflow-x: hidden;
+
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid #dddddd !important;
+        }
+
+        .header-nav-profile .dropdown .profile-info {
+            display: inline-block;
+            vertical-align: middle;
+            padding: 0 20px 0 10px;
+            line-height: 15px;
+            color: #212529;
+        }
+
+        .database-info {
+            color: #212529;
+            padding-right: .5rem;
+            padding-left: .5rem;
+        }
+
+        .navbar-default .nav > li > a:hover, .navbar-default .nav > li > a:focus {
+            background-color: #e3e3e3;
+            color: #212529;
+        }
+
+        #navbar-fixed-top {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            border-bottom: 1px solid #e6e6e6 !important;
+            margin: 0px;
+            height: 71px;
+            background: #DCDCDC;
+
+        }
+
+        .nav > li.active > a {
+            color: #212529;
+            background-color: #ccc;
+        }
+
+        .nav > li > a {
+            color: #212529;
+            font-weight: 600;
+            padding: 14px 20px 14px 25px;
+        }
+        .navbar-minimalize {
+            padding: 5px 10px;
+            margin: -10px 0px;
+        }
+
+        .nav > li.active {
+            border-left: 4px solid #35b44a;
+            background: #ffffff;
+        }
+
+        .nav-second-level li, .nav-third-level li {
+            border-bottom: none !important;
+            background-color: #ffffff;
+            color: #212529;
+        }
+
+        .mini-navbar .nav .nav-second-level {
+            position: absolute;
+            left: 70px;
+            top: 0;
+            background-color: #6ebb44;
+            padding: 2px;
+            font-size: 12px;
+        }
+
+        .nav-second-level li:last-child {
+            padding-bottom: 0px;
+        }
+
+        .metismenu .collapse {
+            display: none;
+            background: white;
+        }
+
+
+        .tabs-container .nav-tabs > li.active > a, .tabs-container .nav-tabs > li.active > a:hover, .tabs-container .nav-tabs > li.active > a:focus {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: 0.85rem;
+            border: 1px solid #e7eaec;
+            border-bottom-color: transparent;
+            color: black;
+        }
+
+        .active {
+            background-color: #e3e3e3;
+        }
+
+        div#chosen_sistema_chosen {
+            background-color: #f5f5f5;
+        }
+
+        .chosen-container-single .chosen-single {
+            background: #ffffff;
+            box-shadow: none;
+            -moz-box-sizing: border-box;
+            border-radius: 0px;
+            cursor: text;
+            height: auto !important;
+            margin: 0;
+            min-height: 30px;
+            overflow: hidden;
+            padding: 4px 12px;
+            position: relative;
+            width: 100%;
+            border: #e7eaec solid 1px;
+        }
+
+        .chosen-container-single .chosen-single span {
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .chosen-container-single .chosen-drop {
+            border-radius: 0px;
+        }
+
+        .chosen-container-single .chosen-drop {
+            border-radius: 0px;
+
+        }
+
+        .chosen-container .chosen-results li.active-result {
+            display: list-item;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-primary {
+            color: #fff;
+            /*background-color: #35b44a;*/
+            border-color: #1ab394;
+        }
+
+        .fa-navicon:before, .fa-reorder:before, .fa-bars:before {
+            content: "\f0c9";
+            color: azure;
+        }
+
+        .fa-search:before {
+            content: "\f002";
+            color: white;
+        }
+
+        .header-nav-profile .dropdown > a:after {
+            content: "\f107";
+            color: #35b44a;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+        .pointer {
+            cursor: pointer;
+        }
+
+        .menuSelecionado {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .ibox-title {
+            -moz-border-bottom-colors: none;
+            -moz-border-left-colors: none;
+            -moz-border-right-colors: none;
+            -moz-border-top-colors: none;
+            background-color: #ffffff;
+            border-color: #e7eaec;
+            border-image: none;
+            border-style: solid solid none;
+            border-width: 2px 0 0;
+            color: inherit;
+            margin-bottom: 0;
+            padding: 15px 39px 8px 15px;
+            min-height: 48px;
+            position: relative;
+            clear: both;
+        }
+
+        .nav > li.active > a { 
+            background-color: #fff;
+        }
+    </style>
+
+
+    <style type="text/css">.jqstooltip {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        visibility: hidden;
+        background: rgb(0, 0, 0) transparent;
+        background-color: rgba(0, 0, 0, 0.6);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+        color: white;
+        font: 10px arial, san serif;
+        text-align: left;
+        white-space: nowrap;
+        padding: 5px;
+        border: 1px solid white;
+        z-index: 10000;
+    }
+
+    .jqsfield {
+        color: white;
+        font: 10px arial, san serif;
+        text-align: left;
+    }
+
+    /* style prototipo */
+    .header-nav .header-nav-brand {
+
+        height: auto;
+    }
+
+    .header-nav-profile .dropdown .profile-info {
+        width: auto;
+    }
+
+    .header-nav-profile .dropdown img {
+    width: 30px;
+    height: auto;
+    }
+
+    .header-nav-profile .dropdown img {
+        width: 30px;
+        height: auto;
+        border-radius: 40px;
+    }
+
+    .header-nav-profile .dropdown > a{
+        padding: 0px;
+    }
+
+
+    .header-nav-profile .dropdown > a:after {
+        margin-right: .3em;
+        top: 10px;
+        float: right;
+        right: 5px;
+    }
+
+    .header-nav-profile .dropdown > a {
+        height: auto;
+        min-height: auto;
+    }
+    body.fixed-nav #wrapper .navbar-static-side, body.fixed-nav #wrapper #page-wrapper{
+        margin-top: 60px;
+    }
+
+    #navbar-fixed-top {
+        height: 60px;
+        margin: 0px 25px;
+    }
+
+    .navbar-center .header-nav-options li{
+        padding: 0px;
+    }
+
+    .navbar:before, .navbar:after {
+        content: none;
+        display: table;
+    }
+
+    .dropdown.ms-hover.show, .dropdown.show > a {
+
+        margin-top: 0px;
+        padding: 12px 3px 1px 12px;
+        background-color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.9);
+        -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
+        box-shadow: none;
+
+    }
+
+    .download {
+        cursor: pointer;
+    }
+
+    textarea.error, input.error {
+        border: 1px solid #ff0000 !important; 
+    }
+
+    .error {
+        color:red !important;
+    }
+
+
+    .center {
+        text-align: center;
+    }
+
+    </style>
+    <script type="text/javascript" id="tansaInitScript"
+            nonce="CRPeE33yLL2SC16UZbg2Dg"> var selectorElements = document.querySelectorAll('textarea, input[type="text"], [contenteditable="true"]');
+    for (var i = 0; i < selectorElements.length; i++) {
+        var selectorElement = selectorElements[i];
+        selectorElement.addEventListener('focus', function (evt) {
+            window.lastFocusedElement = evt.target;
+        });
+    }</script>
+</head>
+
+
+<body class="fixed-nav pace-done pace-done" cz-shortcut-listen="true">
+<div class="pace  pace-inactive">
+    <div class="pace-progress" data-progress-text="100%" data-progress="99"
+         style="transform: translate3d(100%, 0px, 0px);">
+        <div class="pace-progress-inner"></div>
+    </div>
+    <div class="pace-activity"></div>
+</div>
+<div class="pace  pace-inactive">
+    <div class="pace-progress" data-progress-text="100%" data-progress="99"
+         style="transform: translate3d(100%, 0px, 0px);">
+        <div class="pace-progress-inner"></div>
+    </div>
+    <div class="pace-activity"></div>
+</div>
+<script>
+    Pace.on("done", function () {
+        $("#loading").fadeOut(250);
+    });
+    Pace.start;
+</script>
+<div class="loading-dialog" id="loading" style="display: none;"></div>
+
+
+<div id="wrapper">
+
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu in" id="side-menu">
+                <li class="active"> 
+                    <ul class="nav nav-second-level in collapse" aria-expanded="true">
+                        
+                        <li class="">
+                            <a href="#" class="btn-menu-demandante">
+                            <i class="fa fa-user"></i> Demandante </a>
+                        </li>
+
+                        <li class="">
+                            <a href="#" class="btn-menu-sdr">
+                            <i class="fa fa-user"></i> Triagem</a>
+                        </li>
+
+                        <li class="">
+                            <a href="#" class="btn-menu-demandado">
+                                <i class="fa fa-user"></i> 
+                             Demandado </a>
+                        </li> 
+                        <li class="">
+                            <a href="#" class="btn-menu-produrador">
+                            <i class="fa fa-user"></i>
+                             Procurador </a>
+                        </li>
+                        <li class="">
+                            <a href="javascript: actionOrdenador()"> 
+                            <i class="fa fa-user"></i>
+                            Ordenador de Despesa </a>
+                        </li>
+                        <li class="">
+                            <a href="javascript: actionGovernador()">
+                            <i class="fa fa-user"></i>
+                            Governador </a>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+
+            <script>
+
+                var actionDemandante = function (){
+                    loadPage('prefeitura_dashboard.html', 'wrapper-content',funccal);
+
+                    funccal(500)
+                }
+
+                var actionDemandado = function() {
+                  loadPage('demandado.html', 'wrapper-content');
+                }
+
+
+                var actionSdr = function (){
+                    loadPage('sdr_monitoramento.html', 'wrapper-content');
+
+                }
+
+                var actionProcurador = function(){
+                    loadPage('procurador_demanda_lista.html', 'wrapper-content');
+                }
+
+                var actionOrdenador = function(){
+                    loadPage('ordenador_lista.html', 'wrapper-content');
+                }
+
+
+                var actionGovernador = function(){
+                    loadPage('governador_demanda_lista.html', 'wrapper-content');
+                }
+
+                var funccal =  function(t){
+                        //
+                    };
+
+
+                $(document).ready(function () {
+
+                    $('.btn-menu-demandante').click(actionDemandante);
+                    
+                    $('.btn-menu-sdr').click(actionSdr);
+                    
+                    $('.btn-menu-demandado').click(actionDemandado);
+                    
+                    $('.btn-menu-produrador').click(actionProcurador);
+
+                    $('.btn-menu-ordenador').click(actionOrdenador);
+
+                    $('.btn-menu-governador').click(actionGovernador);
+                    
+                    $("#side-menu").find(".active").each(function (index) {
+                        $(this).parents("ul").each(function () {
+                            $(this).addClass("in").parent("li").addClass("active");
+                        })
+                    })
+                })
+            </script>
+        </div>
+    </nav>
+
+    <div id="page-wrapper" class="gray-bg" style="min-height: 648px;">
+        <div class="row border-bottom">
+
+            <nav class="navbar navbar-fixed-top" role="navigation" id="navbar-fixed-top">
+            <div class="navbar-left">
+                <ul class="header-nav header-nav-options">
+                    <li class="header-nav-brand"  >
+                        <img src="./Sem papel - Prototipo_files/logo-semPapel.png" class="img-responsive"
+                            style="width: 100px; margin: 0px 0px;">
+                    </li>
+
+                    <li>
+                        <a class="navbar-minimalize btn btn-primary" href="http://pim-local/demandas/demandas.php?modulo=demandantes/listar&amp;acao=A#">
+                           <i class="fa fa-bars"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="navbar-center hidden-md hidden-lg">
+                <ul class="header-nav header-nav-profile">
+                    <li class="dropdown ">
+                        <a href="javascript:void(0);" class="dropdown-toggle" id="dropdownMenuButton"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img alt="image" class="profile-pic" src="./Sem papel - Prototipo_files/profile_small.jpg">
+                        </a>
+                        <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton">
+                            <li class="dropdown-item">
+
+                                <a class="select-sistemas">
+                                    <select id="chosen-sistema" onclick="" class="form-control"
+                                            data-placeholder="Selecione" onchange="javascript:changeSystem(this.value)">
+                                        <option selected="selected" value="283">Demandas</option>
+                                        <option value="147">Obras</option>
+                                        <option value="231">PAR</option>
+                                        <option value="4">SIS</option>
+                                        <option value="237">SPO - Emendas Parlamentares</option>
+                                    </select>
+                                    <script type="text/javascript">
+                                        $(document).ready(function () {
+                                            $('.dropdown-menu select, .dropdown-menu a.select-sistemas').click(function (e) {
+                                                e.stopPropagation();
+                                            });
+                                        })
+                                    </script>
+                                </a>
+                            </li>
+                            <li class="dropdown-header">Super Usuário</li>
+                            <li>
+                                <a data-toggle="modal" class="btSimularUsuario">
+                                    <i class="glyphicon glyphicon-eye-open"></i> Simular Usuário
+                                </a>
+                            </li>
+                            <li>
+                                <a id="btUser" data-toggle="modal" data-target="#modal-user">
+                                    <i class="glyphicon glyphicon-wrench"></i> Gerenciar seus dados
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="modal" class="btPainelWorkflow">
+                                    <i class="glyphicon glyphicon-stats"></i> Painel do workflow
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a onclick="javascript:window.location.href = &#39;/logout.php&#39;">
+                                    <i class="fa fa-sign-out"></i> Sair
+                                </a>
+                            </li>
+                        </ul><!--end .dropdown-menu -->
+                    </li><!--end .dropdown -->
+                </ul>
+            </div>
+
+            <div class="navbar-center hidden-xs">
+                <ul class="header-nav header-nav-options">
+                    <li style="width:55%">
+                        <select id="chosen-sistema2" class="form-control chosen-select" data-placeholder="Selecione"
+                                onchange="javascript:changeSystem(this.value)" style="display: none;">
+                            <option selected="selected" value="283">Demandas</option>
+                            <option value="147">Obras</option>
+                            <option value="231">PAR</option>
+                            <option value="4">SIS</option>
+                            <option value="237">SPO - Emendas Parlamentares</option>
+                        </select>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="navbar-right hidden-xs">
+                <ul class="header-nav header-nav-profile">
+                    <li class="dropdown ms-hover">
+                        <a href="javascript:void(0);" class="dropdown-togglee ink-reaction" data-toggle="dropdown">
+                            <img alt="image" class="profile-pic"
+                                 src="./Sem papel - Prototipo_files/profile_small(1).jpg">
+                            <span class="profile-info">
+                                            Adminstrador de sistema                        <small></small>
+                                        </span>
+                        </a>
+                        <ul class="dropdown-menu animation-dock">
+                            <li class="dropdown-header">Super Usuário</li>
+                            <li>
+                                <a data-toggle="modal" class="btSimularUsuario">
+                                    <i class="glyphicon glyphicon-eye-open"></i> Simular Usuário
+                                </a>
+                            </li>
+                            <li>
+                                <a id="btUser2" data-toggle="modal" data-target="#modal-user">
+                                    <i class="glyphicon glyphicon-wrench"></i> Gerenciar seus dados
+                                </a>
+                            </li>
+
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-sign-out"></i> Sair
+                                </a>
+                            </li>
+                        </ul><!--end .dropdown-menu -->
+                    </li><!--end .dropdown -->
+                </ul>
+            </div>
+            </nav>
+        </div>
+        <script>
+            $(document).ajaxComplete(function () {
+                $(".chosen-select").chosen();
+            });
+        </script>
+
+        <div id="wrapper-content" class="wrapper wrapper-content">
+            <script type="text/javascript">
+
+
+            </script>
+            <script type="text/javascript">
+                if (typeof _JS == 'undefined') {
+                    var _JS = {};
+                }
+            </script>
+
+            <!-- inicio --->
+            <div class="tabs-container">
+                <ul class="nav nav-tabs nav-custom">
+                    <li class="active"><a
+                            href="index.html">Prefeituras</a>
+                    </li>
+                    <li>
+                        <a href="Secretarias.html">Secretarias
+                            Estaduais</a></li>
+                    <li>
+                        <a href="apae.html">APAE</a>
+                    </li>
+                </ul>
+                <!-- fim --->
+
+                <div class="ibox">
+
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>Filtros de pesquisa</h2>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="ibox-content">
+                        <form method="post" name="formulario-entidade" id="formulario-entidade">
+                            <input type="hidden" name="pesquisar" value="1">
+                            <input type="hidden" id="exporta" name="exporta" value="false">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" name="">
+
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    <div class="ibox-footer">
+                        <div class="center">
+                            <button type="submit" class="btn btn-primary btn-pesquisar" style="width: 200px;"><i
+                                    class="fa fa-search" ></i> Pesquisar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="ibox">
+
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>Lista de Demandantes</h2>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="ibox-content" id="conteudo">
+
+
+                    </div>
+                </div>
+
+
+
+                <div class="footer">
+                    <div class="float-right">
+                        <strong>Data:</strong> 06/06/2019 - 08:54:44 |
+                        <strong>Último acesso</strong> 06/06/2019
+                    </div>
+                    <div>
+                        <a href="javascript:abrirFaleConosco();"><strong><i class="fa fa-user"></i> Fale
+                            Conosco</strong></a> |
+                        <a><strong>Revisão: 123456</strong></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="modal-user" tabindex="0" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Informações de usuário</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-3 col-lg-3 text-center">
+                                <img style="width: 95%; margin-bottom: 10px; height: 110px;"
+                                     class="img-circle profile-pic" src="./Sem papel - Prototipo_files/imagemperfil.php"
+                                     alt="Adminstrador De Sistema">
+                                <a style="padding-left: 5px;"
+                                   href="http://pim-local/demandas/demandas.php?modulo=demandantes/listar&amp;acao=A#"
+                                   class="profile-picture dz-clickable">Editar foto</a>
+                            </div>
+                            <div class="col-md-9 col-lg-9 hidden-xs hidden-sm">
+                                <table class="table ">
+                                    <tbody>
+                                    <tr>
+                                        <td colspan="2"><strong>Adminstrador De Sistema</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>CPF:</td>
+                                        <td>005.396.281-82</td>
+                                    </tr>
+                                    <tr style="border: solid 0px; ">
+                                        <td>E-mail:</td>
+                                        <td>simec@mec.gov.br</td>
+                                    </tr>
+                                    <tr style="border: solid 0px; ">
+                                        <td>Perfil:</td>
+                                        <td>
+                                            <span class="label label-success">Super Usuário</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-lg-12">
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    <script type="text/javascript">
+        function loadPage(page, div ='conteudo', funcCallback =function(){console.log('no funcCallback')} ){
+
+
+            $.get('paginas/'+page+'?'+getRandomArbitrary(1,999), function(r){ 
+
+                $('#'+div).html(r);
+                funcCallback();
+            });
+        }
+        function appendToDiv(page, div ='conteudo', funcCallback =function(){console.log('no funcCallback')} ){
+            $.get('paginas/'+page+'?'+getRandomArbitrary(1,999), function(r){
+                $('#'+div).append(r);
+                funcCallback();
+            });
+        }
+
+        $('.btn-pesquisar').click(function(e){
+
+            event.preventDefault();
+            loadPage('demandantes_prefeitura_lista.html');
+        });
+
+    </script>
+
+
+        <script language="JavaScript">
+            $('.btSimularUsuario').click(function () {
+                $('#modal-user-search').modal();
+                setTimeout(function () {
+                    $('#perfisSimularUsuario').chosen({});
+                }, 300);
+            });
+            $('#bt-carregar-usuarios-sistema-simular').click(function (e) {
+                e.preventDefault();
+                $('#formulario-simular-usuario').ajaxSubmit(function (html) {
+                    $('#container-lista-simular').hide().html(html).fadeIn();
+                });
+                return false;
+            });
+
+            /** Função de fazer com que o sistema informe que esta havendo uma requisição ajax */
+            $(document).ajaxSend(function (e, jqxhr, settings) {
+                jQuery("#loading").fadeIn();
+            }).ajaxStop(function () {
+                jQuery("#loading").fadeOut();
+                attachInit();
+                attachEvents();
+            });
+
+            /** Mensagem de carregando quando houver requisições em ajax */
+            $.ajaxSetup({
+                timeout: 0,
+                error: function (xhr, status, error) {
+                    console.log("Ocorrência de erro no retorno AJAX: " + status + "\nError: " + error);
+                    jQuery("#loading").fadeOut();
+                    jQuery("#loading").fadeIn();
+
+                    setTimeout(function () {
+                        jQuery("#loading").fadeOut();
+                    }, 1300);
+                }
+            });
+
+            // -- Substituindo o alert do browser.
+            window.alert = function (texto) {
+                jQuery('#modal-alert .modal-body').html(texto);
+                jQuery('#modal-alert').modal();
+            };
+
+            function abrirFaleConosco(inuid) {
+                window.open(
+                    '../geral/fale_conosco_par3.php?inuid=' + inuid,
+                    'faleconoosco',
+                    'height=515,width=900,scrollbars=yes,top=50,left=200'
+                );
+            }
+        </script>
+
+
+        <script src="./Sem papel - Prototipo_files/jquery.metisMenu.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/jquery.slimscroll.min.js.download"></script>
+
+        <script src="./Sem papel - Prototipo_files/jquery-ui.min.js.download"></script>
+
+        <!-- Data picker -->
+        <script src="./Sem papel - Prototipo_files/bootstrap-datepicker.js(1).download"></script>
+        <script src="./Sem papel - Prototipo_files/bootstrap-datepicker.pt-BR.js.download"></script>
+
+        <!-- jQuery UI custom -->
+        <script src="./Sem papel - Prototipo_files/jquery-ui.custom.min.js.download"></script>
+
+        <!-- Sweet Aler -->
+        <script src="./Sem papel - Prototipo_files/sweetalert.min.js.download"></script>
+
+
+        <script src="./Sem papel - Prototipo_files/jquery.bootstrap-touchspin.min.js(1).download"></script>
+
+
+        <!-- Custom and plugin javascript -->
+        <script src="./Sem papel - Prototipo_files/theme.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/pace.min.js.download"></script>
+
+        <!-- jQuery UI -->
+        <script src="./Sem papel - Prototipo_files/jquery-ui.min.js(1).download"></script>
+
+        <!-- GITTER -->
+        <script src="./Sem papel - Prototipo_files/jquery.gritter.min.js.download"></script>
+
+        <!-- Sparkline -->
+        <script src="./Sem papel - Prototipo_files/jquery.sparkline.min.js.download"></script>
+
+        <!-- Sparkline demo data  -->
+        <script src="./Sem papel - Prototipo_files/sparkline-demo.js.download"></script>
+
+        <!-- ChartJS-->
+        <script src="./Sem papel - Prototipo_files/Chart.min.js.download"></script>
+
+        <!-- Toastr -->
+        <script src="./Sem papel - Prototipo_files/toastr.min.js.download"></script>
+
+
+        <!-- Chosen -->
+        <script src="./Sem papel - Prototipo_files/chosen.jquery.js.download"></script>
+
+        <!-- JSKnob -->
+        <script src="./Sem papel - Prototipo_files/jquery.knob.js.download"></script>
+
+        <!-- Switcher -->
+        <script src="./Sem papel - Prototipo_files/bootstrap-switch.js.download"></script>
+
+        <!-- NanoScroller -->
+        <script src="./Sem papel - Prototipo_files/jquery.nanoscroller.min.js.download"></script>
+
+        <!-- FullCalendar -->
+        <script src="./Sem papel - Prototipo_files/fullcalendar.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/moment.min.js.download"></script>
+
+        <!-- Switchery -->
+        <script src="./Sem papel - Prototipo_files/switchery.js.download"></script>
+
+        <!-- JsTree -->
+        <script src="./Sem papel - Prototipo_files/jstree.min.js.download"></script>
+
+        <!-- iCheck -->
+        <script src="./Sem papel - Prototipo_files/icheck.min.js.download"></script>
+
+        <!-- File Input -->
+        <script src="./Sem papel - Prototipo_files/fileinput.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/fileinput_locale_pt-BR.js.download"></script>
+
+        <!-- Summernote -->
+        <script src="./Sem papel - Prototipo_files/summernote.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/summernote-pt-BR.js.download"></script>
+
+        <!-- Flot -->
+        <script src="./Sem papel - Prototipo_files/jquery.flot.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/jquery.flot.tooltip.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/jquery.flot.spline.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/jquery.flot.resize.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/jquery.flot.pie.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/jquery.flot.symbol.js.download"></script>
+
+        <!-- Dropzone -->
+        <script src="./Sem papel - Prototipo_files/dropzone.js.download"></script>
+
+        <!-- Masked Input -->
+        <script src="./Sem papel - Prototipo_files/jquery.maskedinput.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/inputmask.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/jquery.inputmask.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/inputmask.numeric.extensions.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/inputmask.regex.extensions.min.js.download"></script>
+
+
+        <!-- Datatables -->
+        <script src="./Sem papel - Prototipo_files/jquery.dataTables.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/dataTables.bootstrap.js.download"></script>
+
+        <!-- Bootstrap Tour -->
+        <script src="./Sem papel - Prototipo_files/bootstrap-tour.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/bootstrap-tour-standalone.min.js.download"></script>
+
+
+        <!-- Bootbox -->
+        <script src="./Sem papel - Prototipo_files/bootbox.min.js.download"></script>
+
+        <!-- Ion Range Slider -->
+        <script src="./Sem papel - Prototipo_files/ion.rangeSlider.min.js.download"></script>
+
+        <!-- Validate -->
+        <script src="./Sem papel - Prototipo_files/jquery.validate.min.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/jquery.validate.extend.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/jquery.form.min.js.download"></script>
+
+        <!-- SIMEC -->
+        <script src="./Sem papel - Prototipo_files/simec.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/simec-eventos.js.download"></script>
+        <script src="./Sem papel - Prototipo_files/simec-mascaras.js.download"></script>
+
+
+            <div id="base_wf" style="display: none">
+
+              <div class="row bg-primary text-white py-3 px-2">
+
+                <div class="col-sm-1">Seq.</div>
+                <div class="col-sm-3">Onde Estava</div>
+                <div class="col-sm-3">O que aconteceu</div>
+                <div class="col-sm-3">Quem Fez</div>
+                <div class="col-sm-2">Quando Fez</div>
+
+              </div>
+
+              <div class="row p-2 my-1">
+
+                <div class="col-sm-1">1.</div>
+                <div class="col-sm-3">Planejamento pelo proponente</div>
+                <div class="col-sm-3">Enviado para licitação</div>
+                <div class="col-sm-3">Administrador do Sistema</div>
+                <div class="col-sm-2">09/05/2019 17:02:05</div>
+
+              </div>
+
+              <div class="row p-2">
+
+                <div class="col-sm-1">2.</div>
+                <div class="col-sm-3">Licitação</div>
+                <div class="col-sm-3">Enviado para contratação</div>
+                <div class="col-sm-3">Administrador do Sistema</div>
+                <div class="col-sm-2">09/05/2019 17:05:05</div>
+
+              </div>
+
+              <div class="row p-2">
+
+                <div class="col-sm-1">3.</div>
+                <div class="col-sm-3">Contratação</div>
+                <div class="col-sm-3">Enviado para execução</div>
+                <div class="col-sm-3">Administrador do Sistema</div>
+                <div class="col-sm-2">10/05/2019 08:22:05</div>
+
+              </div>
+
+              <div class="row px-2">
+
+                <div class="col-sm-12 text-center">Estado Atual: <b id="workflow_estado_atual">Análise Administrativa</b></div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <script src="./Sem papel - Prototipo_files/funcoes.js.download"></script>
+        <script>
+            var alertaSucesso = function(msg ='Operação realizada com sucesso.'){
+
+                $('.modal').modal('hide');
+                $('.modal-sucesso-content').html(msg);
+                $('.modal-sucesso').modal();
+
+            }
+
+
+
+            var wf = function(div ='wf'){
+
+                appendToDiv('demandado_workflow.html', div);
+
+                //$('#'+div).html($('#base_wf').html());
+
+            }
+            var alertaUsuario = function(div ='alerta_usu'){
+
+                $('#'+div).html($('#base_alerta_usu').html());
+
+            }
+
+
+
+            var alertaErro = function(msg = 'Ocorreu um erro.'){
+
+                $('.modal').modal('hide');
+                $('.modal-erro-content').html(msg);
+                $('.modal-erro').modal();
+
+            }
+
+            function getRandomArbitrary(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            var dw =  function(){
+                $('.download').click(function(){
+                    file = $(this).attr('file-name');
+
+                    if(file =='' || file == undefined)
+                       file = 'doc.pdf';
+
+                   var link = document.createElement('a');
+                    link.href = '/prototipo/files/saopaulospgovbr.pdf';;
+                    link.download = file;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+
+
+                })
+            }
+
+            var setLoren = function(){
+                $('textarea').each(function(){
+                    if($(this).val() ==''){
+                        $(this).html('Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum');
+                    }
+                })
+            }
+
+            $(document).ready(function () {
+                var config = {allow_single_deselect: true};
+
+                $('.voltar_usuario_origem').click(function () {
+                    simularUsuariosSistemas('00539628182');
+                });
+
+                $('.btPainelWorkflow').click(function () {
+                    $('#modal-painel-workflow').modal();
+                    setTimeout(function () {
+                        $('#fluxo-painel-workflow').chosen(config);
+                        $('#estado-documento-situacao-workflow').chosen(config);
+                    }, 450);
+                });
+
+            });
+
+
+var replaceAll = function(str, search, replacement) {
+    var target = str;
+    return target.replace(new RegExp(search, 'g'), replacement);
+}
+
+        </script>
+
+    </div>
+</div>
+<input type="file" multiple="multiple" class="dz-hidden-input"
+       style="visibility: hidden; position: absolute; top: 0px; left: 0px; height: 0px; width: 0px;"></body>
+</html>
+
+
+
+<div class="ibox float-e-margins animated modal modal-sucesso" id="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" name="formEquipe" id="formEquipe" class="form form-horizontal">
+            <div class="modal-content animated flipInY">
+                <div class="ibox-title" tipo="integrantes">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Sucesso </h3>
+                </div>
+                <div class="ibox-content modal-sucesso-content">
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="ibox float-e-margins animated modal modal-erro" id="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" name="formEquipe" id="formEquipe" class="form form-horizontal">
+            <div class="modal-content animated flipInY">
+                <div class="ibox-title" tipo="integrantes">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Erro </h3>
+                </div>
+                <div class="ibox-content modal-erro-content">
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="ibox float-e-margins animated modal" id="modal-alert" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" name="formEquipe" id="formEquipe" class="form form-horizontal">
+            <div class="modal-content animated flipInY">
+                <div class="ibox-title" tipo="integrantes">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Alerta </h3>
+                </div>
+                <div class="ibox-content modal-erro-content modal-body"  >
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div id="base_alerta_usu" style="display: none">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> CADIN / SICONFI</h4>
+
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    </div>
+
+</div>

@@ -1,0 +1,115 @@
+<?php
+//
+// $Id$
+//
+
+require_once APPRAIZ."includes/ActiveRecord/ActiveRecord.php";
+
+/**
+ *
+ */
+class entidades_juridicaBase extends ActiveRecord {
+	/**
+	 * Nome da tabela especificada para esta entidade
+	 * @var string
+	 * @access protected
+	 */
+	protected $tabela = 'corporativo.entidades_juridica';
+
+	/**
+	 * Sequence pertencente a tabela entidade.funcao
+	 * @access protected
+	 */
+	protected $sequence = 'corporativo.entidades_juridica_enjid_seq';
+
+	/**
+	 * Chave primaria.
+	 *
+	 * @param integer $id Valor da chave primária do registro no banco de dados
+	 */
+	protected $chavePrimaria = array('ensid', null);
+
+	protected $campos = array('ensdsc' => null,
+		'enfid'                           => null,
+		'enjid'                           => null,
+		'ensstatus'                       => null,
+		'enscpf'                          => null,
+		'ensemail'                        => null,
+		'enstelefone'                     => null,
+		'ensendcep'                       => null,
+		'ensendlogradouro'                => null,
+		'ensendcomplemento'               => null,
+		'ensendnumero'                    => null,
+		'ensendbairro'                    => null);
+
+	/**
+	 * Carrega os dados recuperados do banco de dados no objeto.
+	 *
+	 * @param integer $id Valor da chave primária do registro no banco de dados
+	 */
+
+	public function carregar($id = null) {
+		if ($id == null) {
+			return new Arquivo();
+		}
+
+		$sql = "SELECT
+
+                    enjid,
+                    enjdsc,
+                    enfid,
+                    enjstatus,
+                    enjcnpj,
+                    enjrazaosocial,
+                    enjinscricaoestadual,
+                    enjemail,
+                    enjtelefone,
+                    enjendcep,
+                    enjendlogradouro,
+                    enjendcomplemento,
+                    enjendnumero,
+                    enjendbairro,
+                    muncod
+
+                FROM
+                    corporativo.entidades_juridica
+                WHERE
+                    ensid = ?";
+
+		$rs = $this->Execute($sql, array($id));
+
+		$this->enjid               = $rs->fields['enjid'];
+		$this->enjdsc              = $rs->fields['enjdsc'];
+		$this->enfid               = $rs->fields['enfid'];
+		$this->enjstatus           = $rs->fields['enjstatus'];
+		$this->enjcnpj             = $rs->fields['enjcnpj'];
+		$this->enjrazaosocial      = $rs->fields['enjrazaosocial'];
+		$this->enjinscricaoestadua = $rs->fields['enjinscricaoestadual'];
+		$this->enjemail            = $rs->fields['enjemail'];
+		$this->enjtelefone         = $rs->fields['enjtelefone'];
+		$this->enjendcep           = $rs->fields['enjendcep'];
+		$this->enjendlogradouro    = $rs->fields['enjendlogradouro'];
+		$this->enjendcomplemento   = $rs->fields['enjendcomplemento'];
+		$this->enjendnumero        = $rs->fields['enjendnumero'];
+		$this->enjendbairro        = $rs->fields['enjendbairro'];
+		$this->muncod              = $rs->fields['muncod'];
+
+		$this->chavePrimaria[1] = $rs->fields['enjid'];
+
+		return clone$this;
+	}
+
+	/**
+	 *
+	 */
+	public function setPrimaryKey($valor) {
+		return $this->chavePrimaria[1] = $valor;
+	}
+
+	/**
+	 *
+	 */
+	public function getPrimaryKey() {
+		return $this->chavePrimaria[1];
+	}
+}

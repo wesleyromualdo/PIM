@@ -1,0 +1,46 @@
+<?php 
+global $simec;
+
+$arrEntidade[$this->funcao_entidade[0]['enfidpai']] = $this->funcao_entidade[0]['entidade_pai'];
+
+foreach ($this->funcao_entidade as $v) {
+    $arrEntidade[$v['enfidfilho']] = $v['entidade_filho'];
+}
+//ver($this->pessoa_fisica,d);
+//$renderEntidade = new Demanda_Controller_Entidade();
+?>
+<form method="post" name="formulario-pessoa-fisica" id="formulario-pessoa-fisica" class="form form-horizontal">
+    <input type="hidden" name="ddtid"   id="ddtid"  value="<?php echo $_REQUEST['ddtid']?>"/>
+    <input type="hidden" name="ensid"   id="ensid"  value="<?php echo $_REQUEST['ensid']?>"/>
+    <input type="hidden" name="enfid"   id="enfid"  value="<?php echo $_REQUEST['enfid']?>"/>
+    <input type="hidden" name="ejfid"   id="ejfid"  value="<?php echo $_REQUEST['ejfid']?>"/>
+    <input type="hidden" name="tipo_representante"   id="tipo_representante"  value="<?php echo $_REQUEST['tipo_representante']; ?>"/>
+    
+    <input type="hidden" name="requisicao" value=""/>
+    <div class="ibox-title">
+    	<h3 id="entidade">Dados da <?php echo $arrEntidade[$_REQUEST['enfid']];?></h3>
+    </div>
+    <div class="ibox-content"><?php
+    $radioSexo = array('f' => 'Feminino', 'm' => 'Masculino');
+    
+    echo $disabled['enscpf'] != '' ? '<input type="hidden" name="enscpf" value="'.formatar_cpf($this->pessoa_fisica['enscpf']).'"/>' : '';
+    echo $simec->cpf('enscpf', 'CPF', $this->pessoa_fisica['enscpf'], array('class' => 'cpf', $disabled['enscpf'], 'data-pessoa' => true, ($this->pessoa_fisica['enscpf'] != '' ? 'disabled' : ''), 'data-pessoa-campos' => '{"#ensdsc": "no_pessoa_rf"}'));
+    echo $simec->input('ensdsc', 'Nome', $this->pessoa_fisica['ensdsc'], array('maxlength' => '255', $disabled['ensdsc'], 'required'));
+    echo $simec->radio('enssexo', 'Sexo', $this->pessoa_fisica['enssexo'] ? strtolower($this->pessoa_fisica['enssexo']) : '', $radioSexo, array($disabled['enssexo'], $required), array('type' => 'radio radio-info radio', 'style' => 'inline'));
+    echo $simec->email('ensemail', 'E-mail', $this->pessoa_fisica['ensemail'], array('class' => 'email', $disabled['ensemail'], 'required'));
+    echo $simec->input('ensrg', 'Registro Geral (RG)', $this->pessoa_fisica['ensrg'], array($disabled['ensrg'], 'required', 'maxlength' => '20'));
+    echo $simec->input('ensorgexpedidor', 'Orgão Expedidor', $this->pessoa_fisica['ensorgexpedidor'], array($disabled['ensorgexpedidor'], 'maxlength' => '20', 'required'));
+    echo $simec->data('ensdtnascimento', 'Data Nascimento', $this->pessoa_fisica['ensdtnascimento'], array($disabled['ensdtnascimento'], $required));
+    echo $simec->telefone('enstelefone', 'Telefone Comercial', $this->pessoa_fisica['enstelefone'], array('class' => 'telefone', $disabled['enstelefone'], $required));
+    ?></div>
+    <div class="ibox-title">
+    	<h3>Endereço da <?php echo $arrEntidade[$_REQUEST['enfid']];?></h3>
+    </div>
+    <div class="ibox-content"><?php 
+    echo $simec->cep('enjendcep', 'CEP', $this->pessoa_fisica['enjendcep'], array('class' => 'cep', 'onblur' => 'getEnderecoByCEP(this.value,\'1\');', '', 'required'));
+    echo $simec->input('enjendlogradouro', 'Logradouro', str_to_upper($this->pessoa_fisica['enjendlogradouro']), array('maxlength' => '255', '', 'required'));
+    echo $simec->input('enjendcomplemento', 'Complemento', str_to_upper($this->pessoa_fisica['enjendcomplemento']), array('maxlength' => '255', ''));
+    echo $simec->input('enjendnumero', 'Número', $this->pessoa_fisica['enjendnumero'], array('maxlength' => '20', ''));
+    echo $simec->input('enjendbairro', 'Bairro', str_to_upper($this->pessoa_fisica['enjendbairro']), array('maxlength' => '255', '', 'required'));    
+    ?></div>
+</form>

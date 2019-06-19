@@ -1,0 +1,267 @@
+    <div class="ibox-content-round-gray ibox-content">
+        <div class="row">
+            <div class="col-md-3 colunaMenu noprint">
+                <div class="space-25"></div>
+                <div id="menuDirigentes">
+                    <h5>INFORMAÇÕES</h5>
+					<div class="nav flex-column nav-pills" aria-orientation="vertical">
+						<span class="nav-link active" data-toggle="pill" aria-selected="true" onclick = "loadPage('prefeitura_demandante_prefeitura.html', 'ibox-content')">Prefeitura</span>
+						<span class="nav-link" data-toggle="pill" aria-selected="false" onclick = "loadPage('prefeitura_demandante_prefeito.html', 'ibox-content')">Prefeito</span>
+						<span class="nav-link" data-toggle="pill" aria-selected="false" onclick = "loadPage('prefeitura_demandante_equipe.html', 'ibox-content')">Equipe Local</span>
+					</div>
+					<!--
+                    <div class="menuUnidade menuSelecionado bold pointer" tipo="prefeitura" onclick = "loadPage('prefeitura_demandante_prefeitura.html', 'ibox-content')">
+                        <span class="fa fa-check iconUnidade"  style="color:green !important;background-color: transparent;"></span> Prefeitura
+                    </div>
+                    <div class="menuUnidade pointer " tipo="prefeito" onclick = "loadPage('prefeitura_demandante_prefeito.html', 'ibox-content')" >
+                        <span class="fa fa-check iconUnidade"  style="color:green !important;background-color: transparent;"></span> Prefeito
+                    </div>
+                    <div class="menuUnidade pointer" tipo="equipe" onclick = "loadPage('prefeitura_demandante_equipe.html', 'ibox-content')">
+                        <span class="fa fa-check iconUnidade" style="color:green !important;background-color: transparent;"></span> Equipe Local
+                    </div>
+					-->
+                </div>
+
+            </div>
+            <div class="col-md-9 colunaForm" id="print_area">
+                <form method="post" name="formulario-prefeitura" id="formulario-prefeitura" class="form form-horizontal">
+                    <input type="hidden" name="ddtid" id="ddtid" value="4">
+                    <input type="hidden" name="requisicao" value="">
+                    <input type="hidden" name="menu" value="">
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <h3 id="entidade">Dados da Prefeitura</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <input type="hidden" name="enjid" value="1275">
+                            <input type="hidden" id="form" value="">
+                            <input type="hidden" name="enfid" value="1">
+                            <input type="hidden" name="enjcnpj_old" value="55.356.653/0001-08">
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjcnpj" class="col-sm-3 col-md-3 col-lg-3 control-label">CNPJ: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><span class="fa fa-building"></span></span>
+                                        <input data-inputmask="'mask': '99.999.999/9999-99', 'clearIncomplete': 'true'" name="enjcnpj" id="enjcnpj" type="text" value="55356653000108" class="form-control cnpj cnpj"=""="" required="required">
+
+                                    </div>
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjdsc" class="col-sm-3 col-md-3 col-lg-3 control-label">Nome: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                    <input name="enjdsc" id="enjdsc" type="text" value="PM PRE PRUDENTE" class="form-control" maxlength="255" required="required">
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjrazaosocial" class="col-sm-3 col-md-3 col-lg-3 control-label">Razão Social: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                    <input name="enjrazaosocial" id="enjrazaosocial" type="text" value="PREF MUN DE PRESIDENTE PRUDENTE" class="form-control" maxlength="255" required="required">
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjinscricaoestadual" class="col-sm-3 col-md-3 col-lg-3 control-label">Inscrição Estadual: </label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                    <input name="enjinscricaoestadual" id="enjinscricaoestadual" type="text" value="" class="form-control" maxlength="255">
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjemail" class="col-sm-3 col-md-3 col-lg-3 control-label">E-mail: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><span class="fa fa-envelope"></span></span>
+                                        <input data-alias="'email'" name="enjemail" id="enjemail" type="text" value="gabinete@presidenteprudente.sp.gov.br" class="form-control cep email" required="required">
+
+                                    </div>
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjtelefone" class="col-sm-3 col-md-3 col-lg-3 control-label">Telefone Comercial: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><span class="fa fa-phone"></span></span>
+                                        <input data-inputmask="'mask': '(99) 9999-9999[9]', 'clearIncomplete': 'true'" name="enjtelefone" id="enjtelefone" type="text" value="1839024400" class="form-control telefone telefone"=""="" required="required">
+
+                                    </div>
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+                        <div class="ibox-title">
+                            <h3>Endereço da Prefeitura</h3>
+                        </div>
+                        <div class="ibox-content">
+                            <input type="hidden" name="enjid" value="1275">
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjendcep" class="col-sm-3 col-md-3 col-lg-3 control-label">CEP: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
+                                        <input data-inputmask="'mask': '99.999-999', 'clearIncomplete': 'true'" name="enjendcep" id="enjendcep" type="text" value="19010081" class="form-control cep cep" onblur="getEnderecoByCEP(this.value,'1');"=""="" required="required">
+
+                                    </div>
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjendlogradouro" class="col-sm-3 col-md-3 col-lg-3 control-label">Logradouro: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                    <input name="enjendlogradouro" id="enjendlogradouro" type="text" value="AV. CORONEL JOSE SOARES MARCONDES, 1200" class="form-control" maxlength="255" required="required">
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjendcomplemento" class="col-sm-3 col-md-3 col-lg-3 control-label">Complemento: </label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                    <input name="enjendcomplemento" id="enjendcomplemento" type="text" value="" class="form-control" maxlength="255">
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjendnumero" class="col-sm-3 col-md-3 col-lg-3 control-label">Número: </label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                    <input name="enjendnumero" id="enjendnumero" type="text" value="0" class="form-control" maxlength="20">
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+
+                            <style>
+                                .dropdown-menu {
+                                    z-index: 10000 !important;
+                                }
+                            </style>
+
+                            <div class="form-group ">
+                                <label for="enjendbairro" class="col-sm-3 col-md-3 col-lg-3 control-label">Bairro: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                                <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                    <input name="enjendbairro" id="enjendbairro" type="text" value="CENTRO" class="form-control" maxlength="255" required="required">
+
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+                        <div class="ibox-footer">
+                            <div class="row">
+                                <div class="col-lg-4 text-center">
+                                    <button type="submit" class="btn btn-success btnSalvar" onclick="javascript: alertaSucesso(); return false; "><i class="fa fa-save"></i> Salvar prefeitura</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>  
+
+                <script>
+                    $(document).ready(function() {
+                        $('.next').click(function() {
+                            var url = window.location.href.toString().replace('prefeitura', 'prefeito');
+
+                            if (url.indexOf('prefeito'))
+                                url = url + '&menu=prefeito';
+
+                            window.location.href = url;
+                        });
+  
+
+                    });
+                </script>
+            </div>
+        </div>
+    
+<script type="text/javascript">
+    
+    $('.salvar').click(function(e){
+         
+        
+    })
+</script>

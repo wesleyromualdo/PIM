@@ -1,0 +1,40 @@
+/* Elementos */
+
+#modal-atuacao_profissional .chosen-container.chosen-container-single{
+    min-width: 300px !important;
+
+}
+#modal-atuacao_profissional .chosen-single{
+    border: 1px solid #e5e6e7;
+    border-radius: 1px;
+    background-color: #FFFFFF;
+    background-image: none;
+    border: 1px solid #e5e6e7;
+
+    color: inherit;
+    display: block;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    width: 100%;
+        font-size: 14px;
+    
+}
+
+.badge.label {
+    color: #FFF;
+}
+
+.badge.label.label-danger {
+    background-color: #ed5565;
+}
+
+.badge.label.label-warning {
+    background-color: #f8ac59;
+}
+
+.badge.label.label-info {
+    background-color: #23c6c8;
+}
+.badge.label.label-primary {
+    background-color: #1ab394;
+}

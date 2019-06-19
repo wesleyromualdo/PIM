@@ -1,0 +1,794 @@
+
+<script type="text/javascript">
+
+    var listaObjetoNota = [];
+    var idControleObjDocumento = 0;
+    var listaEmpresasRemovidas = [];
+    var listaNotasRemovidas = [];
+    var listaMedicoesContrato = [];
+    var acaoEditar = false;
+    var idEmpresaContratada = $("#idEmpresaContratada").val();
+    var dadosMedicao = null;
+
+    //    window.onunload = refreshParent;
+
+    function editarNotaFiscal(elemento, indexObjDocumento, idMedicaoContrato, numeroMedicao,contrato,ntmvlrpago,valorMedicao, percentualMedicaoFisica, percentualMedicaoAcumulada,mecid)
+    {
+
+        ntmvlrpago = formatarValorMonetario(ntmvlrpago);
+        $('#valorPagoNota').val(ntmvlrpago);
+
+        $("#medicaoFisica").html(percentualMedicaoFisica);
+        $("#medicaoAcumulada").html(percentualMedicaoAcumulada);
+
+
+        $(elemento).closest("tr").remove();
+
+        listaObjetoNota = listaObjetoNota.filter(function(e) {
+            if (e.id == indexObjDocumento) {
+                listaNotasRemovidas.push(e.ntmid);
+            }
+            return e.id != indexObjDocumento ;
+        });
+
+
+        $("#notasRemovidas").val(JSON.parse(JSON.stringify(listaNotasRemovidas)));
+
+        var procurarMecid = function (idMedicaoContrato) {
+            for(var x=0; x < listaMedicoesContrato.length; x++) {
+                if (idMedicaoContrato == listaMedicoesContrato[x]) {
+                    listaMedicoesContrato.splice(x, 1);
+                }
+            }
+        };
+        procurarMecid(idMedicaoContrato);
+
+        if (listaObjetoNota.length <= 0) {
+            $("#acompanhamento").hide();
+            $("#dadosNotaFiscalMedicao").val("");
+            listaMedicoesContrato = [];
+        }
+
+        /*Validação: Uma nota fiscal não pode pagar o mesmo contrato/aditivo mais de uma vez .*/
+        var fornecedorSelecionado = $("#empresaContratada").val();
+
+        montaComboContratos(fornecedorSelecionado)
+        $("#contratos>[value=" + contrato + "]").attr("selected", true);
+
+        montaComboMedicao(fornecedorSelecionado, contrato);
+        $("#medicao>[value=" + mecid + "]").attr("selected", true);
+
+        getDadosMedicao(mecid,true);
+
+        /* Validação: Uma nota fiscal é vinculada aos contratos/aditivos de apenas uma empresa. */
+        for (var i=0; i < listaEmpresasRemovidas.length; i++) {
+            var empresaRemovida = listaEmpresasRemovidas[i];
+            $('#empresaContratada').append($('<option>', {
+                value: empresaRemovida.id,
+                text: empresaRemovida.text
+            }));
+        }
+
+        listaEmpresasRemovidas = [];
+
+        // $("#empresaContratada"   ).attr("disabled", false);
+
+        console.log(listaObjetoNota);
+
+
+        $("#dadosNotaFiscalMedicao").val(JSON.stringify(listaObjetoNota));
+
+    }
+
+
+
+
+    $("#contratos").change(function(){
+        var fornecedorSelecionado = $("#empresaContratada").val();
+        var contratoSelecionado = $("#contratos").val();
+
+        $('#valorMedicao').text("");
+        montaComboMedicao(fornecedorSelecionado, contratoSelecionado);
+    });
+
+    $("#empresaContratada").change(function(){
+        var opcao = $('#empresaContratada :selected').text();
+        var cnpj = opcao.substring(1, 19);
+        var cnpjLimpo = cnpj.replace(/\D+/g, "");
+        consultaCNPJFornecedor(cnpjLimpo);
+    });
+
+    $(document).ready(function() {
+
+        $("#formulario").submit(function () {
+            var isValid = validarSubmit();
+            if (isValid !== true) {
+                $("#empresaContratada").attr("disabled", true);
+                $("#empresaContratada").removeAttr("disabled");
+                alert(isValid);
+                return false;
+            }else{
+                $("#empresaContratada").removeAttr("disabled");
+            }
+            // É necessário habilitar o campo "Empresa Contratada" no momento que o formulário for submetido.
+            
+        });
+
+        acaoEditar = $("#ntfid").val() != "" ? true : false;
+        if (acaoEditar) {
+
+            listaNotasRemovidas = [];
+
+            // Automatizando a seleção da empresa automaticamente para que seja feita a busca da UF pelo serviço.
+            if (idEmpresaContratada) {
+                $("#empresaContratada").val(idEmpresaContratada).trigger("change");
+            }
+
+            //listaObjetoNota = JSON.parse(JSON.stringify($("#dadosMedicaoNota").val()));
+            listaObjetoNota = JSON.parse($("#dadosMedicaoNota").val());
+            for (var x=0; x < listaObjetoNota.length; x++) {
+                var o = listaObjetoNota[x];
+                listaMedicoesContrato.push(o.idMedicaoContrato);
+            }
+
+            console.log(listaObjetoNota);
+
+            $("#dadosNotaFiscalMedicao").val(listaObjetoNota);
+            $("#dadosMedicaoNota").remove();
+            $("#empresaContratada").attr("disabled", true);
+            idControleObjDocumento = listaObjetoNota.length;
+        }
+    });
+
+    function validarSubmit() {
+
+        var arquivoNota = $("#arquivoNota").get(0).files;
+        var nomeArquivoNota = arquivoNota.length > 0 ? arquivoNota[0].name : "";
+        var arqidOld = $("#arqidOld").val();
+
+        var valorMedicao = $("#valorMedicao").text();
+        valorMedicao = valorMedicao.replace(/[.]/g, "");
+        valorMedicao = valorMedicao.replace(/[,]/g, ".");
+        valorMedicao = parseFloat(valorMedicao);
+
+        var valorNota = $("#valorNota").val();
+        valorNota = valorNota.replace(/[.]/g, "");
+        valorNota = valorNota.replace(/[,]/g, ".");
+        valorNota = parseFloat(valorNota);
+
+        var valorPagoNota = $("#valorPagoNota").val();
+        valorPagoNota = valorPagoNota.replace(/[.]/g, "");
+        valorPagoNota = valorPagoNota.replace(/[,]/g, ".");
+        valorPagoNota = parseFloat(valorPagoNota);
+
+        if ($("#empresaContratada").val() == "") {
+            return "Informe a Empresa Contratada.";
+        } else if ($("#ufFornecedor").text() == "") {
+            return "Informe a UF do Fornecedor.";
+        } else if (arqidOld != "" && acaoEditar) {
+            if (arquivoNota.length == 0) {
+                return "É necessário anexar a Nota Fiscal.";
+            } else if (nomeArquivoNota.substr(nomeArquivoNota.lastIndexOf('.')).toLowerCase() !== ".pdf") {
+                return "O arquivo da Nota Fiscal deve ser um arquivo no formato .PDF";
+            }
+        } else if ($("#numeroNota").val() == "") {
+            return "Informe o Número da Nota Fiscal.";
+        } else if ($("#dataNota").val() == "") {
+            return "Informe a Data da Nota Fiscal.";
+        } else if ((valorNota <= 0) || (isNaN(valorNota))) {
+            return "O Valor da Nota Fiscal deve ser um número maior que zero.";
+        } else if (listaObjetoNota.length < 1) {
+            return "A nota fiscal precisa ser vinculada a pelo menos uma medição.";
+        }
+
+        var somatorio = 0;
+        var somatorioValoresPagos = function (somatorio) {
+            $.each(listaObjetoNota, function(k, v) {
+
+                var vlrPagoNota = v.valorPagoNota;
+                vlrPagoNota = parseFloat(vlrPagoNota);
+
+                somatorio += vlrPagoNota;
+
+            });
+            somatorio = parseFloat(somatorio.toFixed(2));
+            return somatorio;
+        };
+
+        if (somatorioValoresPagos(somatorio) != valorNota) {
+            return "O somatório dos valores pagos na nota fiscal deve ser igual ao Valor da Nota Fiscal.";
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Função responsável por atualizar a página com a lista de itens na tela de notas fiscais. Esta atualização é feita
+     * logo após o cadastro de uma nota fiscal.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+     */
+    function refreshParent() {
+        window.opener.location.reload();
+    }
+
+    /**
+     * Função para limpar os campos do formulario de medições
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+     */
+    function limpaFormMedicao() {
+        $('#valorMedicao').text("");
+        $('#valorPagoNota').val("");
+        $('#medicaoFisica').text("");
+        $('#medicaoAcumulada').text("");
+        $('#vlrReferencia').val("");
+    }
+
+    /**
+     * Função responsável por fazer a requisição para a montagem da combo 'Contrato ou Aditivo de Valor'.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+     * @param entid Id da 'entidade' ou da 'construtora extra'.
+     * @returns {boolean}
+     */
+    function montaComboContratos(idFornecedor) {
+
+        $("#contratos").empty().append("<option value=''>Selecione...</option>");
+
+        if (idFornecedor.length <= 0) {
+            return false;
+        }
+
+        $.ajax({
+            url: window.location.href,
+            type: "post",
+            async: false,
+            dataType: "json",
+            data: {
+                "requisicao": "carregarContratos",
+                "idFornecedor": idFornecedor
+            },
+            beforeSend: function () {
+                divCarregando();
+            },
+            success: function (data) {
+
+                var selected = null;
+
+                if (data.length > 0) {
+
+                    selected = data.length == 1 ? "selected" : selected;
+
+                    $.each(data, function (chave, valor) {
+                        $("#contratos")
+                            .append($("<option " + selected + "></option>")
+                                .attr("value", valor.codigo)
+                                .text(valor.descricao)
+                            );
+                    });
+                }
+                var fornecedor = $("#empresaContratada").val();
+                var contrato = $("#contratos").val();
+                if(fornecedor != "" && contrato != ""){
+                    montaComboMedicao(fornecedor, contrato);
+                }
+                divCarregado();
+            }
+        });
+    }
+
+    /**
+     * Função responsável por fazer a requisição para a montagem da combo 'Boletim de Medição'.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+     * @param fornecedor ID do contrato de origem da entidade ou de construtora extra'.
+     * @param contrato ID do contrato de origem da entidade ou de construtora extra'.
+     * @returns {boolean}
+     */
+    function montaComboMedicao(fornecedor, contrato) {
+
+        $("#medicao").empty().append("<option value=''>Selecione...</option>");
+
+        if (contrato.length <= 0) {
+            return false;
+        }
+
+        $.ajax({
+            url: window.location.href,
+            type: "post",
+            async: false,
+            dataType: "json",
+            data: {
+                "requisicao": "carregarMedicao",
+                "fornecedor": fornecedor,
+                "contrato": contrato
+            },
+            beforeSend: function () {
+                divCarregando();
+            },
+            success: function (data) {
+
+                var selected = null;
+
+                if (data.length > 0) {
+
+                    $.each(data, function (chave, valor) {
+                        $("#medicao")
+                            .append($("<option " + selected + "></option>")
+                                .attr("value", valor.codigo)
+                                .text(valor.descricao)
+                            );
+                    });
+                }
+                divCarregado();
+            }
+        });
+    }
+
+    /**
+     * Função responsável por montar a tabela de acompanhamento das medições e preparar os dados para salvar.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+     * @returns {boolean}
+     */
+    function atualizarListaContratos() {
+
+        var retornoValidacao = validarDadosFormulario();
+
+        if (retornoValidacao !== true) {
+            alert(retornoValidacao);
+            return false;
+        }
+
+        var idEmpresaContratada = $("#empresaContratada").val();
+        //var nomeEmpresaContratada = $("#empresaContratada option:selected").text();
+        var idContrato = $("#contratos").val();
+        var nomeContrato = $("#contratos option:selected").text();
+        var tipoContrato = (nomeContrato.substr(0, 3)).toLowerCase();
+        var numeroNota = $("#numeroNota").val();
+        var dataNota = $("#dataNota").val();
+        var valorNota = $("#valorNota").val();
+        valorNota = valorNota.replace(/[.]/g, "");
+        valorNota = valorNota.replace(/[,]/g, ".");
+        var idMedicaoContrato = $("#medicao option:selected").val();
+        var numeroMedicao = $("#medicao option:selected").text();
+        var valorMedicao = $("#valorMedicao").text();
+        var valorPagoNota = $("#valorPagoNota").val();
+        valorPagoNota = valorPagoNota.replace(/[.]/g, "");
+        valorPagoNota = valorPagoNota.replace(/[,]/g, ".");
+
+        /* Validação: Uma medição não pode ser paga mais de uma vez na nesma nopta. */
+        listaMedicoesContrato.push(idMedicaoContrato);
+        var procurarMecid = function (idMedicaoContrato) {
+            for(var x=0; x < listaMedicoesContrato.length; x++) {
+                if (listaMedicoesContrato[x] == idMedicaoContrato) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        /*if (listaMedicoesContrato.length > 1) {
+            if (procurarMecid(idMedicaoContrato)) {
+                alert("A mesma medição não pode pode ser paga mais de uma vez.");
+                return false;
+            }
+        }*/
+        /* Fim da Validação: Uma medição não pode ser paga mais de uma vez na nesma nota. */
+
+        $("#acompanhamento").show();
+
+        var objNota = {
+            "id": idControleObjDocumento, // Este ID não é do banco de dados. Serve apenas para controle no javascript.
+            //"idEmpresaContratada": idEmpresaContratada,
+            "idContrato": idContrato,
+            "tipoContrato": tipoContrato,
+            //"numeroNota": numeroNota,
+            //"dataNota": dataNota,
+            //"valorNota": valorNota,
+            "idMedicaoContrato": idMedicaoContrato,
+            //"valorMedicao": valorMedicao,
+            //"numeroMedicao": numeroMedicao,
+            "valorPagoNota": valorPagoNota
+        };
+
+        /* Validação: Uma nota fiscal não pode pagar o mesmo contrato/aditivo mais de uma vez . */
+        $("#medicao option[value='" + idMedicaoContrato + "']").remove();
+
+        /* Validação: Uma nota fiscal é vinculada aos contratos/aditivos de apenas uma empresa. */
+        $("#empresaContratada option:not([value='" + idEmpresaContratada + "'], [value=''])").each(function () {
+           listaEmpresasRemovidas.push(
+               {
+                   "id": $(this).val(),
+                   "text": $(this).text()
+               }
+           );
+        });
+
+        $("#empresaContratada option:not([value='" + idEmpresaContratada + "'], [value=''])").remove();
+        $("#empresaContratada").attr("disabled", true);
+
+        listaObjetoNota.push(objNota);
+        idControleObjDocumento++;
+
+        /* Na tabela de acompanhamento, o "Valor Referente ao Contrato ou Aditivo de Valor" é exibido com máscara. */
+        $("#tbAcompanhamento > tbody:last-child").append(
+            "<tr>"
+            + "<td><img src='/imagens/excluir.gif' alt='Excluir' title='Excluir' onclick='removerNotaTabelaAcompanhamento(this, " + objNota.id + ", " + objNota.idMedicaoContrato + ", \"" + numeroMedicao + "\")' style='cursor:pointer;' /></td>"
+            + "<td>" + numeroMedicao + "</td>"
+            + "<td>" + dadosMedicao.meddtmedicao + "</td>"
+            + "<td>" + dadosMedicao.meddtinicioexec + " à " + dadosMedicao.meddtfimexec + "</td>"
+            + "<td>" + valorMedicao + "</td>"
+            + "<td>" + $("#valorPagoNota").val() + "</td>"
+            + "<td>" + $("#medicaoFisica").text() + "</td>"
+            + "<td>" + $("#medicaoAcumulada").text() + "</td>"
+            + "</tr>"
+        );
+
+        limpaFormMedicao();
+
+        var jsonString = JSON.stringify(listaObjetoNota);
+        console.log(listaObjetoNota)
+        console.log(jsonString)
+        $("#dadosNotaFiscalMedicao").val(jsonString);
+
+    }
+
+    /**
+     * Função responsável por remover da tabela de acompanhamento determinada medição.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+     * @param elemento
+     * @param ntmid
+     * @param indexObjDocumento
+     * @param idMedicao
+     * @param numeroMedicao
+     */
+    function removerNotaTabelaAcompanhamento(elemento, indexObjDocumento, idMedicaoContrato, numeroMedicao) {
+
+        $(elemento).closest("tr").remove();
+
+        listaObjetoNota = listaObjetoNota.filter(function(e) {
+            if (e.id == indexObjDocumento) {
+                listaNotasRemovidas.push(e.ntmid);
+            }
+            return e.id != indexObjDocumento ;
+        });
+
+        if (acaoEditar) {
+            if (listaObjetoNota.length < 1) {
+                var arquivoAtual = $("#arquivoAtual").val();
+                $("#arqidOld").val(arquivoAtual);
+                $(".divArquivoDownload").hide("fast");
+                $(".divArquivoUpload").show("fast");
+            }
+        }
+
+        $("#notasRemovidas").val(JSON.parse(JSON.stringify(listaNotasRemovidas)));
+
+        var procurarMecid = function (idMedicaoContrato) {
+            for(var x=0; x < listaMedicoesContrato.length; x++) {
+                if (idMedicaoContrato == listaMedicoesContrato[x]) {
+                    listaMedicoesContrato.splice(x, 1);
+                }
+            }
+        };
+        procurarMecid(idMedicaoContrato);
+
+        if (listaObjetoNota.length <= 0) {
+            $("#acompanhamento").hide();
+            $("#dadosNotaFiscalMedicao").val("");
+            listaMedicoesContrato = [];
+        }
+
+        /*Validação: Uma nota fiscal não pode pagar o mesmo contrato/aditivo mais de uma vez .*/
+        if(numeroMedicao != null) {
+            $("#medicao").append($('<option>', {
+                value: idMedicaoContrato,
+                text: numeroMedicao
+            }));
+        }
+
+        /* Validação: Uma nota fiscal é vinculada aos contratos/aditivos de apenas uma empresa. */
+        for (var i=0; i < listaEmpresasRemovidas.length; i++) {
+            var empresaRemovida = listaEmpresasRemovidas[i];
+            $('#empresaContratada').append($('<option>', {
+                value: empresaRemovida.id,
+                text: empresaRemovida.text
+            }));
+        }
+
+        listaEmpresasRemovidas = [];
+
+        $("#empresaContratada").attr("disabled", false);
+
+        $("#dadosNotaFiscalMedicao").val(JSON.stringify(listaObjetoNota));
+    }
+
+    /**
+     * Função responsável por validar os campos do formulário para inclusão das medições.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+     * @returns {*}
+     */
+    function validarDadosFormulario() {
+
+        var arquivoNota = $("#arquivoNota").get(0).files;
+        var nomeArquivoNota = arquivoNota.length > 0 ? arquivoNota[0].name : "";
+        var arqidOld = $("#arqidOld").val();
+
+        var valorMedicao = $("#valorMedicao").text();
+        valorMedicao = valorMedicao.replace(/[.]/g, "");
+        valorMedicao = valorMedicao.replace(/[,]/g, ".");
+        valorMedicao = parseFloat(valorMedicao);
+
+        var valorNota = $("#valorNota").val();
+        valorNota = valorNota.replace(/[.]/g, "");
+        valorNota = valorNota.replace(/[,]/g, ".");
+        valorNota = parseFloat(valorNota);
+
+        var valorPagoNota = $("#valorPagoNota").val();
+        valorPagoNota = valorPagoNota.replace(/[.]/g, "");
+        valorPagoNota = valorPagoNota.replace(/[,]/g, ".");
+        valorPagoNota = parseFloat(valorPagoNota);
+
+        if ($("#empresaContratada").val() == "") {
+            return "Informe a Empresa Contratada.";
+        } else if ($("#ufFornecedor").text() == "") {
+            return "Informe a UF do Fornecedor.";
+        } else if (arqidOld != "" && acaoEditar) {
+            if (arquivoNota.length == 0) {
+                return "É necessário anexar a Nota Fiscal.";
+            } else if (nomeArquivoNota.substr(nomeArquivoNota.lastIndexOf('.')).toLowerCase() !== ".pdf") {
+                return "O arquivo da Nota Fiscal deve ser um arquivo no formato .PDF";
+            }
+        } else if ($("#numeroNota").val() == "") {
+            return "Informe o Número da Nota Fiscal.";
+        } else if ($("#dataNota").val() == "") {
+            return "Informe a Data da Nota Fiscal.";
+        } else if ((valorNota <= 0) || (isNaN(valorNota))) {
+            return "O Valor da Nota Fiscal deve ser um número maior que zero.";
+        } else if ($("#contratos").val() == "") {
+            return "Informe o Contrato ou Aditivo de Valor.";
+        } else if ($("#medicao").val() == "") {
+            return "Informe o Boletim de Medição.";
+        } else if ((valorMedicao <= 0) || (isNaN(valorMedicao))) {
+            return "O Valor da Medição deve ser um número maior que zero.";
+        } else if ((valorPagoNota <= 0) || (isNaN(valorPagoNota))) {
+            return "O Valor Pago na Nota Fiscal deve ser um número maior que zero.";
+        } else if ($("#medicaoFisica").text() == "") {
+            return "Informe o percentual da Medição Física na Nota Fiscal.";
+        } else if ($("#medicaoAcumulada").text() == "") {
+            return "Informe o percentual da Medição Física Acumulada.";
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Função responsável por realizar a falsa exclusão do arquivo da medição.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+     * @param arqid
+     */
+    function excluirArquivo(arqid) {
+        if(confirm('Confirma a exclusão do arquivo?')) {
+            $("#arqidOld").val(arqid);
+            $(".divArquivoDownload").hide("fast");
+            $(".divArquivoUpload").show("fast");
+        }
+    }
+
+    /**
+     * Função responsável pelo download do arquivo da nota.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15249
+     * @param arqid
+     */
+    function downloadArquivo(arqid) {
+        window.location = window.location.href + "&requisicao=download&arqid=" + arqid;
+    }
+
+    /**
+     * Função responsável por verificar se o CNPJ fornecido está no formato válido.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15250
+     * @param cnpj
+     */
+    function validarCPNJ(cnpj) {
+
+        var retorno = false;
+
+        $.ajax({
+            url: window.location.href,
+            type: "post",
+            async: false,
+            data: {
+                "requisicao": "validarCNPJ",
+                "cnpjFornecedor": cnpj
+            },
+            success: function (data) {
+                retorno = (data == "true") || false;
+            }
+        });
+
+        return retorno;
+    }    
+
+    /**
+     * Função para pesquisa de dados de um fornecedor por CNPJ.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15250
+     * @param cpnj
+     * @returns {boolean}
+     */
+    function consultaCNPJFornecedor(cnpj) {
+
+        $("#ufFornecedor").text("");
+
+        if (cnpj.trim() == "") {
+            alert("É obrigatório informar o CNPJ do fornecedor.");
+            $("#cnpjFornecedor").focus();
+            return false;
+        }
+
+        if (!validarCPNJ(cnpj)) {
+            alert("O CNPJ fornecido é inválido.");
+            $("#cnpjFornecedor").val("");
+            $("#cnpjFornecedor").focus();
+            return false;
+        }
+
+        //divCarregando();
+          var pessoaJudirica = new dCNPJ();
+          pessoaJudirica.buscarDados(cnpj); 
+
+
+          /*
+          TODO: 
+          MELHORAR ISSO. ESTA DANDO UM ERRO NO PROCESSAMENTO ASSINCRONO DO JS
+           */
+          setTimeout(function () {
+            pessoaJudirica.carregarDados();
+
+            if (pessoaJudirica.dados.sg_uf == "") {
+                alert("Não há informações sobre o CNPJ informado em nossa base de dados.");
+                return false;
+            }
+
+
+
+          }, 100);
+
+            $("#ufFornecedor").text("SP");
+
+
+
+        //divCarregado();
+
+        return false;
+    }
+
+    /**
+     * @todo Comentar depois
+     */
+    function getDadosMedicao(objSelecionado,edicao = false) {
+
+        if(edicao ==  true){
+            mecid = objSelecionado;
+        }else{
+            mecid = objSelecionado.value;
+        }
+
+
+
+        if (mecid.length <= 0) {
+            return false;
+        }
+
+        $.ajax({
+            url: window.location.href,
+            type: "post",
+            async: false,
+            dataType: "json",
+            data: {
+                "requisicao": "getDadosMedicao",
+                "mecid": mecid
+            },
+            beforeSend: function () {
+                divCarregando();
+            },
+            success: function (data) {
+
+                dadosMedicao = data;
+
+                var valorMedicao = parseFloat(data.medvlrmedicao);
+                valorMedicaoFormatado = formatarValorMonetario(valorMedicao);
+
+                $('#valorMedicao').text(valorMedicaoFormatado);
+
+                divCarregado();
+            }
+        });
+
+    }
+
+    /**
+     * Função responsável por fazer a requisição para calcular os percentuais da medição.
+     * @author José Carlos <jose.costa@castgroup.com.br>, Sérgio Henrique <sergio.henrique@castgroup.com.br>
+     * @link https://gestaoaplicacoes.mec.gov.br/plugins/tracker/?aid=15250
+     * @param valor Id da medição.
+     * @returns {boolean}
+     */
+    function calcularPercentualMedicoes(){
+
+        var valorPagoNota = $("#valorPagoNota").val();
+        var valorPagoNota = $("#valorPagoNota").val();
+        valorPagoNota = valorPagoNota.replace(/[.]/g, "");
+        valorPagoNota = valorPagoNota.replace(/[,]/g, ".");
+        var dataNota = $("#dataNota").val();
+        var dadosEmpresaContratada = $("#empresaContratada").val();
+        var dadosContratoAditivo = $("#contratos").val();
+        var valorMedicao = $("#valorMedicao").text();
+        valorMedicao = valorMedicao.replace(/[.]/g, "");
+        valorMedicao = valorMedicao.replace(/[,]/g, ".");
+
+        var arrDadosEmpresaContratada = dadosEmpresaContratada.split("_");
+        var tipoEmpresaContratada = arrDadosEmpresaContratada[0];
+        var idContrato = arrDadosEmpresaContratada[2];
+
+        if (valorPagoNota == "" || dataNota == "") {
+            return false;
+        }
+
+        var totalPagoNota = 0;
+        var getSomatorioValoresPagos = function (totalPagoNota) {
+            $.each(listaObjetoNota, function(index, value) {
+                if(value.tipoContrato == "con"){
+                    var valorPago = value.valorPagoNota;
+                    totalPagoNota += parseFloat(valorPago);
+                }
+            });
+            return totalPagoNota;
+        };
+
+        totalPagoNota = getSomatorioValoresPagos(totalPagoNota) + parseFloat(valorPagoNota);
+ 
+
+        $.ajax({
+
+            url: window.location.href,
+            type: "post",
+            async: true,
+            dataType: "json",
+            data: {
+                "requisicao": "calcularPercentuaisMedicao",
+                "tipoEmpresaContratada": tipoEmpresaContratada,
+                "idContrato": idContrato,
+                "dadosContratoAditivo": dadosContratoAditivo,
+                "valorPagoNota": valorPagoNota,
+                "totalPagoNota": totalPagoNota,
+                "dataNota": dataNota,
+                "valorMedicao": valorMedicao
+            },
+            beforeSend: function () {
+                $("#medicaoFisica").html("<img src='/imagens/icones/ajax-loader.gif'>&nbsp;Realizando cálculo...");
+                $("#medicaoAcumulada").html("<img src='/imagens/icones/ajax-loader.gif'>&nbsp;Realizando cálculo...");
+                $("#botaoAtualizarLista").attr("disabled", true);
+                $("#dataNota").attr("disabled", true);
+                $("#valorPagoNota").attr("disabled", true);
+            },
+            success: function (data) {
+                $("#botaoAtualizarLista").attr("disabled", false);
+                $("#dataNota").attr("disabled", false);
+                $("#valorPagoNota").attr("disabled", false);
+                $('#medicaoFisica').text(JSON.stringify(data));
+                $('#medicaoFisica').text(data.fisica);
+                $('#medicaoAcumulada').text(data.acumulada);
+            }
+        });
+    }
+
+</script>

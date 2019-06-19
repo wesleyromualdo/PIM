@@ -1,0 +1,11 @@
+.form-listagem {
+    overflow: scroll;
+    padding-top: 55px;
+    overflow-y: hidden;
+}
+.footer{
+    bottom: -38px;
+}
+#wrapper{
+    width: 103%;
+}

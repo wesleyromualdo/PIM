@@ -1,0 +1,593 @@
+
+
+    /* O arquivo bootstrap.min-simec.css Ã© utilizado no layout antigo. Nesse arquivo estÃ£o comentadas as classes que o
+     * Bootstrap utiliza para tabelas. Portanto, para utilizar a formataÃ§Ã£o de tabelas do bootstrap Ã© necessÃ¡rio o trecho
+     * a seguir.
+     */
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+        padding: 8px;
+        line-height: 1.428571429;
+        vertical-align: top;
+        border-top: 1px solid #dddddd;
+    }
+
+    .table thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dddddd;
+    }
+
+    .table caption + thead tr:first-child th, .table colgroup + thead tr:first-child th, .table thead:first-child tr:first-child th, .table caption + thead tr:first-child td, .table colgroup + thead tr:first-child td, .table thead:first-child tr:first-child td {
+        border-top: 0;
+    }
+
+    .table tbody + tbody {
+        border-top: 2px solid #dddddd;
+    }
+
+    .table .table {
+        background-color: #ffffff;
+    }
+
+    .table-condensed thead > tr > th, .table-condensed tbody > tr > th, .table-condensed tfoot > tr > th, .table-condensed thead > tr > td, .table-condensed tbody > tr > td, .table-condensed tfoot > tr > td {
+        padding: 5px;
+    }
+
+    .table-bordered {
+        border: 1px solid #dddddd;
+    }
+
+    .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+        border: 1px solid #dddddd;
+    }
+
+    .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+        border-bottom-width: 2px;
+    }
+
+    .table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+        background-color: #f9f9f9;
+    }
+
+    .table-hover > tbody > tr:hover > td, .table-hover > tbody > tr:hover > th {
+        background-color: #f5f5f5;
+    }
+
+    table col[class*="col-"] {
+        float: none;
+        display: table-column;
+    }
+
+    table td[class*="col-"], table th[class*="col-"] {
+        float: none;
+        display: table-cell;
+    }
+
+    .table > thead > tr > td.active, .table > tbody > tr > td.active, .table > tfoot > tr > td.active, .table > thead > tr > th.active, .table > tbody > tr > th.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > tbody > tr.active > td, .table > tfoot > tr.active > td, .table > thead > tr.active > th, .table > tbody > tr.active > th, .table > tfoot > tr.active > th {
+        background-color: #f5f5f5;
+    }
+
+    .table > thead > tr > td.success, .table > tbody > tr > td.success, .table > tfoot > tr > td.success, .table > thead > tr > th.success, .table > tbody > tr > th.success, .table > tfoot > tr > th.success, .table > thead > tr.success > td, .table > tbody > tr.success > td, .table > tfoot > tr.success > td, .table > thead > tr.success > th, .table > tbody > tr.success > th, .table > tfoot > tr.success > th {
+        background-color: #468847;
+        border-color: #46773d;
+    }
+
+    .table-hover > tbody > tr > td.success:hover, .table-hover > tbody > tr > th.success:hover, .table-hover > tbody > tr.success:hover > td {
+        background-color: #3d773e;
+        border-color: #3c6635;
+    }
+
+    .table > thead > tr > td.danger, .table > tbody > tr > td.danger, .table > tfoot > tr > td.danger, .table > thead > tr > th.danger, .table > tbody > tr > th.danger, .table > tfoot > tr > th.danger, .table > thead > tr.danger > td, .table > tbody > tr.danger > td, .table > tfoot > tr.danger > td, .table > thead > tr.danger > th, .table > tbody > tr.danger > th, .table > tfoot > tr.danger > th {
+        background-color: #b94a48;
+        border-color: #af4353;
+    }
+
+    .table-hover > tbody > tr > td.danger:hover, .table-hover > tbody > tr > th.danger:hover, .table-hover > tbody > tr.danger:hover > td {
+        background-color: #a74240;
+        border-color: #9c3c4a;
+    }
+
+    .table > thead > tr > td.warning, .table > tbody > tr > td.warning, .table > tfoot > tr > td.warning, .table > thead > tr > th.warning, .table > tbody > tr > th.warning, .table > tfoot > tr > th.warning, .table > thead > tr.warning > td, .table > tbody > tr.warning > td, .table > tfoot > tr.warning > td, .table > thead > tr.warning > th, .table > tbody > tr.warning > th, .table > tfoot > tr.warning > th {
+        background-color: #c09853;
+        border-color: #bc7e48;
+    }
+
+    .table-hover > tbody > tr > td.warning:hover, .table-hover > tbody > tr > th.warning:hover, .table-hover > tbody > tr.warning:hover > td {
+        background-color: #b78c43;
+        border-color: #ab713f;
+    }
+
+    .table > thead > tr > td {
+        text-align: center;
+        font-weight: bold;
+        vertical-align: middle;
+        font-size: 12px;
+    }
+
+    .table > tbody > tr > td {
+        vertical-align: middle;
+        text-align: center;
+        font-size: 12px;
+    }
+    
+    .containerListas {
+        float: left;
+        width: 79%;
+    }
+
+    .containerPainelDiversos {
+        float: right;
+        width: 20%;
+        border: 1px solid #dcdcdc;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+    }
+
+    .wrapPainelDiversos {
+        padding: 5px;
+    }
+
+    .mPainel {
+        padding: 5px;
+        border: 1px solid #dcdcdc;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        background-color: #f0f0f0;
+    }
+
+    .mPainelTitulo {
+        background-color: #E0EEEE;
+        font-weight: bold;
+        font-size: 15px;
+        padding: 5px;
+    }
+
+    .mPainelConteudo {
+        padding-top: 5px;
+    }
+
+    .mPainelConteudoBloco {
+        background-color: #FFFFFF;
+        padding: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+    }
+
+    .lnkNomeObra {
+        color: #31708f;
+        cursor: pointer;
+    }
+
+    .lnkNomeObra:hover {
+        text-decoration: underline;
+
+    }
+
+    .divTituloPadrao{
+        margin: 0px;
+        padding: 0px;
+        text-align: center;
+        vertical-align: center;
+        background-color: #D3E0E0;
+    }
+
+    .txtSubtituloPadrao{
+        padding: 5px;
+        border: 1px solid #dcdcdc;
+        font-size: 11px;
+        background-color: #f0f0f0;
+    }
+
+    .txtTituloPadrao{
+        padding: 5px;
+        border: 1px solid #dcdcdc;
+        font-size: 17px;
+        font-weight: bold;
+        background-color: #D3E0E0;
+        color: #000000;
+    }
+
+    .divLabelForm{
+        font-weight: bold;
+        background-color: #E0EEEE;
+        color: #000000;
+        text-align: right;
+        padding: 5px;
+        font-size: 13px;
+        height: auto;
+        vertical-align: center;
+    }
+
+    .divInputForm {
+        text-align: left;
+        padding: 5px;
+        height: 20px;
+        vertical-align: center;
+        background-color: #FFFFFF;
+    }
+
+    .txtTituloForm{
+        font-weight: bold;
+        background-color: #E0EEEE;
+        color: #000000;
+        text-align: center;
+        padding: 5px;
+        font-size: 13px;
+        vertical-align: center;
+        width: 100%;
+    }
+
+    .containerPrincipal{
+        border: inset 1px;
+        padding: 10px;
+    }
+
+
+
+
+
+
+    /*
+    @Ezequiel
+    alterações layout cabecalho_v5
+    */
+
+
+body {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+    color: #676a6c; 
+    background: #fff !important;
+}
+
+.SubTituloDireita, td, TD, .TituloTela,.col-md-1,.col-md-2,.col-md-3,.col-md-4,.col-md-5,.col-md-6,.col-md-7,.col-md-8,.col-md-9,.col-md-10,.col-md-11,.col-md-12
+.col-md-1,.col-md-12  {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+
+}        
+
+
+TD {
+    FONT: 8pt Arial,verdana;
+}
+
+.TituloTela{
+  background: none;
+}
+
+       
+
+ @media (max-width: 767px){
+        .navbar-nav .open .dropdown-menu {
+            border-radius:0px;
+        }
+    }
+
+    img[src*="obrig.gif"] {
+        display: initial;
+    }
+    .navbar-brand .chosen-container {
+        width: 90% !important;
+    }
+
+    .adm-users-bar{
+        ddisplay: flex !important;
+        /* width: 90%; */
+        padding: 0 10px !important;
+        margin-top: 1px !important;
+    }
+
+    .chosen-container-single .chosen-single {
+        background: #ffffff;
+        box-shadow: none;
+        -moz-box-sizing: border-box;
+        border-radius: 0px;
+        cursor: text;
+        height: auto !important;
+        margin: 0;
+        min-height: 30px;
+        overflow: hidden;
+        padding: 4px 12px;
+        position: relative;
+        width: 100%;
+        border: #e7eaec solid 1px;
+    }
+    .chosen-container-single .chosen-single span {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    } 
+    .chosen-container-single .chosen-drop {
+        border-radius: 0 px; 
+    }   
+
+    .chosen-container-single .chosen-drop {
+        border-radius: 0 px; 
+
+    } 
+    .chosen-container .chosen-results li.active-result {
+        display: list-item;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    .navbar-brand .chosen-container-single .chosen-single {
+            height: 30px !important;
+            border-radius: 0px !important;
+    }
+/*
+.dropdown-menu .dropdown-submenu {
+    position: initial;
+    margin: 10px 5px;
+}
+
+
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+    background: #fff !important;
+    position: static;
+    border-radius: 0px;
+    border-left: 7px #ccc solid;
+    z-index: 99999;
+  }
+*/
+
+
+.dropdown-submenu:hover > .dropdown-menu {
+    border: 1px #35b44a solid;
+    display: block;
+    background: #fff !important; 
+    border-radius: 0px;
+    border-left: 7px #35b44a solid;
+    z-index: 99999;
+
+
+  }
+
+
+
+.navbar-nav>li>.dropdown-menu {
+    border: 2px #6ebb44 solid;
+    background: #fff !important;
+}
+
+
+
+.dropdown-menu>li>a {
+    display: block;
+    padding: 8px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.428571429;
+    color: #333333;
+    white-space: nowrap;
+    
+}
+
+.dropdown-menu li {
+      padding: 3px;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+    background-color: #e3e3e3;
+    color: #555555;
+}
+
+
+
+
+    .modal-dialog{
+        z-index: 99999;
+    }
+    .pd-2{
+        padding: 2px;
+    }
+
+    .pd-3{
+        padding: 3px;
+    }
+
+    .pd-3-5{
+        padding: 3.5px
+    }
+
+
+    .pd-5{
+        padding: 5px;
+    }
+    @media print {
+        #print-head, #print-fot{
+            display:none;
+        }
+        .notprint {
+            display: none;
+
+        }
+        .div_rolagem{
+            display: none;
+        }
+        .div_rol{
+            display: none;
+        }
+    }
+
+    @media screen {
+        .notscreen {
+            display: none;
+        }
+        .div_rol{
+            display: none;
+        }
+    }
+    .notscreen{
+        border-bottom: solid 1px;
+    }
+    .mensagensAvisos {
+        -moz-border-radius: 35%;
+        -webkit-border-radius: 35%;
+        border-radius: 35%;
+        background: red;
+        padding: 1px 4px;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .navbar-default, .dropdown-menu{
+        background: #DCDCDC !important;
+    }
+
+    .dropdown-menu>li>a, .dropdown-menu>li>a, .dropdown-submenu, .dropdown-menu>li, .dropdown-submenu > a {
+
+    margin: 1px;
+
+    }
+
+
+    .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus, .dropdown-submenu:hover, .dropdown-menu>li:hover, .dropdown-submenu:hover > a {
+
+    text-decoration: none !important;
+    color: #383a38 !important;
+    background-color: #202d18 !important;
+    background-image: linear-gradient(to bottom, #dcdcdc, #dcdcdc) !important; 
+
+    }
+}
+
+
+::-moz-selection { 
+        background: #35b44a; 
+        color: #ffffff;
+        background-image: linear-gradient(to bottom, #aad294, #6ebb44) !important
+    }
+::selection { 
+    background: #35b44a; 
+    color: #ffffff;
+    background-image: linear-gradient(to bottom, #aad294, #6ebb44) !important
+}
+
+
+.txtTituloPadrao, .SubTituloDireita, .divLabelForm, #barra-ferramenta-obra>td, .SubTituloCentro,.divTituloPadrao {
+     background-color: #e7e7e7 !important; 
+}
+
+
+.menuUnidade{
+border-bottom-color: rgb(227, 227, 227);
+border-bottom-style: solid;
+border-bottom-width: 0.989583px;
+box-sizing: border-box;
+color: rgb(33, 37, 41);
+cursor: pointer;
+display: block;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+font-size: 11.56px;
+font-weight: 400;
+height: 27.6563px;
+line-height: 17.34px;
+overflow-x: hidden;
+overflow-y: hidden;
+padding-bottom: 5px;
+padding-left: 5px;
+padding-right: 5px;
+padding-top: 5px;
+text-align: left;
+text-overflow: ellipsis;
+text-size-adjust: 100%;
+white-space: nowrap; 
+-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+
+.menuDirigentes {
+  box-sizing: border-box;
+color: rgb(33, 37, 41);
+display: block;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+font-size: 12px;
+font-weight: 600;
+height: 13.3333px;
+line-height: 14.4px;
+margin-block-end: 6.8px;
+margin-block-start: 5px;
+margin-bottom: 6.8px;
+margin-inline-end: 0px;
+margin-inline-start: 0px;
+margin-top: 5px;
+text-align: left;
+text-size-adjust: 100%; 
+-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.menuUnidade a{
+  color: #222222;
+}
+
+.conteudo-dados-obra{
+  background: #fff;
+  bborder: 1px #ccc solid;
+  padding: 10px 0 10 0px;
+  min-height: 100% !important;
+}
+
+
+.navbar-default .navbar-nav>li>a {
+    color: #333333;
+}
+
+
+.navbar-default .navbar-nav>li>a {
+    color: #333333 !important;
+}
+.espacador-simec{
+      height: 30px !important;
+}
+
+.menuUnidade.active{
+  margin-left: 5px;
+  color: green !important;
+  background: #e9e9e9;
+}
+
+.menuUnidade:hover{
+  font-weight: bold !important;
+  background: #dcdcdc;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+
+.SubTituloEsquerda, #barra-ferramenta-obra, .divLabelForm{
+    background-color: #DCDCDC !important;
+} 
+
+
+.panel-success > .panel-heading, .mPainelTitulo {
+    color: #000000;
+    background-color: #dcdcdc !important;
+    border-color: #dcdcdc !important;
+}
+
+
+.panel-success {
+    border-color: #dcdcdc !important;
+}
+
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+    background-color: #dcdcdc !important;
+}

@@ -1,0 +1,317 @@
+<div class="ibox">
+    <div class="ibox-title">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="left">Monitoramento</h1>
+            </div>
+        </div>
+    </div> 
+
+
+    <div class="ibox-title">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="left">Demandas Filtro</h3>
+            </div>
+        </div>
+    </div> 
+
+
+            <div class="ibox-content">
+                <form method="post" name="formulario-entidade" id="formulario-entidade">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Numero da Demanda:
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="nr_demanda" value="" class="form-control">
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Tipo Portifólio:
+                                </label>
+                                <div class="col-sm-8">
+                                    <select class="form-control chosen-select ">
+                                        <option value="">Obras e Instalações</option>
+                                        <option value="">Documentos</option>
+                                    </select>
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Entidade:
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="nr_demanda" placeholder="" class="form-control cnpj">
+                                </div> 
+                                <div style="clear:both"></div>
+                            </div>
+                        </div> 
+
+                    </div>
+                    <div class="row" id="tipo_portfolio_row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Periodo:
+                                </label>
+                                <div class="col-sm-4">
+                                    <div class='input-group ' id='datetimepi'>
+                                    <input type='text' class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class='input-group ' id='datetimepi'>
+                                        <input type='text' class="form-control" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label class="col-sm-4 control-label">
+                                    Portifólio:
+                            </label>
+                            <div class="col-sm-8"> 
+                                <select name="status" id="status" class="form-control chosen-select">
+                                    <option value="">Recapeamento Asfáltico</option>
+                                    <option value="">Reforma Elétrica</option>
+                                    <option value="">Instalação Elétrica</option>
+                                </select>
+                            </div> 
+                        </div>
+
+                    </div>
+
+                    <div class="row" id="portfolio_row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Situação:
+                                </label>
+                                <div class="col-sm-8"> 
+                                    <select name="status" id="status" class="form-control chosen-select">
+                                        <option value="">Solicitadas</option>
+                                        <option value="">Em análise do SDR</option>
+                                        <option value="">Em análise da Secretaria</option>
+                                        <option value="">Recurso Indisponível</option>
+                                        <option value="">Aguardando Visita</option>
+
+                                    </select>
+                                    
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="ibox-footer">
+                <div class="center">
+                    <button type="submit" class="btn btn-primary btn-pesquisar" style="width: 200px;"><i class="fa fa-search"></i> Pesquisar 
+                    </button>
+                </div>
+            </div>
+
+
+            <div id="ibox-content" class="ibox-content  " >
+                <table id="tb_render" class="table hide table table-striped table-bordered table-hover table-condensed tabela-listagem  " >
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Id</th>
+                            <th>Demandate</th>
+                            <th>Tipo Portifólio</th>
+                            <th>Portifólio</th>
+                            <th>Valor</th>
+                            <th>Situação</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+
+        <div class="ibox float-e-margins animated modal " id="modal-aprovacao-sdr" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <form method="post" name="formEquipe" id="formEquipe" class="form form-horizontal">
+                    <div class="modal-content animated flipInY">
+                        <div class="ibox-title" tipo="integrantes">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h3>Aprovação de Demanda </h3>
+                        </div>
+                        <div class="ibox-content modal-aprovacao-content">
+
+                                      <div class="row">
+                                          <div class="col-12">
+                                              <h1>Demanda N° 00248 - Recapeamento asfáltico</h1>
+                                          </div>
+                                          <div class="col-sm-4 mb-4">
+                                            <div class="row border-bottom p-1">
+                                                <div class="col-sm-4 bold">Demandante:</div>
+                                                <div class="col-sm-8 text-right" id="txt_demandante"></div>
+                                              </div>
+                                              <div class="row border-bottom p-1">
+                                                <div class="col-sm-4 bold">Tipo:</div>
+                                                <div class="col-sm-8 text-right" id="txt_tipo"></div>
+                                              </div>
+                                              <div class="row border-bottom p-1">
+                                                <div class="col-sm-4 bold">Portfólio:</div>
+                                                <div class="col-sm-8 text-right" id="txt_portfolio"></div>
+                                              </div>
+                                              <div class="row border-bottom p-1">
+                                                <div class="col-sm-4 bold">Valor:</div>
+                                                <div class="col-sm-8 text-right" id="txt_valor"></div>
+                                              </div>
+                                          </div>
+                                      </div> 
+                                      <div style="clear:both"></div> 
+
+                                      <br />
+
+                                    <textarea data-toggle="tooltip" id="obsReprovar" class="form-control" style="display: none" title="Favor preencher a justificativa "></textarea>
+                                    <p for="obsReprovar" class="invalid-feedback" style="display: none"> Favor preencher a justificativa</p>
+
+                        </div> 
+                        <div class="modal-footer" style="display: block">
+                            <div class="row">
+                                <div class="col-md-3">          
+                                        <button type="button" class="btn btn-primary btn-block btn-aprovar-dmd" > <i class="fa fa-check-square" > </i> Aprovar Demanda</button>
+                                </div>
+                                <div class="col-md-3">          
+                                    <button type="button" class="btn btn-danger btn-block btn-reprovar-dmd" > <i class="fa fa-ban" > </i> Reprovar Demanda</button>
+                                </div>
+                                <div class="col-md-6">                            
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" style=" margin-bottom: 0px;">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                      </div> 
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+ 
+        <script>
+
+            var openAnalise = function (idx)
+            {
+              var demandante = $('#demandante_'+idx).html();
+              var tipo = $('#tipo_'+idx).html();
+              var portfolio = $('#portfolio_'+idx).html();
+              var valor = $('#valor_'+idx).html();
+              var situacao = $('#situacao_'+idx).html();
+
+              
+
+              $('#modal-aprovacao-sdr').modal();
+
+ 
+                dw();
+                $('#txt_demandante').html(demandante);
+                $('#txt_tipo').html(tipo);
+                $('#txt_portfolio').html(portfolio);
+                $('#txt_valor').html(valor); 
+
+
+            }
+
+            $(document).ready(function() {
+                
+                $('[data-toggle="tooltip"]').tooltip()
+
+                $('.btn-aprovar-dmd').click(function(e){
+                    e.preventDefault();
+
+
+                    alertaSucesso('Demanda Aprovada com sucesso');
+                    
+                    return false;
+                })
+
+                var arr = ['PM PRE PRUDENTE','PM ARCO-IRIS','PM JAGUARIUNA','PM BRODOWSKI','PM SARAPUI','PM BARBOSA','PM MONTE MOR'];
+
+                var arrSt = ['PM aprovado ','PM aprovado ','aprovado ','aprovado ','aprovado ','aprovado ','aprovado '];
+
+
+                var lista = function (){
+                    html = '';
+                    for (i =0; i<arr.length; i++){ 
+
+                        var tipoPortifolio =  i%2==0 ?'Obras e Instalações':'Aquisição';
+
+                        var portifolio =  getRandomArbitrary(1, i+10)%2==0 ?'Recapeamento asfáltico':'Reforma elétrica';
+
+                        var situacao = i%3==0 ?'Aguardando Aprovação':'Aguardando Assinatura'
+
+
+                        html += '<tr class=" class_replace_hidden b" ref="'+i+'">'+
+                        '<td class="text-center class_replace_hidden" style="width:33px"><a href="javascript: openAnalise('+i+');" title="Abrir"><span class="btn btn-primary btn-sm glyphicon glyphicon-eye-open"></span></a></td>' +
+                        '<td style="width:33px">' + i + ' </td><td id="demandante_'+i+'"> ' + arr[i] + '</td><td id="tipo_'+i+'"> ' + tipoPortifolio + '</td><td id="portfolio_'+i+'"> ' + portifolio+ '</td><td id="valor_'+i+'">  R$ ' + getRandomArbitrary(1, i+10)  + '</td><td id="situacao_'+i+'">' + situacao  + '</td></tr>';
+                    }
+
+                    $("#tb_render tbody").html(html);
+                    $("#tb_render").removeClass('hide');
+                }
+
+
+                $('.btn-reprovar-dmd').click(function(e){
+                    e.preventDefault();
+
+
+                    if($('#obsReprovar').val().length < 10){
+                        $('#obsReprovar').show()
+                        $('#obsReprovar').addClass('error')
+
+                        $('p[for=obsReprovar]').show()
+                        $('p[for=obsReprovar]').addClass('error')
+                        return false;
+                    }
+
+                    alertaSucesso('Demanda Reprovada ');
+                    
+                    return false;
+                })
+
+
+                $('.btn-pesquisar').click(function(e) {
+                    e.preventDefault();
+                     
+                    lista();
+
+
+                });
+
+                lista();
+
+                $(".chosen-select").chosen();
+            });
+        </script> 
+

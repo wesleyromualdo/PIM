@@ -1,0 +1,213 @@
+
+        <script>
+            $(document).ajaxComplete(function () {
+                $(".chosen-select").chosen();
+            });
+        </script>
+ 
+ 
+
+                <div class="ibox">
+
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>Solicitação de Demandas</h2>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="ibox-content">
+                        <form method="post" name="formulario-entidade" id="formulario-entidade">
+                            <div class="row">
+                              <div class="col-lg-6">
+                                <div class="form-group">
+                                  <label class="col-sm-4 control-label">
+                                    Demandante:
+                                  </label>
+                                  <div class="col-sm-8">
+                                      <input type="text" name="demandante" value="Prefeitura do Município A" class="form-control" readonly>
+                                  </div>
+                                  <div style="clear:both"></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-lg-6">
+                                <div class="form-group">
+                                  <label class="col-sm-4 control-label">
+                                    Vínculo:
+                                  </label>
+                                  <div class="col-sm-8">
+                                      <input type="radio" name="vinculo" id="vinculo_governo" checked>Programa de Governo
+                                  </div>
+                                  <div class="col-sm-8">
+                                      <input type="radio" name="vinculo" id="vinculo_outros">Outros
+                                  </div>
+                                  <div style="clear:both"></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row" id="tipo_portfolio_row">
+                              <div class="col-lg-6">
+                                <div class="form-group">
+                                  <label class="col-sm-4 control-label">
+                                    Tipo Portfólio:
+                                  </label>
+                                  <div class="col-sm-8">
+                                    <select name="tipo_portfolio" id="tipo_portfolio" class="form-control chosen chosen-select">
+                                      <option value="">Selecione o tipo</option>
+                                      <option value="1">Obras e Instalações</option>
+                                      <option value="2">Aquisição</option>
+                                    </select>
+                                  </div>
+                                  <div style="clear:both"></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row" id="portfolio_row">
+                              <div class="col-lg-6">
+                                <div class="form-group">
+                                  <label class="col-sm-4 control-label">
+                                    Portfólio:
+                                  </label>
+                                  <div class="col-sm-8">
+                                    <span id="portfolio_selecione">Selecione a opção anterior</span>
+                                    <select name="portfolio-1" id="portfolio-1" style="display: none" class="form-control">
+                                      <option value="">Selecione</option>
+                                      <option value="">Recapeamento asfáltico</option>
+                                      <option value="">Reforma elétrica</option>
+                                      <option value="">Instalação Hidráulica</option>
+                                    </select>
+                                    <select name="portfolio-2" id="portfolio-2" style="display: none" class="form-control">
+                                      <option value="">Selecione</option>
+                                      <option value="">A</option>
+                                      <option value="">B</option>
+                                      <option value="">C</option>
+                                    </select>
+                                  </div>
+                                  <div style="clear:both"></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row" id="secretaria_responsavel_row">
+                              <div class="col-lg-6">
+                                <div class="form-group">
+                                  <label class="col-sm-4 control-label">
+                                    Secretaria Responsável:
+                                  </label>
+                                  <div class="col-sm-8">
+                                    <input type="text" name="secretaria" readonly value="Secretaria de Desenvolvimento Regional" class="form-control">
+                                  </div>
+                                  <div style="clear:both"></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-lg-6">
+                                <div class="form-group">
+                                  <label class="col-sm-4 control-label">
+                                    Justificativa:
+                                  </label>
+                                  <div class="col-sm-8">
+                                    <textarea name="justificativa" class="form-control" rows="5"></textarea>
+                                  </div>
+                                  <div style="clear:both"></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-lg-6">
+                                <div class="form-group">
+                                  <label class="col-sm-4 control-label">
+                                    Valor (R$):
+                                  </label>
+                                  <div class="col-sm-8">
+                                    <input type="text" name="valor" placeholder="R$" class="form-control" id="real">
+                                  </div>
+                                  <div style="clear:both"></div>
+                                </div>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="ibox-footer">
+                        <div class="center">
+                            <button type="submit" class="btn btn-primary btn-pesquisar" style="width: 200px;"><i
+                                    class="fa fa-save" ></i> Salvar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    $(document).ready(function() {
+                      $("#real").inputmask('decimal', {
+                                'alias': 'numeric',
+                                'groupSeparator': ',',
+                                'autoGroup': true,
+                                'digits': 2,
+                                'radixPoint': ".",
+                                'digitsOptional': false,
+                                'allowMinus': false,
+                                'prefix': 'R$ ',
+                                'placeholder': ''
+                    });
+                    $('#portfolio-1').chosen();
+                    $('#portfolio-2').chosen();
+
+                    $('#secretaria_responsavel_row').hide(0);
+
+                    setTimeout(function() {
+                      $('#portfolio_1_chosen').hide(0);
+                      $('#portfolio_2_chosen').hide(0);
+                    }, 100);
+
+                    $('#vinculo_governo').click(function() {
+                      $('#tipo_portfolio_row').show(0);
+                      $('#portfolio_row').show(0);
+                    });
+                    $('#vinculo_outros').click(function() {
+                      $('#tipo_portfolio_row').hide(0);
+                      $('#portfolio_row').hide(0);
+                    });
+                    $('#tipo_portfolio').change(function() {
+                      var selected = $(this).find(':selected').val();
+                      if(selected == 1)
+                      {
+                        $('#portfolio_1_chosen').show(0);
+                        $('#portfolio_2_chosen').hide(0);
+                        $('#portfolio_selecione').hide(0);
+                      }
+                      else if(selected == 2)
+                      {
+                        $('#portfolio_2_chosen').show(0);
+                        $('#portfolio_1_chosen').hide(0);
+                        $('#portfolio_selecione').hide(0);
+                      }
+                      else {
+                        $('#portfolio_2_chosen').hide(0);
+                        $('#portfolio_1_chosen').hide(0);
+                        $('#portfolio_selecione').show(0);
+                        $('#secretaria_responsavel_row').hide(0);
+                      }
+                    });
+                    $('#portfolio-1, #portfolio-2').change(function() {
+                      $('#secretaria_responsavel_row').show(0);
+                    });
+                  });
+                  </script>
+
+                <script type="text/javascript">
+
+
+                    $('.btn-pesquisar').click(function(e){
+
+                        event.preventDefault();
+                        alertaSucesso();
+                        return false;
+                    });
+
+                </script>

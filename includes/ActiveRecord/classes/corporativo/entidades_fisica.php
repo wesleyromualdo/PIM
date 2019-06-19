@@ -1,0 +1,43 @@
+<?php
+
+require_once APPRAIZ .  "includes/ActiveRecord/classes/base/corporativo/entidades_fisicaBase.php";
+
+class entidades_fisica extends entidades_fisicaBase {
+    /**
+     * 
+     */
+    static public function getBycpf($entid)
+    {
+        $sql = "SELECT
+                    
+                        ensid,
+                        ensdsc,
+                        enfid,
+                        enjid,
+                        ensstatus,
+                        enscpf,
+                        ensemail,
+                        enstelefone,
+                        ensendcep,
+                        ensendlogradouro,
+                        ensendcomplemento,
+                        ensendnumero,
+                        ensendbairro
+
+                FROM
+                    corporativo.entidades_fisica
+                WHERE
+                    enscpf = ? 
+                    ";
+
+
+        $rs        = ActiveRecord::ExecSQL($sql, array($entid)); 
+
+        return $retorno = $rs->fields;
+    }
+}
+
+
+
+
+

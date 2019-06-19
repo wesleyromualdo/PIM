@@ -1,0 +1,692 @@
+﻿<?php
+    /*
+     * Sistema Simec Setor responsável: SPO-MEC Desenvolvedor:
+     * Equipe Simec
+     *
+     * Analista: Werter Dias Almeida
+     * Programador: Lindalberto Filho
+     * Módulo:consusuario_bootstrap.inc
+     * Finalidade: Atualização de interface (bootstrap)
+     * Data: 21/07/2014
+     */
+    #ver($_REQUEST);
+
+    require_once APPRAIZ . "includes/library/simec/Listagem.php";
+
+    $modulo = $_REQUEST['modulo'];
+    $encontrou = false;
+
+    if ($_REQUEST['act'] == 'visualizaXls') {
+        $listagem = new Simec_Listagem(Simec_Listagem::RELATORIO_XLS);
+    } else {
+        $listagem = new Simec_Listagem();
+    }
+
+    if ($_SESSION['sisid'] != 4) {
+        $habil = 'N';
+        $_REQUEST['codigo'] = $_SESSION['sisid'];
+    } else
+        $habil = 'S';
+
+
+    if ($_REQUEST['requisicaoAjax']) {
+        $_REQUEST['requisicaoAjax']();
+        exit;
+    }
+
+    include APPRAIZ . "includes/cabecalho_bootstrap_v3.inc";
+    require_once APPRAIZ . "includes/funcoesspo_componentes.php";
+
+    if ($_REQUEST['acao'] == 'A') {
+        $titulo_modulo = 'Alterar o Cadastro de Usuários do Simec';
+    }
+    if ($_REQUEST['acao'] == 'C') {
+        $titulo_modulo = 'Consultar o Cadastro de Usuários do Simec';
+    }
+
+    //monta_titulo( $titulo_modulo, '' );
+
+    function mask($val) {
+        $mask = '###.###.###-##';
+        $maskared = '';
+        $k = 0;
+        for ($i = 0; $i <= strlen($mask) - 1; $i++) {
+            if ($mask[$i] == '#') {
+                if (isset($val[$k]))
+                    $maskared .= $val[$k++];
+            }
+            else {
+                if (isset($mask[$i]))
+                    $maskared .= $mask[$i];
+            }
+        }
+        return $maskared;
+    }
+
+    if ($_REQUEST['formulario']) {
+        $usucpf = $_REQUEST['usucpf'];
+        $usunome = $_REQUEST['usunome'];
+        $codigo = $_REQUEST['codigo'];
+        $suscod = $_REQUEST['suscod'];
+        $pflcod = $_REQUEST['pflcod'];
+        $muncod = $_REQUEST['muncod'];
+        $usuchaveativacao = $_REQUEST['usuchaveativacao'];
+        $sitperfil = $_REQUEST['sitperfil'];
+        $unidade = $_REQUEST['unidade'];
+    } else {
+        $codigo = $_SESSION['sisid'];
+    }
+
+    //Monta o combo com a listagem dos municípios após a escolha de um estado.
+    function listar_Municipios() {
+        global $db;
+        $sql = "
+            SELECT  muncod, mundescricao as mundsc
+            FROM territorios.municipio
+            WHERE estuf = '{$_REQUEST['estuf']}'
+            ORDER BY mundsc
+        ";
+        $dados = $db->carregar($sql);
+
+        if( !$dados ){
+            die();
+        }
+
+        $enviar .="<option value=\"\"> Todos </option> ";
+        foreach ($dados as $data) {
+            $enviar .="<option title=\"{$data['mundsc']}\" ";
+
+            if( isset($_REQUEST['municipio']) && $_REQUEST['municipio'] == $data['muncod'] ){
+                $enviar .="selected=true ";
+            }
+            $enviar .="value= " . $data['muncod'] . ">  " . simec_htmlentities($data['mundsc']) . " </option> ";
+        }
+        die($enviar);
+    }
+?>
+
+<script language="JavaScript" type="text/javascript">
+
+    function listar_municipios(estuf, muncod){
+        var url = window.location + "&requisicaoAjax=listar_Municipios&estuf=" + estuf;
+        if (muncod != "")
+            url += "&municipio=" + muncod;
+
+        $.post(url, function (data) {
+            $('#municipio').html(data);
+            $("#municipio").trigger("chosen:updated");
+        });
+        $('#muncod_on').css('display', 'inherit');
+        $('#muncod_off').css('display', 'none');
+
+    }
+
+    function ProcuraUsuario(tipo){
+        if (document.formulario.usunome) {
+            if (tipo == 'xls') {
+                document.formulario.act.value = "visualizaXls";
+            } else {
+                document.formulario.act.value = "procura";
+            }
+            document.formulario.submit();
+        }
+    }
+
+    function consultar_usu(usucpf) {
+        window.location = "<?= $_SESSION['sisarquivo'] ?>.php?modulo=sistema/usuario/cadusuario&acao=C&usucpf=" + usucpf;
+    }
+
+    function alterar_usu(usucpf) {
+        window.location = "<?= $_SESSION['sisarquivo'] ?>.php?modulo=sistema/usuario/cadusuario&acao=A&usucpf=" + usucpf;
+    }
+
+    function SelPerfil() {
+        if (document.formulario.pflcod.value == '') {
+            alert('Selecione o Perfil antes de escolher a Situação Perfil.');
+            document.formulario.sitperfil[0].checked = false;
+            document.formulario.sitperfil[1].checked = false;
+            document.formulario.sitperfil[2].checked = false;
+        }
+    }
+
+    $(document).ready(function () {
+        var mu = "<? echo $_REQUEST['muncod']; ?>";
+        if ($('#unidadeF').val() != "") {
+            listar_municipios($('#unidadeF').val(), mu);
+        }
+        $("[name=sitperfil]").click(function () {
+            if ($('#cod').val() == '') {
+                alert('Selecione o Perfil antes de escolher a Situação Perfil.');
+
+                setTimeout(function () {
+                    $("[name=sitperfil]").parent('label').removeClass("active");
+                    $("#sitperfil").attr('checked', false);
+                }, 50);
+            }
+        });
+    });
+
+</script>
+
+<?php
+
+    if($_SESSION['perfilusuario'][$_SESSION['usucpf']][231]) {
+
+	$verificarPrograma = false;
+
+	#Tratando array para não gerar erro no foreach abaixo
+	$perfisArray = ( is_array( $_SESSION['perfilusuario'][$_SESSION['usucpf']][231] ) ) ? $_SESSION['perfilusuario'][$_SESSION['usucpf']][231] : Array();
+
+	foreach($perfisArray as $key){
+	    if($key['pflcod'] == 1479){
+	        $verificarPrograma = true;
+	    }
+	}
+
+	$sql1 = "select * from par3.usuario_programa where usucpf = '{$_SESSION['usucpf']}'";
+	$dados = $db->carregar($sql1);
+	$filtrarNutricionistas = false;
+	$filtrarCae = false;
+	if(!empty($dados)) {
+            #Tratando array para não gerar erro no foreach abaixo
+            $dados = ( is_array($dados) ) ? $dados : Array();
+	    foreach ($dados as $key) {
+	        if ($key['prgid'] == '4') {
+	            $_REQUEST['pflcod'] = 1435;
+	        }
+	        if ($key['prgid'] == '5') {
+	            $_REQUEST['pflcod'] = 1477;
+	        }
+	    }
+	}
+    }
+?>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Consulta de Usuários</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="<?php echo MODULO; ?>.php?modulo=inicio&acao=C"><?php echo $_SESSION['sisabrev']; ?></a>
+            </li>
+            <li><a>Sistema</a></li>
+            <li><a>Usuários</a></li>
+            <li><a>Gerenciar</a></li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeIn">
+
+<?php
+    if( $verificarPrograma == false or ($verificarPrograma and $_REQUEST['pflcod'] == 1435) or ($verificarPrograma and $_REQUEST['pflcod'] == 1477) ){
+?>
+        <div class="row">
+            <form method="POST" role="form" class="form-horizontal well" name="formulario" id="formulario">
+                <input type="hidden" name="formulario" value="1"/>
+                <input type=hidden name="modulo" value="<?= $modulo ?>"/>
+                <input type=hidden name="act" value="<?=$_REQUEST['act'];?>"/>
+
+                <section class="col-md-12">
+                    <section class="form-group">
+                        <label for="cpf" class="col-md-2 control-label">CPF (ou parte do CPF):</label>
+                        <section class="col-md-10">
+                            <?= inputTexto('usucpf', '', 'cpf', 14, false, array('masc' => '###.###.###-##')); ?>
+                        </section>
+                    </section>
+                    <section class="form-group">
+                        <label class="col-md-2 control-label" for="nome"> Nome completo (ou parte do nome): </label>
+                        <section class="col-md-10">
+                            <?= inputTexto('usunome', $valor, 'nome', 50, false); ?>
+                        </section>
+                    </section>
+
+                    <section class="form-group">
+                        <label class="col-md-2 control-label" for="unidadeF"> Unidade Federativa: </label>
+                        <section class="col-md-10">
+                            <?php
+                                $regcod = $_REQUEST['regcod_disable'];
+                                $sql = "SELECT regcod AS codigo, regcod||' - '||descricaouf AS descricao FROM uf WHERE codigoibgeuf IS NOT NULL ORDER BY 2";
+                                inputCombo('regcod_disable', $sql, $regcod, 'unidadeF', array('acao' => 'listar_municipios'));
+                            ?>
+                        </section>
+                    </section>
+
+                    <section class="form-group">
+                        <label class="col-md-2 control-label" for="municipio"> Município: </label>
+                        <style>
+                            #municipio_chosen{
+                                width: 100% !important;
+                            }
+                        </style>
+                        <section class="col-md-10">
+                            <div id="muncod_on" style="<?= isset($_REQUEST['muncod']) ? 'display:inherit' : 'display:none;'; ?>">
+                                <select  id="municipio" name="muncod" class="campode100porcento form-control chosen-select"></select>
+                            </div>
+                            <div id="muncod_off" class="form-control-static" style="color:#909090;<?= isset($_REQUEST['muncod']) ? 'display:none' : 'display:inherit;'; ?>">Selecione uma Unidade Federativa.</div>
+                        </section>
+                    </section>
+
+                    <section class="form-group">
+                        <label class="col-md-2 control-label" for="sistema"> Sistema: </label>
+                        <section class="col-md-10">
+                            <?php
+                                $sql = "select s.sisid as codigo, s.sisdsc as descricao from seguranca.sistema s where s.sisstatus='A'";
+                                inputCombo('codigo', $sql, $valor, 'sistema', array('titulo' => 'Qualquer (selecione)', 'habil' => 'N'));
+                            ?>
+                        </section>
+                    </section>
+
+            <?php
+                if ($codigo) {
+            ?>
+                    <section class="form-group">
+                        <label class="col-md-2 control-label" for="cod">
+                            Perfil:
+                        </label>
+                        <section class="col-md-10">
+            <?php
+                            $sql = "
+                                    SELECT pflcod AS codigo,
+                                            pfldsc AS descricao
+                                    FROM seguranca.perfil
+                                    WHERE pflstatus = 'A' AND sisid = $codigo
+                                    ORDER BY pfldsc
+                            ";
+
+                           if($verificarPrograma) {
+                               $sql1 = "select * from par3.usuario_programa where usucpf = '{$_SESSION['usucpf']}'";
+                               $dados = $db->carregar($sql1);
+                               $filtrarNutricionistas = false;
+                               $filtrarCae = false;
+                               if(!empty($dados)) {
+                                   foreach ($dados as $key) {
+                                       if ($key['prgid'] == '4') {
+                                           $_REQUEST['pflcod'] = 1435;
+                                       }
+                                       if ($key['prgid'] == '5') {
+                                           $_REQUEST['pflcod'] = 1477;
+                                       }
+                                   }
+                               }
+                               $valor = tratarArrayParaMultiSelect($_REQUEST['pflcod']);
+                            }else{
+                               $valor = tratarArrayParaMultiSelect($_REQUEST['pflcod']);
+                           }
+
+                            $pflcod = tratarArrayParaMultiSelect($_POST['pflcod']);
+                            if($verificarPrograma) {
+                                inputCombo('pflcod', $sql, $valor, 'cod', array('titulo' => 'Todos','habil' => 'N','multiple'=>'multiple'));
+                            }else{
+                                inputCombo('pflcod', $sql, $valor, 'cod', array('titulo' => 'Todos','multiple'=>'multiple'));
+                            }
+            ?>
+                        </section>
+                    </section>
+
+                    <section class="form-group">
+                        <label class="col-md-2 control-label">Unidade Orçamentária:</label>
+                        <section class="col-md-10">
+            <?php
+                            $sql = "
+                                SELECT  unicod as codigo,
+                                        unicod || ' - ' || unidsc as descricao
+                                FROM public.unidade
+                                WHERE orgcod = '26000' and unistatus = 'A'
+                                ORDER BY unicod
+                            ";
+                            $options = array(
+                                'titulo' => 'Selecione o(s) Perfil(s)'
+                            );
+                            inputCombo('unidade[]', $sql, $unidade, 'unidade', $options);
+            ?>
+                        </section>
+                    </section>
+        <?php
+                }
+
+                if (!isset($_REQUEST['formulario'])){
+                    $suscod = 'A';
+                }
+
+                if( $_REQUEST['acao'] == 'A' || $_REQUEST['acao'] == 'C' ){
+                    $_active_Q          = $suscod == '' ? 'active' : '';
+                    $_active_Q_check    = $suscod == '' ? 'checked="checked"' : '';
+                    $_active_A          = $suscod == 'A' ? 'active' : '';
+                    $_active_A_check    = $suscod == 'A' ? 'checked="checked"' : '';
+                    $_active_P          = $suscod == 'P' ? 'active' : '';
+                    $_active_P_check    = $suscod == 'P' ? 'checked="checked"' : '';
+                    $_active_B          = $suscod == 'B' ? 'active' : '';
+                    $_active_B_check    = $suscod == 'B' ? 'checked="checked"' : '';
+        ?>
+                    <section class="form-group control-group">
+                        <label class="control-label col-md-2"> Status geral do usuário: </label>
+                        <section class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default <?=$_active_Q;?>">
+                                <input id="status_qualquer" type="radio" name="suscod" value="" <?=$_active_Q_check;?>/> Qualquer
+                            </label>
+
+                            <label for="status_ativo" class="btn btn-default <?=$_active_A;?>">
+                                <input id="status_ativo" type="radio" name="suscod" value="A" <?=$_active_A_check;?>/> Ativo
+                            </label>
+
+                            <label for="status_pendente" class="btn btn-default <?=$_active_P;?>">
+                                <input id="status_pendente" type="radio" name="suscod" value="P" <?=$_active_P_check;?>/> Pendente
+                            </label>
+
+                            <label for="status_bloqueado" class="btn btn-default <?=$_active_B;?>">
+                                <input id="status_bloqueado" type="radio" name="suscod" value="B" <?=$_active_B_check;?>/> Bloqueado
+                            </label>
+                        </section>
+                    </section>
+            <?php
+                }
+            ?>
+                    <section class="form-group">
+                        <label class="control-label col-md-2">Já acessou o sistema:</label>
+                        <section class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default <?php
+                            if ($usuchaveativacao == '') {
+                                echo 'active';
+                            }
+                            ?>">
+                                <input id="acesso_qualquer" type="radio" name="usuchaveativacao" value="" <?= $usuchaveativacao == '' ? 'checked="checked"' : "" ?>/>
+                                Qualquer
+                            </label>
+
+                            <label class="btn btn-default <?php
+                            if ($usuchaveativacao == 't') {
+                                echo 'active';
+                            }
+                            ?>">
+                                <input id="acesso_sim" type="radio" name="usuchaveativacao" value="t" <?= $usuchaveativacao == 't' ? 'checked="checked"' : "" ?>/>
+                                Sim
+                            </label>
+
+                            <label class="btn btn-default <?php
+                            if ($usuchaveativacao == 'f') {
+                                echo 'active';
+                            }
+                            ?>">
+                                <input id="acesso_nao" type="radio" name="usuchaveativacao" value="f" <?= $usuchaveativacao == 'f' ? 'checked="checked"' : "" ?>/>
+                                Não
+                            </label>
+                        </section>
+                    </section>
+
+                    <section class="form-group">
+                        <label class="control-label col-md-2">	Situação Perfil:</label>
+                        <section class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default <?php
+                            if ($sitperfil == 'V') {
+                                echo 'active';
+                            }
+                            ?>" name="sitperfil">
+                                <input type="radio" name="sitperfil" id="sitperfil" value="V"  <?= $sitperfil == 'V' ? 'checked="checked"' : "" ?>/>
+                                Qualquer
+                            </label>
+                            <label class="btn btn-default <?php
+                            if ($sitperfil == 'D') {
+                                echo 'active';
+                            }
+                            ?>" name="sitperfil">
+                                <input  type="radio" name="sitperfil" id="sitperfil" value="D"  <?= $sitperfil == 'D' ? 'checked="checked"' : "" ?>/>
+                                Desejado
+                            </label>
+                            <label class="btn btn-default <?php
+                            if ($sitperfil == 'A') {
+                                echo 'active';
+                            }
+                            ?>" name="sitperfil">
+                                <input type="radio" name="sitperfil" id="sitperfil" value="A"  <?= $sitperfil == 'A' ? 'checked="checked"' : "" ?>/>
+                                Atribuído
+                            </label>
+                        </section>
+                    </section>
+
+                    <section class="col-md-offset-2">
+                        <input type='button' class="btn btn-primary" name='consultar' value='Consultar' onclick="ProcuraUsuario('')">
+                        <input type='button' class="btn btn-danger" name='visualizarXls' value='Exportar XLS' onclick="ProcuraUsuario('xls')">
+                    </section>
+
+                    <div style="clear:both;"></div>
+		</section>
+                <div style="clear:both;"></div>
+            </form>
+
+            <section class="col-md-12">
+<?php
+            unset($sql, $texto);
+//            ver($verificarPrograma,d);
+
+            #insere filtros de consulta
+            if ($_REQUEST['usunome'])
+                $texto = " and TRANSLATE(usuario.usunome, 'áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ','aaaaeeiooouucAAAAEEIOOOUUC') ilike TRANSLATE('%" . $_REQUEST['usunome'] . "%', 'áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ','aaaaeeiooouucAAAAEEIOOOUUC') ";
+
+            if ($_REQUEST['usucpf'])
+                $texto.= " and usuario.usucpf like '%" . str_to_upper(corrige_cpf($_REQUEST['usucpf'])) . "%'";
+
+            if( trim($_REQUEST['suscod']) != '' && $suscod != '' )
+                $texto.= " and usuariosistema.suscod = '" . $_REQUEST['suscod'] . "'";
+
+            if ($_REQUEST['codigo'])
+                $texto.= " and usuariosistema.sisid = '" . $_REQUEST['codigo'] . "'";
+
+            /* UF e Municipio */
+            if ($_REQUEST['regcod_disable'])
+                $texto.= " and usuario.regcod = '" . $_REQUEST['regcod_disable'] . "'";
+
+            if ($_REQUEST['muncod'])
+                $texto.= " and usuario.muncod = '" . $_REQUEST['muncod'] . "'";
+
+            //Unidade Orcamentaria
+            if (!empty($_REQUEST['unidade'][0])) {
+                foreach ($_REQUEST['unidade'] as $unidade) {
+                    $und[] = "unidadex.unicod = '" . (integer) $unidade . "'";
+                }
+                if (!empty($und)) {
+                    $texto .= ' AND ' . implode(' OR ', $und);
+                }
+            }
+
+            // Se já acessou o sistema
+            if ($_REQUEST["usuchaveativacao"])
+                $texto .= " and usuario.usuchaveativacao = '" . $_REQUEST["usuchaveativacao"] . "'";
+
+            if ($_REQUEST["sitperfil"] == '') {
+                $_REQUEST["sitperfil"] = 'A';
+            }
+
+            // verifica situação do perfil (Desejado ou atribuido)
+            if ($_REQUEST["sitperfil"] == 'D') {
+                if ($_REQUEST["pflcod"]) {
+                    if(is_array($_REQUEST['pflcod'])) {
+                        $arPflcod = array_filter($_REQUEST['pflcod']);
+                        if(count($arPflcod)> 0){
+                            $pfl = implode(',',$arPflcod);
+                            $texto .= " and (usuariosistema.pflcod in ({$pfl}))";
+                        }
+                    }                }
+            }else if ($_REQUEST["sitperfil"] == 'A') {
+                if ($_REQUEST["pflcod"]){
+                    if(is_array($_REQUEST['pflcod'])) {
+                        $arPflcod = array_filter($_REQUEST['pflcod']);
+                        if(count($arPflcod)> 0){
+                            $pfl = implode(',',$arPflcod);
+                            $texto .= " and (perfil.pflcod in ({$pfl}))";
+                        }
+                    }
+                }
+
+            }else if ($_REQUEST["sitperfil"] == 'V') {
+                if ($_REQUEST["pflcod"]){
+                    if(is_array($_REQUEST['pflcod'])) {
+                        $arPflcod = array_filter($_REQUEST['pflcod']);
+                        if(count($arPflcod)> 0){
+                            $pfl = implode(',',$arPflcod);
+                            $texto .= " and (perfil.pflcod in (".$pfl. ") OR usuariosistema.pflcod in (" .$pfl. "))";
+                        }
+                    }
+                }
+            }
+
+            if ($arrCampo) {
+                foreach ($arrCampo as $campo => $valor) {
+                    if ($campo && is_array($valor)) {
+                        $arrWhere[] = "resp.$campo in ('" . implode("','", $valor) . "') ";
+                    }
+                }
+                $arrWhere[] = "resp.rpustatus = 'A'";
+                $innerResponsabilidade = " INNER JOIN {$_SESSION['sisdiretorio']}.usuarioresponsabilidade resp ON usuario.usucpf = resp.usucpf " . ($arrWhere ? " AND ( " . implode(" AND ", $arrWhere) . " ) " : "");
+            }
+
+            #USADO APENAS NO PAR3 PARA QUE O GRID DE USUARIOS DIPONOBILISE A COLUNA PERFIS, LISTADANDO TODOS OS PERFIS DO USUÁRIO NO SISTEMA
+            $withperfil = '';
+            $join_par3 = '';
+            if( $_REQUEST['codigo'] == 231 ){
+                $withperfil =<<<SQLJOINPERFIL
+                    WITH perfis AS (
+                        SELECT  p.sisid, p.pfldsc, pu.usucpf
+                        FROM seguranca.perfilusuario pu
+                        JOIN seguranca.perfil p on p.pflcod = pu.pflcod
+                        WHERE p.pflstatus = 'A' AND p.sisid = 231
+                    )
+
+SQLJOINPERFIL;
+                $join_par3 = " left join perfis AS p on p.usucpf = usuario.usucpf ";
+                $_perfis_par = "
+                    ,TRIM( array_to_string( array_agg(distinct p.pfldsc ), ';<br>' ) ) as perfil
+                ";
+                $cabecalho = array('CPF', 'Nome Completo', 'Telefone', 'E-mail', 'Unidade', 'Cargo / Função', 'Órgão', 'UF', 'Município', 'Data da Ultima Atualização', 'Status no Módulo', 'Status Geral', 'Perfis');
+            }else{
+                $cabecalho = array('CPF', 'Nome Completo', 'Telefone', 'E-mail', 'Unidade', 'Cargo / Função', 'Órgão', 'UF', 'Município', 'Data da Ultima Atualização', 'Status no Módulo', 'Status Geral');
+            }
+
+            if ($_REQUEST['pflcod']) {
+                if(is_array($_REQUEST['pflcod'])) {
+                    $arPflcod = array_filter($_REQUEST['pflcod']);
+                    if(count($arPflcod)> 0){
+                        $pfl = implode(',',$arPflcod);
+                    $oin_sql .= "
+                    seguranca.perfil perfil
+                    inner join seguranca.perfilusuario AS perfilusuario on perfil.pflcod = perfilusuario.pflcod and perfil.pflcod in ({$pfl})
+                    right join seguranca.usuario AS usuario on usuario.usucpf = perfilusuario.usucpf
+                    left join(
+                        select	unicod,	unidsc
+                        from public.unidade
+                        where unitpocod = 'U'
+                    ) AS unidadex on usuario.unicod = unidadex.unicod";
+                    }
+                }
+            } else {
+                $oin_sql .= "
+                    ( select unicod, unidsc from public.unidade where unitpocod = 'U') as unidadex
+                    right join seguranca.usuario AS usuario ON usuario.unicod = unidadex.unicod
+                    left join seguranca.perfilusuario AS perfilusuario ON usuario.usucpf = perfilusuario.usucpf
+                    left join seguranca.perfil AS perfil ON perfil.pflcod = perfilusuario.pflcod
+                ";
+            }
+
+            // seleciona qual ação o botão que aparece na listagem deve acionar
+            if ($_REQUEST['acao'] == 'A') {
+                $funcao = "alterar_usu";
+            } else {
+                $funcao = "consultar_usu";
+            }
+
+            $campos = "
+                usuario.usucpf,
+                usuario.usucpf as cpf,
+                usuario.usunome as nomeusuario,
+                '(' || usuario.usufoneddd || ') ' || usuario.usufonenum as fone ,
+                usuario.usuemail,
+                CASE WHEN entidade.entid = 390402 THEN trim(usuario.orgao) ELSE trim(unidadex.unidsc) END as unidsc,
+                COALESCE(cargo.cardsc,'')||' / '||COALESCE(usuario.usufuncao,'') as cargo,
+                entidade.entnome as orgao,
+                usuario.regcod,
+                municipio.mundescricao,
+                usuario.usudataatualizacao as data,
+                CASE
+                    WHEN usuariosistema.suscod = 'A' THEN 'Ativo'
+                    WHEN usuariosistema.suscod = 'B' THEN 'Bloqueado'
+                    WHEN usuariosistema.suscod = 'P' THEN 'Pendente'
+                END as status_sistema,
+                CASE
+                    WHEN usuario.suscod = 'A' THEN 'Ativo'
+                    WHEN usuario.suscod = 'B' THEN 'Bloqueado'
+                    WHEN usuario.suscod = 'P' THEN 'Pendente'
+                END as status_geral
+
+                {$_perfis_par}
+            ";
+
+            $groupby = "
+            usuario.usucpf, usuario.usunome, usuario.usufoneddd, 
+            usuario.usufonenum, usuario.regcod, entidade.entid, entidade.entnome, 
+            unidadex.unidsc, usuario.orgao, usuario.usudataatualizacao , municipio.mundescricao, cargo.cardsc, usuario.usufuncao,usuariosistema.suscod
+            ";
+
+            $sql = "
+                {$withperfil}
+                SELECT  DISTINCT
+                        {$campos}
+
+                FROM {$oin_sql}
+                {$join_par3}
+                left join  territorios.municipio municipio on municipio.muncod = usuario.muncod
+                inner join seguranca.usuario_sistema usuariosistema on usuario.usucpf = usuariosistema.usucpf
+                left join  entidade.entidade entidade on usuario.entid = entidade.entid
+                left join  public.cargo cargo on cargo.carid = usuario.carid
+
+                {$innerResponsabilidade}
+
+                WHERE usunome is not null {$texto} {$andPerfilPermissao}
+
+                GROUP BY {$groupby}
+
+                ORDER BY nomeusuario
+            ";
+            if( $_REQUEST['act'] == 'procura' || $_REQUEST['act'] == 'visualizaXls' ){
+                /* Exibe a consulta para um XLS */
+                if ($_REQUEST['act'] == 'visualizaXls') {
+                    $listagem = new Simec_Listagem(Simec_Listagem::RELATORIO_XLS);
+                    ob_clean();
+                    $listagem->setCabecalho($cabecalho);
+                    $listagem->esconderColuna(array('usucpf'));
+                    $listagem->setQuery($sql);
+                    $listagem->setTotalizador(Simec_Listagem::TOTAL_QTD_REGISTROS);
+                    $listagem->render();
+                    header("Content-Disposition: attachment; filename=consusuario.xls");
+                    die();
+                }
+//                ver($sql);
+                /* Exibe a consulta na tela */
+                $listagem->setFormFiltros('formulario');
+                $listagem->setCabecalho($cabecalho);
+                $listagem->setQuery($sql);
+                $listagem->setAcoes(array('edit' => $funcao));
+                $listagem->addCallbackDeCampo('cpf', 'formatar_cpf');
+                $listagem->addCallbackDeCampo('data', 'formata_data');
+                $listagem->turnOnOrdenacao('usunome');
+                $listagem->setTotalizador(Simec_Listagem::TOTAL_QTD_REGISTROS);
+                $listagem->render(Simec_Listagem::SEM_REGISTROS_MENSAGEM);
+            }else{
+                echo '
+                    <br><br>
+                    <div class="col-md-8 col-md-offset-2 listagem-info">
+                        <div class="alert alert-info text-center" role="alert">
+                            <b>Não foi encontrado nenhum registro</b>
+                        </div>
+                    </div>
+                    <br style="clear:both" />
+                ';
+            }
+?>
+        </section>
+    </div>
+</div>
+
+<?php
+    }else{
+        echo "É necessário associar essa pessoa a um programa para que possam ser feitas alterações";
+    }
+?>

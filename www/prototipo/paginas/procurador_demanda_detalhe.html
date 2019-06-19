@@ -1,0 +1,161 @@
+<div class="ibox">
+    <div class="ibox-title">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="left">Demanda Nº 00248 - Recapeamento asfáltico</h1>
+            </div>
+        </div>
+    </div> 
+
+
+    <div class="ibox-title">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="left">Documentos da Análise Tecnica e Administrativa</h3>
+            </div>
+        </div>
+    </div> 
+
+
+            <div class="ibox-content">
+                 <div class="row">
+                     <div class="col-10">
+
+                         <!-- <div class="col-sm-8">
+                            <div class="row py-4">
+                              <label class="col-sm-4 control-label">
+                                Documentos da Administração:
+                              </label>
+                              <div class="col-sm-8">
+                                  <button type="button" class="btn btn-info download" file-name="Documentos ADM.pdf"><i class="fas fa-eye"></i> Visualizar Documento</button>
+                              </div>
+                              <label class="col-sm-4 control-label py-4">
+                                Documentos da análise técnica:
+                              </label>
+                              <div class="col-sm-8 py-4">
+                                  <button type="button" class="btn btn-info download" file-name="Documentos Análise Técnica.pdf"><i class="fas fa-eye"></i> Visualizar Documento</button>
+                              </div>
+                            </div>
+                          </div> -->
+                          <div class="col-sm-8">
+                                <div class="row pt-4 pb-2">
+                                    <div class="col-sm-12 mb-3">
+                                        <h3>Documentos da Análise Administrativa:</h3>
+                                    </div>
+                                    <label class="col-sm-4 control-label">
+                                        Certificado de CRMC:
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn btn-info download" file-name="Certificado de CRMC.pdf"><i class="fas fa-eye"></i> Visualizar Documento</button>
+                                    </div>
+                                </div>
+                                <div class="row pt-4 pb-2">
+                                    <div class="col-sm-12 mb-3">
+                                        <h3>Documentos da Análise Técnica:</h3>
+                                    </div>
+                                    <label class="col-sm-4 control-label">
+                                      Orçamento:
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn btn-info download" file-name="Orçamento.pdf"><i class="fas fa-eye"></i> Visualizar Documento</button>
+                                    </div>
+                                  </div>
+                                  <div class="row py-2">
+                                    <label class="col-sm-4 control-label">
+                                      Cronograma:
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn btn-info download" file-name="Cronograma.pdf"><i class="fas fa-eye"></i> Visualizar Documento</button>
+                                    </div>
+                                  </div>
+                                  <div class="row py-2">
+                                    <label class="col-sm-4 control-label">
+                                      Plano de trabalho:
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn btn-info download" file-name="Plano de trabalho.pdf"><i class="fas fa-eye"></i> Visualizar Documento</button>
+                                    </div>
+                                  </div>
+                                  <div class="row py-2">
+                                    <label class="col-sm-4 control-label">
+                                      Vistoria:
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn btn-info download" file-name="Vistoria.pdf"><i class="fas fa-eye"></i> Visualizar Documento</button>
+                                    </div>
+                                  </div>
+                                  <div class="row py-2">
+                                    <label class="col-sm-4 control-label">
+                                      Laudo / Parecer técnico:
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn btn-info download" file-name="Laudo - Parecer Técnico.pdf"><i class="fas fa-eye"></i> Visualizar Documento</button>
+                                    </div>
+                                  </div>
+                                </div>
+                          <div style="clear:both"></div>
+
+                         <div class="row mt-3">
+                             <div class="col-12 form-group">
+                                 <label for="relatorio">Relatório:</label>
+                                 <textarea id="relatorio" class="form-control"></textarea>
+                             </div>
+                         </div>
+
+                         <div class="row">
+                             <div class="col-12 form-group">
+                                 <label for="relatorio">Opnião:</label>
+                                 <textarea id="relatorio" class="form-control"></textarea>
+                             </div>
+                         </div>
+
+
+                         <div class="row">
+                             <div class="col-12 form-group">
+                                 <label for="relatorio">Recomendação:</label>
+                                 <textarea id="relatorio" class="form-control"></textarea>
+                             </div>
+                         </div>
+                     </div>
+
+
+                     <div class="col-2">
+                         <div id="wf"></div>
+                     </div>
+                 </div>
+
+            </div>
+
+            <div class="ibox-footer">
+                <div class="center">
+                    <button type="submit" class="btn btn-primary btn-salvar" style="width: 200px;"><i class="fa fa-save"></i>   Salvar Parecer 
+                    </button>
+                </div>
+            </div>
+
+ 
+        </div>
+ 
+        <script>
+            var  abrir = function(id){
+               loadPage('procurador_demanda_detalhe.html', 'wrapper-content');
+            }
+
+            $(document).ready(function() {
+        
+                $('.btn-salvar').click(function(e) {
+                    event.preventDefault();
+                    
+                    alertaSucesso();
+                        
+                    return false;
+                });
+
+                alertaUsuario();
+                appendToDiv('procurador_demanda_workflow.html', 'wf');
+                dw();
+
+                $(".chosen-select").chosen();
+            });
+        </script> 
+

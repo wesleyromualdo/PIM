@@ -1,0 +1,339 @@
+<div class="ibox-content-round-gray ibox-content">
+    <div class="row">
+        <div class="col-md-3 colunaMenu noprint">
+            <div class="space-25"></div>
+                <div id="menuDirigentes">
+                    <h5>INFORMAÇÕES</h5>
+					<div class="nav flex-column nav-pills" aria-orientation="vertical">
+						<span class="nav-link" data-toggle="pill" aria-selected="false" onclick = "loadPage('prefeitura_demandante_prefeitura.html', 'ibox-content')">Prefeitura</span>
+						<span class="nav-link active" data-toggle="pill" aria-selected="true" onclick = "loadPage('prefeitura_demandante_prefeito.html', 'ibox-content')">Prefeito</span>
+						<span class="nav-link" data-toggle="pill" aria-selected="false" onclick = "loadPage('prefeitura_demandante_equipe.html', 'ibox-content')">Equipe Local</span>
+					</div>
+					<!--
+                    <div class="menuUnidade   pointer" tipo="prefeitura" onclick = "loadPage('prefeitura_demandante_prefeitura.html', 'ibox-content')">
+                        <span class="fa fa-check iconUnidade"  style="color:green !important;background-color: transparent;"></span> Prefeitura
+                    </div>
+                    <div class="menuUnidade menuSelecionado pointer " tipo="prefeito" onclick = "loadPage('prefeitura_demandante_prefeito.html', 'ibox-content')" >
+                        <span class="fa fa-check iconUnidade"  style="color:green !important;background-color: transparent;"></span> Prefeito
+                    </div>
+                    <div class="menuUnidade pointer" tipo="equipe" onclick = "loadPage('prefeitura_demandante_equipe.html', 'ibox-content')">
+                        <span class="fa fa-check iconUnidade" style="color:green !important;background-color: transparent;"></span> Equipe Local
+                    </div>
+					-->
+                </div>
+
+        </div>
+        <div class="col-md-9 colunaForm" id="print_area">
+            <form method="post" name="formulario" id="formulario" class="form form-horizontal">
+
+                <input type="hidden" name="ddtid" id="ddtid" value="4">
+                <input type="hidden" name="req" value="salvar">
+                <input type="hidden" name="menu" value="prefeito">
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3 id="entidade">Dados do(a) Prefeito(a)</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content" id="div_prefeito">
+                        <input type="hidden" name="enjid" value="">
+                        <input type="hidden" id="form" value="">
+                        <input type="hidden" name="entcpf_old" value="">
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="entcpf" class="col-sm-3 col-md-3 col-lg-3 control-label">CPF: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="fa fa-user"></span></span>
+                                    <input data-inputmask="'mask': '999.999.999-99', 'clearIncomplete': 'true'" name="entcpf" id="entcpf" type="text" value="" class="form-control cpf cpf" data-pessoa="1" data-pessoa-campos="{&quot;#entnome&quot;: &quot;no_pessoa_rf&quot;}"=""="">
+
+                                </div>
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="entnome" class="col-sm-3 col-md-3 col-lg-3 control-label">Nome: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                <input name="entnome" id="entnome" type="text" value="" class="form-control" maxlength="255" readonly="readonly" required="required">
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <div class="form-group ">
+                            <label for="intcnpj" class="col-sm-3 col-md-3 col-lg-3 control-label  control-label">Sexo: </label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                <div class="radio radio-inline ">
+                                    <input name="entsexo" id="entsexo-f" type="radio" value="f"=""="">
+                                    <label for="entsexo-f">Feminino</label>
+                                </div>
+                                <div class="radio radio-inline ">
+                                    <input name="entsexo" id="entsexo-m" type="radio" value="m"=""="">
+                                    <label for="entsexo-m">Masculino</label>
+                                </div>
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="entemail" class="col-sm-3 col-md-3 col-lg-3 control-label">E-mail: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="fa fa-envelope"></span></span>
+                                    <input data-alias="'email'" name="entemail" id="entemail" type="text" value="" class="form-control cep email" required="required">
+
+                                </div>
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="entrg" class="col-sm-3 col-md-3 col-lg-3 control-label">Registro Geral (RG): <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                <input name="entrg" id="entrg" type="text" value="" class="form-control" maxlength="20" required="required">
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="entorgexpedidor" class="col-sm-3 col-md-3 col-lg-3 control-label">Orgão Expedidor: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                <input name="entorgexpedidor" id="entorgexpedidor" type="text" value="" class="form-control" maxlength="20" required="required">
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="entdtnascimento" class="col-sm-3 col-md-3 col-lg-3 control-label">Data Nascimento: </label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 date hasDatepicker" id="dp1559831771532">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                                    <input name="entdtnascimento" id="entdtnascimento" type="text" value="" class="datemask form-control"=""="">
+
+                                </div>
+ 
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="enttelefonecomercial" class="col-sm-3 col-md-3 col-lg-3 control-label">Telefone Comercial: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="fa fa-phone"></span></span>
+                                    <input data-inputmask="'mask': '(99) 9999-9999[9]', 'clearIncomplete': 'true'" name="enttelefonecomercial" id="enttelefonecomercial" type="text" value="" class="form-control telefone telefone" required="required"=""="">
+
+                                </div>
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="enttelefonecelular" class="col-sm-3 col-md-3 col-lg-3 control-label">Telefone Celular: </label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="fa fa-phone"></span></span>
+                                    <input data-inputmask="'mask': '(99) 9999-9999[9]', 'clearIncomplete': 'true'" name="enttelefonecelular" id="enttelefonecelular" type="text" value="" class="form-control telefone telefone"=""="">
+
+                                </div>
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="enttelefonefax" class="col-sm-3 col-md-3 col-lg-3 control-label">Telefone Fax: </label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="fa fa-phone"></span></span>
+                                    <input data-inputmask="'mask': '(99) 9999-9999[9]', 'clearIncomplete': 'true'" name="enttelefonefax" id="enttelefonefax" type="text" value="" class="form-control telefone telefone"=""="">
+
+                                </div>
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+                        <script>
+                            $('[name=entdtnascimento]').val('');
+                        </script>
+                    </div>
+                    <div class="ibox-title">
+                        <h3>Endereço do(a) Prefeito(a)</h3>
+                    </div>
+                    <div class="ibox-content">
+                        <input type="hidden" name="enjid" value="">
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="enjendcep" class="col-sm-3 col-md-3 col-lg-3 control-label">CEP: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
+                                    <input data-inputmask="'mask': '99.999-999', 'clearIncomplete': 'true'" name="enjendcep" id="enjendcep" type="text" value="" class="form-control cep cep" onblur="getEnderecoByCEP(this.value,'1');"=""="" required="required">
+
+                                </div>
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="enjendlogradouro" class="col-sm-3 col-md-3 col-lg-3 control-label">Logradouro: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                <input name="enjendlogradouro" id="enjendlogradouro" type="text" value="" class="form-control" maxlength="255" required="required">
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="enjendcomplemento" class="col-sm-3 col-md-3 col-lg-3 control-label">Complemento: </label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                <input name="enjendcomplemento" id="enjendcomplemento" type="text" value="" class="form-control" maxlength="255">
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="enjendnumero" class="col-sm-3 col-md-3 col-lg-3 control-label">Número: </label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                <input name="enjendnumero" id="enjendnumero" type="text" value="" class="form-control" maxlength="20">
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <style>
+                            .dropdown-menu {
+                                z-index: 10000 !important;
+                            }
+                        </style>
+
+                        <div class="form-group ">
+                            <label for="enjendbairro" class="col-sm-3 col-md-3 col-lg-3 control-label">Bairro: <span class="campo-obrigatorio" title="Campo obrigatório">*</span></label>
+                            <div class="col-sm-9 col-md-9 col-lg-9 ">
+                                <input name="enjendbairro" id="enjendbairro" type="text" value="" class="form-control" maxlength="255" required="required">
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+                    </div>
+                    <div class="ibox-footer">
+                        <div class="row">
+                            <div class="col-lg-4 text-center">
+                                <button type="submit" class="btn btn-success salvar"><i class="fa fa-save"></i> Salvar prefeito</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h3>Histórico Modificações</h3>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    
+    $('.salvar').click(function(e){
+         
+        alertaSucesso();
+        return false;
+    })
+</script>

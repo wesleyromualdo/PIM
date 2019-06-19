@@ -1,0 +1,89 @@
+<div class="ibox position-relative" id="ibox-ordenador">
+
+      <div class="ibox-title">
+        <div class="row">
+            <div class="col-12">
+                <h1>Demanda N° 00248 - Recapeamento asfáltico</h1>
+            </div>
+            <div class="col-sm-4 mb-4">
+              <div class="row border-bottom p-1">
+                <div class="col-sm-4 bold">Demandante:</div>
+                <div class="col-sm-8 text-right" id="txt_demandante"></div>
+              </div>
+              <div class="row border-bottom p-1">
+                <div class="col-sm-4 bold">Tipo:</div>
+                <div class="col-sm-8 text-right" id="txt_tipo"></div>
+              </div>
+              <div class="row border-bottom p-1">
+                <div class="col-sm-4 bold">Portfólio:</div>
+                <div class="col-sm-8 text-right" id="txt_portfolio"></div>
+              </div>
+              <div class="row border-bottom p-1">
+                <div class="col-sm-4 bold">Valor:</div>
+                <div class="col-sm-8 text-right" id="txt_valor"></div>
+              </div>
+            </div> 
+
+            <div style="clear:both"></div>
+        </div>
+        <div class="row ibox-content">
+            <div class="col-md-3"><button type="button" class="btn btn-outline btn-primary dim btn-block p-4 active  ordenador-btn" data-id="reserva"><i class="fas fa-receipt"></i> Nota de Reserva</button></div>
+            <div class="col-md-3"><button type="button" class="btn btn-outline dim btn-block p-4  btn-warning ordenador-btn" data-id="assinar"><i class="fas fa-file-contract"></i> Assinatura Convênio</button></div>
+            <!---
+              <div class="col-md-3"><button type="button" class=" btn btn-outline dim btn-block p-4  btn-info  ordenador-btn" data-id="formalizacao">Formalização do Convênio</button></div>
+              --->
+              
+            <div class="col-md-3"><button type="button" class=" btn btn-outline dim btn-block p-4  btn-primary   ordenador-btn" data-id="empenhar"><i class="fas fa-dollar-sign"></i> Empenhar Recursos</button></div>
+
+          
+        </div>
+      </div>
+
+  <div class="ibox-content position-relative" id="ordenador-container">
+
+  </div>
+
+  <script>
+    $(document).ready(function() {
+
+
+      $('.ordenador-btn').click(function() {
+
+        $('.ordenador-btn').removeClass('active');
+        $(this).addClass('active');
+
+        var id = $(this).data('id');
+
+        $('#ordenador-container').html('');
+
+        appendToDiv('ordenador_'+id+'.html', 'ordenador-container');
+
+        loadWorkflow = function(){
+
+          setTimeout(function(){
+
+            if($("#txt_situacao").text() == ''){
+              loadWorkflow();
+            }else {
+              if($("#txt_situacao").text() =='Aguardando Assinatura'){
+                
+                $('[data-id="assinar"], [data-id="empenhar"]').prop('disabled', true);
+
+                appendToDiv('ordenador_nota_reserva_liberrar_assinatura_workflow.html', 'ordenador-container');
+              }
+              else 
+                appendToDiv('ordenador_'+id+'_workflow.html', 'ordenador-container');
+            }
+          },500);
+        } 
+
+        loadWorkflow();
+        //appendToDiv('ordenador_'+id+'_workflow.html', 'ordenador-container');
+
+      });
+
+
+      $('[data-id="reserva"]').click();
+    });
+  </script>
+</div>

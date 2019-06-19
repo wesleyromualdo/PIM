@@ -1,0 +1,98 @@
+
+    <div class="row">
+      <div class="col-12">
+        <div class="col-sm-8">
+          <div class="row mb-3 mt-4">
+            <label class="col-sm-4 control-label">
+              Termo de Convênio:
+            </label>
+            <div class="col-sm-8">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#assinarConvenioModal"><i class="fas fa-eye"></i> Visualizar Documento</button>
+              </div>
+          </div>
+        </div>
+        <div style="clear:both"></div>
+      </div>
+    </div>
+    <div id="convenio_assinado" class="hidden">
+        <div class="alert alert-success" id="convenio_assinado_txt" role="alert">
+          
+        </div>
+      </div>
+    
+
+      <div class="modal fade" id="assinarConvenioModal" tabindex="-1" role="dialog" aria-labelledby="assinarConvenioModalTitulo" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 clas="modal-title" id="assinarConvenioModalTitulo">Assinar Convênio</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                  <span aria-hidden="true">X</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Na Administração Pública, o Convênio vem sendo sistematicamente utilizado sempre que há o
+        efetivo repasse de recursos públicos a outras entidades públicas ou associações privadas destinadas
+        a determinadas ações de interesse público. Embora o Convênio não se confunda com contrato
+        administrativo, o instrumento formaliza um acordo de vontades e, nesse sentido, impõe obrigações
+        e responsabilidades aos signatários.</p>
+        <p>
+        A Lei Federal n.º 8.666/93, que trata dos Contratos e Licitações, em seu artigo 116, regulamenta os
+        Convênios, e estabelece que a celebração dependa da aprovação de um plano de trabalho, a ser
+        apresentado pela parte interessada.</p>
+        <p>
+        O plano de trabalho deve conter as seguintes informações (Art. 116, § 1º):</p>
+        <p>
+        I . identificação do objeto a ser executado;<br>
+        II . metas a serem atingidas;<br>
+        III . etapas ou fases de execução;<br>
+        I V. plano de aplicação dos recursos financeiros;<br>
+        V. cronograma de desembolso;<br>
+        VI. previsão de início e fim da execução do objeto, bem assim da conclusão das etapas ou fases
+        programadas;<br>
+        VII. se o ajuste compreender obra ou serviço de engenharia, comprovação de que os recursos próprios
+        para complementar a execução do objeto estão devidamente assegurados, salvo se o custo total do
+        empreendimento recair sobre a entidade ou órgão descentralizador.
+        </p>
+        <p>
+        A assinatura do Convênio obriga o órgão repassador do recurso (no caso, a Casa Civil) a comunicar o
+        fato à Assembleia Legislativa e ao Tribunal de Contas do Estado.
+        </p>
+        <p>
+        A liberação dos recursos está vinculada ao plano de aplicação aprovado (cronograma físicofinanceiro) e, no caso dos Programas AM e AEM, compreende de 1 a 3 parcelas, de acordo com o
+        valor. Para a liberação de parcelas, é necessária a apresentação de Prestação de Contas parcial.
+        </p>
+        <p>
+        As parcelas ficarão pendentes de liberação nos seguintes casos:
+        </p>
+        <p>
+        •  Quando não houver comprovação da boa e regular aplicação da parcela anteriormente
+        recebida, mediante análise da Prestação de Contas parcial ou Vistoria Técnica de Engenharia
+        pela equipe da Casa Civil/SRM/URM;<br>
+        •  Quando for verificado desvio de finalidade na aplicação dos recursos;<br>
+        •  Quando forem verificadas práticas atentatórias aos princípios fundamentais da
+        Administração Pública nas contratações.
+        </p>
+        <p>
+        As receitas financeiras decorrentes das aplicações dos recursos recebidos serão obrigatoriamente
+        computadas a crédito do Convênio integrando a participação estadual. E deverão ser aplicadas
+        exclusivamente no objeto de sua finalidade, mediante prévia análise e autorização da Casa
+        Civil/SRM/URM.
+        </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="assinar_convenio">Assinar Convênio</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          $(document).ready(function() {
+            $('#assinar_convenio').click(function() {
+              var dt = new Date();
+              $('#convenio_assinado').removeClass('hidden');
+              $('#convenio_assinado_txt').html('Convênio assinado em: ' + dt.getDate() + '/' + dt.getMonth() + '/' + dt.getFullYear());
+            });
+          });
+        </script>

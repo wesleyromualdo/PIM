@@ -1,0 +1,54 @@
+<div class="ibox">
+    <div class="ibox-title">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="left">PM PRE PRUDENTE</h2>
+            </div>
+        </div>
+    </div>
+    <div class="ibox-title">
+        <div class="row">
+            <div class="col-md-2">
+                <button class="btn btn-outline btn-info dim btn-block active" type="button" style="height: 50px;" onclick="javascript: loadPageDash (this, 'prefeitura_demandante_prefeitura.html') "><i class="fa fa-user"></i> Demandante</button>
+            </div>
+        	<div class="col-md-2">
+            	<button class="btn btn-outline btn-success dim btn-block " type="button" style="height: 50px;" onclick="javascript: loadPageDash (this, 'demanda_lista.html')"><i class="fa fa-line-chart"></i> Minhas Demandas</button>
+            </div>
+            <!-- <div class="col-md-2">
+                <button class="btn btn-outline btn-primary dim btn-block btn-demandar" type="button" style="height: 50px;" onclick="javascript: loadPageDash (this, 'cadastrar_demanda.html' )"><i class="fa fa-bar-chart-o"></i> Demandar</button>
+            </div> -->
+            <div class="col-md-2">
+                <button class="btn btn-outline btn-warning dim btn-block " type="button" style="height: 50px;" onclick="javascript: loadPageDash (this, 'analise_demanda_lista.html' )"><i class="fas fa-file-alt"></i> Documentação</button>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline btn-primary dim btn-block " type="button" style="height: 50px;" onclick="loadPageDash (this, 'convenio_lista.html' )"><i class="fas fa-handshake"></i> Convênio</button>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline btn-default dim btn-block" disabled type="button" style="height: 50px;"><i class="fa fa-bolt"></i> Execução /<br>Acompanhamento</button>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline btn-danger dim btn-block" disabled type="button" style="height: 50px;"><i class="fas fa-tasks"></i> Pendências</button>
+            </div>
+            <!-- <div class="col-md-2">
+                <button class="btn btn-outline btn-danger dim btn-block " type="button" style="height: 50px;" onclick="javascript: return false; loadPageDash (this, 'em_desenvolvimento.html' )"><i class="fa fa-institution"></i> Obras</button>
+            </div> -->
+        </div>    </div>
+    <div id="ibox-content" class="ibox-content">
+
+    </div>
+</div>
+
+
+    <script>
+
+        loadPageDash =  function (bt, page, div ='ibox-content'){
+            $('.btn-outline').removeClass('active');
+            $(bt).addClass('active');
+            loadPage(page , div)
+
+        }
+
+        $(document).ready(function() {
+            loadPage('prefeitura_demandante_prefeitura.html', 'ibox-content');
+        });
+    </script>

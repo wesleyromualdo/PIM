@@ -1,0 +1,167 @@
+<div class="ibox position-relative" id="ibox-tecnica">
+
+    <div class="ibox-title">
+      <div class="row">
+          <div class="col-12">
+              <h1>Demanda N° 00248 - Recapeamento asfáltico</h1>
+          </div>
+          
+          <div class="col-sm-4">
+            <div class="row border-bottom p-1">
+              <div class="col-sm-4 bold">Demandante:</div>
+              <div class="col-sm-8 text-right" id="txt_demandante"></div>
+            </div>
+            <div class="row border-bottom p-1">
+              <div class="col-sm-4 bold">Tipo:</div>
+              <div class="col-sm-8 text-right" id="txt_tipo"></div>
+            </div>
+            <div class="row border-bottom p-1">
+              <div class="col-sm-4 bold">Portfólio:</div>
+              <div class="col-sm-8 text-right" id="txt_portfolio"></div>
+            </div>
+            <div class="row border-bottom p-1">
+              <div class="col-sm-4 bold">Valor:</div>
+              <div class="col-sm-8 text-right" id="txt_valor"></div>
+            </div>
+          </div>
+        </div>
+        <div style="clear:both"></div>
+        <div class="row">
+          <div class="col-sm-8">
+            <br/>
+      <script>
+      $(document).ready(function() {
+        appendToDiv('demandado_workflow.html', 'ibox-tecnica');
+      });
+      </script>
+
+
+          </div>
+          <div style="clear:both"></div>
+      </div>
+      <div class="row">
+        <div class="col-2">
+          <button type="button" class="btn btn-outline btn-primary dim p-2 py-4 btn-block ordenador-btna" id="analise_adm">Análise Administrativa</button>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-outline btn-warning dim p-2 py-4 btn-block ordenador-btn" id="analise_tecnica">Análise Técnica</button> 
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-outline btn-info dim p-2 py-4 btn-block ordenador-btn" id="gerar_minuta" data-toggle="modal" data-target="#assinarConvenioModal">Gerar Minuta</button>
+        </div>
+      </div>
+    </div>
+    <script>
+    $(document).ready(function() {
+
+      $('#container_analise').html('');
+      appendToDiv('demandado_adm.html', 'container_analise');
+      $('.btn-outline').each(function() {
+        $(this).removeClass('active');
+      });
+      $('#analise_adm').addClass('active');
+      
+      $('#analise_adm').click(function() {
+        $('#container_analise').html('');
+        appendToDiv('demandado_adm.html', 'container_analise');
+
+        $('.btn-outline').each(function() {
+          $(this).removeClass('active');
+        });
+
+        $(this).addClass('active');
+      });
+      $('#analise_tecnica').click(function() {
+        $('#container_analise').html('');
+        appendToDiv('demandado_tecnica.html', 'container_analise');
+
+        $('.btn-outline').each(function() {
+          $(this).removeClass('active');
+        });
+
+        $(this).addClass('active');
+      });
+      $('#gerar_minuta').click(function() {
+        $('#container_analise').html('');
+
+        $('.btn-outline').each(function() {
+          $(this).removeClass('active');
+        });
+
+
+      });
+    });
+    </script>
+
+<div class="ibox-content" id="container_analise">
+  
+</div>
+</div>
+
+
+<div class="modal fade" id="assinarConvenioModal" tabindex="-1" role="dialog" aria-labelledby="assinarConvenioModalTitulo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 clas="modal-title" id="assinarConvenioModalTitulo">Minuta gerada com sucesso</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">X</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Na Administração Pública, o Convênio vem sendo sistematicamente utilizado sempre que há o
+  efetivo repasse de recursos públicos a outras entidades públicas ou associações privadas destinadas
+  a determinadas ações de interesse público. Embora o Convênio não se confunda com contrato
+  administrativo, o instrumento formaliza um acordo de vontades e, nesse sentido, impõe obrigações
+  e responsabilidades aos signatários.</p>
+  <p>
+  A Lei Federal n.º 8.666/93, que trata dos Contratos e Licitações, em seu artigo 116, regulamenta os
+  Convênios, e estabelece que a celebração dependa da aprovação de um plano de trabalho, a ser
+  apresentado pela parte interessada.</p>
+  <p>
+  O plano de trabalho deve conter as seguintes informações (Art. 116, § 1º):</p>
+  <p>
+  I . identificação do objeto a ser executado;<br>
+  II . metas a serem atingidas;<br>
+  III . etapas ou fases de execução;<br>
+  I V. plano de aplicação dos recursos financeiros;<br>
+  V. cronograma de desembolso;<br>
+  VI. previsão de início e fim da execução do objeto, bem assim da conclusão das etapas ou fases
+  programadas;<br>
+  VII. se o ajuste compreender obra ou serviço de engenharia, comprovação de que os recursos próprios
+  para complementar a execução do objeto estão devidamente assegurados, salvo se o custo total do
+  empreendimento recair sobre a entidade ou órgão descentralizador.
+  </p>
+  <p>
+  A assinatura do Convênio obriga o órgão repassador do recurso (no caso, a Casa Civil) a comunicar o
+  fato à Assembleia Legislativa e ao Tribunal de Contas do Estado.
+  </p>
+  <p>
+  A liberação dos recursos está vinculada ao plano de aplicação aprovado (cronograma físicofinanceiro) e, no caso dos Programas AM e AEM, compreende de 1 a 3 parcelas, de acordo com o
+  valor. Para a liberação de parcelas, é necessária a apresentação de Prestação de Contas parcial.
+  </p>
+  <p>
+  As parcelas ficarão pendentes de liberação nos seguintes casos:
+  </p>
+  <p>
+  •  Quando não houver comprovação da boa e regular aplicação da parcela anteriormente
+  recebida, mediante análise da Prestação de Contas parcial ou Vistoria Técnica de Engenharia
+  pela equipe da Casa Civil/SRM/URM;<br>
+  •  Quando for verificado desvio de finalidade na aplicação dos recursos;<br>
+  •  Quando forem verificadas práticas atentatórias aos princípios fundamentais da
+  Administração Pública nas contratações.
+  </p>
+  <p>
+  As receitas financeiras decorrentes das aplicações dos recursos recebidos serão obrigatoriamente
+  computadas a crédito do Convênio integrando a participação estadual. E deverão ser aplicadas
+  exclusivamente no objeto de sua finalidade, mediante prévia análise e autorização da Casa
+  Civil/SRM/URM.
+  </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Concluir</button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
