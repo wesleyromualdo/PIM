@@ -26,8 +26,6 @@ class DemandasPortfolioDescricao extends mvc\Controle
         $arDado = array();
         
         $_POST['returnsql'] = true;
-        $pesquisar = $_POST['pesquisar'];
-        $this->visao->pesquisar = $pesquisar;
         
         $arDado['sql_portfolio_descricao'] = $moDemandasPortfolioDescricao->listaPortfolioDescricao($_POST);
         

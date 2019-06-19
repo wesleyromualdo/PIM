@@ -7,53 +7,41 @@ require APPRAIZ . 'demandas/model/UnidadeMedida.class.inc';
 
 class Insumo extends mvc\Controle
 {
-    private $modelInsumo;
-
 	public function iniciarFluxo()
-	{
-        $this->modelInsumo = new Insumo_Model();
-
+	{	    
 	    switch ($_REQUEST['requisicao']) {
 	        case 'salvarInsumo':
 	            $this->acaoSalvar();
-                //$this->sucesso('demandas.php?modulo=insumo/listar');
+	            $this->sucesso('demandas.php?modulo=insumo/listar');
 	            die;
 	        case 'deletarInsumo':
-	            ob_clean();
 	            $this->acaoDeletar($_REQUEST);
-                $this->sucesso('demandas.php?modulo=insumo/listar');
+	            $this->sucesso('demandas.php?modulo=insumo/listar');
 	            die;
-            case'validarCodigoInsumo':
-                ob_clean();
-                $resInsumo = $this->modelInsumo->getInsumoCodigoSubgrupoId($_REQUEST);
-                // se ja existir o código inserido não deixa o usuário continuar
-                if( !empty($resInsumo) && is_array($resInsumo) ){
-                    echo 'false';
-                }
-                die;
 
 	    }
 	}	
 	
 	public function acaoListar()
-	{
-	    $arDado = array();
-	    $_REQUEST['returnsql'] = true;
-        $pesquisar = $_POST['pesquisar'];
-        $this->visao->pesquisar = $pesquisar;
+	{    
 	    
-	    $arDado['sql_insumo'] = $this->modelInsumo->listaInsumo($_REQUEST);
+	    $moInsumo = new Insumo_Model();
 
+	    $arDado = array();
+	    $_POST['returnsql'] = true;
+	    
+	    $arDado['sql_insumo'] = $moInsumo->listaInsumo($_POST);
+
+	    // lista de grupos de insumos
         $listagemSimec = new Simec_Listagem();
-        $arrayCabecalho = array('Código', 'Insumo', 'Unidade de medida', 'Tipo', 'Subgrupo');
-        $esconderColunas = array('co_insumo', 'co_status');
+        $arrayCabecalho = array('Código', 'Insumo', 'Unidade de medida', 'Tipo de insumo', 'Grupo insumo');
+        $esconderColunas = array('co_insumo');
         $listagemSimec->setCabecalho($arrayCabecalho);
         $listagemSimec->esconderColunas($esconderColunas);
-        $listagemSimec->turnOffForm();
+        $listagemSimec->turnOnPesquisator();
         $listagemSimec->setQuery($arDado['sql_insumo']);
         $listagemSimec->addAcao('edit', array('func' => 'abrirInsumo'));
         $listagemSimec->addAcao('delete', array('func' => 'deletarInsumo'));
-        $listagemSimec->setAcaoComoCondicional('delete', array(array('campo' => 'co_status', 'valor' => 0, 'op' => 'diferente')) );
         $listagemSimec->setFormFiltros('formulario-insumo');
         $listagemSimec->setTotalizador(Simec_Listagem::TOTAL_QTD_REGISTROS);
         $listagemSimec->setTamanhoPagina(50);
@@ -62,12 +50,14 @@ class Insumo extends mvc\Controle
 
 	    $this->visao->carregarDados($arDado);
 	    
-	    $this->visao->setarTituloCabecalho('Insumos');
+	    $this->visao->setarTituloCabecalho(' ');
 	    $this->visao->incluirVisao('lista');
 	}
 	
 	public function acaoCadastrar()
 	{
+	    
+	    $moInsumo = new Insumo_Model();
         $moUnidadeMedida = new UnidadeMedida_Model();
         $moGrupoInsumo = new GrupoInsumo_Model();
         $moTipoInsumo = new TipoInsumo_Model();
@@ -76,57 +66,44 @@ class Insumo extends mvc\Controle
 	    $arDado = array();
 	    
 	    if($_REQUEST['co_insumo']) {
-	        $arDado = $this->modelInsumo->getInsumoPorId($_REQUEST['co_insumo']);
+	        $arDado = $moInsumo->getInsumoPorId($_REQUEST['co_insumo']);
+            //$arDado['sql_grupo_insumo_filho'] = $moInsumo->listaInsumoFilhoPorPaiID($_REQUEST['co_grupo_insumo']);
         }
 
         $arDado['sql_unidade_medida'] = $moUnidadeMedida->getComboUnidadeMedida();
         $arDado['sql_tipo_insumo'] = $moTipoInsumo->getComboTipoInsumo();
         $arDado['sql_piso_insumo'] = $moPisoInsumo->getComboPisoInsumo();
-        $arDado['sql_grupo_insumo_filho'] = $moGrupoInsumo->getComboGrupoInsumoFilho();
+        $arDado['sql_grupo_insumo'] = $moGrupoInsumo->getComboGrupoInsumo();
 
+	    //ver($arDado);
 	    $this->visao->carregarDados($arDado);
-	    $this->visao->setarTituloCabecalho('');
+	    
+	    $this->visao->setarTituloCabecalho(' ');
 	    $this->visao->incluirVisao('cadastro');
 	}
 
 	
 	public function acaoDeletar()
 	{
+	    $moInsumo = new Insumo_Model();
+	    
 	    $_REQUEST['co_status'] = '0';
-	    $this->modelInsumo->popularDadosObjeto($_REQUEST)->salvar();
-	    $this->modelInsumo->commit();
+
+	    $moInsumo->popularDadosObjeto($_REQUEST)->salvar();
+	    
+	    $moInsumo->commit();
+	    
 	}
 	
 	public function acaoSalvar()
 	{
-        $co_insumo = $_REQUEST['co_insumo'];
+	    $moInsumo = new Insumo_Model();
+
         $_REQUEST['nu_cpf_inclusao'] = $_SESSION['usucpf'];
-	    //$moInsumo = new Insumo_Model();
-	    //$resInsumo = $this->modelInsumo->salvarInsumo($_REQUEST);
-        //$_REQUEST['co_piso_insumo'] = NULL;
-        // @TODO validar regra ao alterar tipo de insumo para material
-        if ( $_REQUEST['co_tipo_insumo'] == 2 ){
-            $_REQUEST['co_piso_insumo'] = null;
-        }
 
-        // @TODO alterar regra de validação para executar no método antesSalvar();
-//        $this->modelInsumo->popularDadosObjeto($_REQUEST);
-//        $result = $this->modelInsumo->salvar(true, false, array('co_piso_insumo'), false);
-
-        $valida = $this->modelInsumo->validaCadastroInsumo($_REQUEST);
-
-        if (isset($valida['erro']) && ($valida['erro'] == false) ) {
-            $this->modelInsumo->popularDadosObjeto($_REQUEST);
-            $this->modelInsumo->salvar(false, false, array('co_piso_insumo'), false);
-            $this->modelInsumo->commit();
-            $this->sucesso('demandas.php?modulo=insumo/listar');
-        } else {
-            if ($co_insumo){
-                $this->erro("demandas.php?modulo=insumo/cadastrar&co_insumo={$co_insumo}", $valida['msg']);
-            } else {
-                $this->erro('demandas.php?modulo=insumo/cadastrar', $valida['msg']);
-            }
-        }
+	    $moInsumo->popularDadosObjeto($_REQUEST)->salvar();
+	    
+	    $moInsumo->commit();
 	    
 	}
 	

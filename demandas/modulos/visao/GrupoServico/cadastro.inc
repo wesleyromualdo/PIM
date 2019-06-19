@@ -12,10 +12,10 @@ global $simec;
   <div class="tabs-container">
     <ul class="nav nav-tabs nav-custom">
       <li>
-        <a href="demandas.php?modulo=grupoServico/listar">Pesquisar</a>
+        <a href="demandas.php?modulo=GrupoServico/listar">Lista</a>
       </li>
       <li class="active">
-        <a href="demandas.php?modulo=grupoServico/cadastrar"><?php echo ($this->co_grupo_servico) ? 'Editar' : 'Cadastrar'; ?></a>
+        <a href="demandas.php?modulo=GrupoServico/cadastrar"><?php echo ($this->co_grupo_servico) ? 'Editar' : 'Cadastro'; ?></a>
       </li>
     </ul>
   </div>
@@ -45,11 +45,8 @@ global $simec;
                     if (empty($this->co_grupo_servico_pai) && ( is_array($this->sql_grupo_servico_filho) && count($this->sql_grupo_servico_filho) > 0 ) ) {
                         //echo 'Este grupo é pai e possui um ou mais filhos vinculados';
                     } else {
-                        echo $simec->select('co_grupo_servico_pai', 'Grupo Responsável', $this->co_grupo_servico_pai, $this->sql_grupo_servico_pai, $attrCombo, array('label-size' => '4', 'input-size' => '8'));
-                    }
 
-                    if (!empty($this->co_grupo_servico)) {
-                        echo $simec->radio("co_status", "Situação", $this->co_status, array('1' => 'Ativo', '0' => 'Inativo'), array('id' => 'co_status'), array('label-size' => '4', 'input-size' => '8'));
+                        echo $simec->select('co_grupo_servico_pai', 'Grupo Responsável', $this->co_grupo_servico_pai, $this->sql_grupo_servico_pai, $attrCombo, array('label-size' => '4', 'input-size' => '8'));
                     }
                 ?>
             </div> 
@@ -80,7 +77,7 @@ $(document).ready(function(){
 
 
     jQuery('.btn-voltar').click(function(){
-        window.location='demandas.php?modulo=grupoServico/listar'
+        window.location='demandas.php?modulo=GrupoServico/listar'
     });
 
     jQuery('.btn-salvar').click(function (){ 

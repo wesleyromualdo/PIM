@@ -1,11 +1,17 @@
 <?php
-
+if( $this->funcao == 'R' ){
+    $entidades = $this->entidade[ $_GET['enfid'] ];
+    $ejfid = $this->demandante['ejfid'];
+} else {
+    $entidades = $this->entidade[$this->demandante['enfid']];
+    $ejfid = $this->demandante['ejfid'];
+}
 ?>
 <div class="ibox">
 	<div class="ibox-title">
         <div class="row">
         	<div class="col-md-12" >
-    	       <h3 id="entidade">Dados do(a) <?php echo $this->entidade[$this->demandante['enfid']];?>(a)</h3>
+    	       <h3 id="entidade">Dados do(a) <?php echo $entidades;?>(a)</h3>
             </div>
 		</div>
 	</div>
@@ -13,13 +19,14 @@
     	<div class="row">
     		<div class="col-lg-12">
 <?php       if( (int)$this->qtd_ja_cadastrado < (int)$this->qtd_representante ){?>
-                    <button type="button" class="btn btn-primary btn-incluir" style="width: 200px;" onclick="abreModalPessoa(<?php echo $this->demandante['ejfid']; ?>, '');"><i class="fa fa-edit"></i> Incluir</button>
+                    <button type="button" class="btn btn-primary btn-incluir" style="width: 200px;" onclick="abreModalPessoa(<?php echo $ejfid; ?>, '');"><i class="fa fa-edit"></i> Incluir</button>
 <?php       }?>
             </div>
     	</div>
     	<div class="row">
     		<div class="col-lg-12">
-    			<input type="hidden" name="enfid" value="<?php echo $this->demandante['enfid'];?>">
+    			<input type="hidden" name="enfid" value="<?php echo $_REQUEST['enfid'];?>">
+    			<input type="hidden" name="ejfid" value="<?php echo $ejfid;?>">
                 	<?php                	
                     $listagemSimec = new Simec_Listagem();
                     $arrayCabecalho = array('CNPJ', 'Nome', 'E-mail', 'Telefone');
@@ -59,8 +66,8 @@
                 </div>
             </div>
             <div class="ibox-footer" style="text-align: center;">
-                <button type="button" id="btn-fechar-pessoa" data-dismiss="modal" class="btn btn-success"><i class="fa fa-times-circle-o"></i> Fechar</button>
                 <button type="button" id="btn-salvar-pessoa" class="btn btn-primary" data-loading-text="Salvando aguarde ..."><i class="fa fa-save"></i> Salvar</button>
+                <button type="button" id="btn-fechar-pessoa" data-dismiss="modal" class="btn btn-success"><i class="fa fa-times-circle-o"></i> Fechar</button>
             </div>
         </div>
     </div>

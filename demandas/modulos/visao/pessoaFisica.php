@@ -22,7 +22,7 @@
     			<input type="hidden" name="enfid" value="<?php echo $_REQUEST['enfid'];?>">
     			<input type="hidden" name="tipo" value="<?php echo $_REQUEST['tipo'];?>">
     			<input type="hidden" name="ejfid" value="<?php echo $this->ejfid;?>">
-    			<input type="hidden" name="tipo_representante"   id="tipo_representante"  value="<?php echo $this->tipo_representante; ?>"/>
+    			<input type="hidden" name="enrtipo"   id="enrtipo"  value="<?php echo $this->enrtipo; ?>"/>
     			
                 	<?php
                     $listagemSimec = new Simec_Listagem();
@@ -72,7 +72,7 @@ function abreModalPessoa( ensid, enrtipo ){
 	jQuery("#form_pessoa").html('');
 	
 	var caminho = window.location.href;
-	var action = '&requisicao=montar_tela_pessoa&ensid='+ensid+'&ejfid='+jQuery('[name="ejfid"]').val()+'&enfid='+jQuery('[name="enfid"]').val()+'&tipo='+jQuery('[name="tipo"]').val()+'&enrtipo='+enrtipo+'&tipo_representante='+jQuery('[name="tipo_representante"]').val();
+	var action = '&requisicao=montar_tela_pessoa&ensid='+ensid+'&ejfid='+jQuery('[name="ejfid"]').val()+'&enfid='+jQuery('[name="enfid"]').val()+'&tipo='+jQuery('[name="tipo"]').val()+'&enrtipo='+enrtipo+'&enrtipo='+jQuery('[name="enrtipo"]').val();
 	jQuery.ajax({
 	    type: "POST",
 	    url: caminho,

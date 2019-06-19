@@ -24,8 +24,6 @@ class UnidadeMedida extends mvc\Controle
 	    $arDado = array();
 	    
 	    $_POST['returnsql'] = true;
-        $pesquisar = $_POST['pesquisar'];
-        $this->visao->pesquisar = $pesquisar;
 	    
 		$arDado['sql_unidade_medida'] = $moUnMed->listaUnidadeMedida($_POST);
 		$arDado['sql_co_sigla'] = $moUnMed->getSiglas();

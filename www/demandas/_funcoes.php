@@ -11,9 +11,9 @@ function criaAbaTabelaApoio()
     
     $moduloparts = explode("/", $_GET['modulo']);
     
-    $aba[] = array("descricao" => "Pesquisar", "link" => "demandas.php?modulo=".$moduloparts[0]."/listar");
+    $aba[] = array("descricao" => "Lista", "link" => "demandas.php?modulo=".$moduloparts[0]."/listar");
     
-    if($moduloparts[1]=='cadastrar') $aba[] = array("descricao" => "Cadastrar", "link" => "demandas.php?modulo=".$moduloparts[0]."/cadastrar");
+    if($moduloparts[1]=='cadastrar') $aba[] = array("descricao" => "Cadastro", "link" => "demandas.php?modulo=".$moduloparts[0]."/cadastrar");
     
     echo $simec->tab ($aba, "demandas.php?modulo=".$_GET['modulo']);
     

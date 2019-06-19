@@ -15,6 +15,7 @@ class Demandantes extends mvc\Controle
 	            die;
 	        case 'abreListaGetor':
                 ob_clean();
+                $_REQUEST['gestor'] = 'S';
                 $this->carregarListaGestor($_REQUEST);
                 die;
 	        case 'carregarCardapio':
@@ -36,7 +37,7 @@ class Demandantes extends mvc\Controle
 	        case 'salva_pessoa_juridica':
 	            $this->salva_pessoa_juridica( $_REQUEST );
 	            if( $_REQUEST['enfid'] && $_REQUEST['tipo'] ){
-	                $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_REQUEST['ddtid'].'&enfid='.$_REQUEST['enfid'].'&tipo='.$_REQUEST['tipo'];
+	                $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_REQUEST['ddtid'].'&enfid='.$_REQUEST['enfid'].'&tipo='.$_REQUEST['tipo'].'&funcao='.$_REQUEST['funcao'];
 	            } else {
 	                $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_REQUEST['ddtid'];
 	            }
@@ -44,7 +45,7 @@ class Demandantes extends mvc\Controle
 	            die;
 	        case 'salva_pessoa_fisica':
 	            $this->salva_pessoa_fisica( $_REQUEST );
-	            $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_REQUEST['ddtid'].'&enfid='.$_REQUEST['enfid'].'&tipo='.$_REQUEST['tipo'];
+	            $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_REQUEST['ddtid'].'&enfid='.$_REQUEST['enfid'].'&tipo='.$_REQUEST['tipo'].'&funcao='.$_REQUEST['funcao'];
 	            $this->sucesso($url);
 	            die;
 	        case 'montar_tela_pessoa':
@@ -104,11 +105,13 @@ class Demandantes extends mvc\Controle
 	    
 	    $arDado['demandante'] = $moDemandante->getVariaveisPessoaJuridicaPai( $_REQUEST['ddtid'] );
 	    
+	    $arDado['funcao'] = $_REQUEST['funcao'];
+	    
 	    /*$arDado['verifica_gestor'] = '';
 	    if( $_REQUEST['enfid'] ){
 	        $arRepresentante = $moDemandante->getDadosRepresentante($_REQUEST['enfid']);
 	        $arDado['qtd_representante'] = $arRepresentante['enrqtdcadastrados'];
-	        $arDado['tipo_representante'] = $arRepresentante['enrtipo'];
+	        $arDado['enrtipo'] = $arRepresentante['enrtipo'];
 	        
 	        $arDado['verifica_gestor'] = $moDemandante->verificaExisteGestor($_REQUEST['enfid']);
 	    }
@@ -116,8 +119,8 @@ class Demandantes extends mvc\Controle
 	    $arDado['municipio'] = array();
 	    $arDado['prefeitura'] = array();
 	    if( $_REQUEST['tipo'] == 'F' ){
-	        $arDado['sql_pessoafisica'] = $moDemandante->getDadosPessoaFisica($_REQUEST['ddtid'], $_REQUEST['ensid'], true, $_REQUEST['enfid'], false, $arDado['tipo_representante']);
-	        $arDado['qtd_ja_cadastrado'] = $moDemandante->getDadosPessoaFisica($_REQUEST['ddtid'], $_REQUEST['ensid'], false, $_REQUEST['enfid'], true, $arDado['tipo_representante']);
+	        $arDado['sql_pessoafisica'] = $moDemandante->getDadosPessoaFisica($_REQUEST['ddtid'], $_REQUEST['ensid'], true, $_REQUEST['enfid'], false, $arDado['enrtipo']);
+	        $arDado['qtd_ja_cadastrado'] = $moDemandante->getDadosPessoaFisica($_REQUEST['ddtid'], $_REQUEST['ensid'], false, $_REQUEST['enfid'], true, $arDado['enrtipo']);
 	        
 	        $arDado['ejfid'] = $moDemandante->getIdVinculoDemandante($_REQUEST['ddtid']);
 	        
@@ -128,16 +131,26 @@ class Demandantes extends mvc\Controle
 	    } else {
 	        $arDado['sql_pessoajuridica'] = $moDemandante->getDadosPessoaJuridica($_REQUEST['ddtid'], true, $_REQUEST['enjid'], $_REQUEST['enfid']);
 	        $arDado['qtd_ja_cadastrado'] = $moDemandante->getDadosPessoaJuridica($_REQUEST['ddtid'], false, $_REQUEST['enjid'], $_REQUEST['enfid'], true);
-	    }*/    
+	    }*/  
 	    
-	    if( $_REQUEST['tipo'] == 'F' ){
+	    if( $_REQUEST['enfid'] ){
+	        $arRepresentante = $moDemandante->getDadosRepresentante($_REQUEST['enfid']);
+	        $arDado['qtd_representante'] = $arRepresentante['enrqtdcadastrados'];
+	        $arDado['enrtipo'] = $arRepresentante['enrtipo'];
+	        
+	        $arDado['verifica_gestor'] = $moDemandante->verificaExisteGestor($_REQUEST['enfid']);
+	    }
+	    
+	    if( $_REQUEST['tipo'] == 'F' )
+	    {
 	        $arrParam = array('ddtid'          => $_REQUEST['ddtid'], 
 	                           'ensid'         => '', 
 	                           'retornoSQL'    => true, 
 	                           'enfid'         => $_REQUEST['enfid'], 
 	                           'retornoCount'  => false, 
-	                           'tipo_representante' => 'E', 
-	                           'tipoGestor'    => false, 
+	                           'enrtipo' => $arDado['enrtipo'], 
+	                           'funcao' => $_REQUEST['funcao'], 
+	                           'enrgestor'    => false, 
 	                           'enjid'         => $arDado['demandante']['enjid']);
 	        
 	        $arDado['sql_pessoafisica'] = $moDemandante->getDadosPessoaFisica( $arrParam );
@@ -145,25 +158,43 @@ class Demandantes extends mvc\Controle
 	        $arrParam['retornoSQL'] = false;
 	        $arrParam['retornoCount'] = true;	        
 	        $arDado['qtd_ja_cadastrado'] = $moDemandante->getDadosPessoaFisica( $arrParam );
-	    } else {	    
+	        $arFuncao = $moDemandante->getFuncaoEntidade($_GET['enfid']);
+	    }else{
+	        
     	    $arrParam = array('ddtid' => $_REQUEST['ddtid'], 
     	                      'retornoSQL' => true, 
     	                      'enjid' => $arDado['demandante']['enjid'], 
     	                      'enfid' => $arDado['demandante']['enfid'], 
+    	                      'enrtipo' => $arDado['enrtipo'],
+    	                      'funcao' => $_REQUEST['funcao'], 
     	                      'retornoCount' => false);
-    	    $arDado['sql_pessoajuridica'] = $moDemandante->getDadosPessoaJuridica( $arrParam );
     	    
-    	    $arrParam['retornoSQL'] = false;
-    	    $arrParam['retornoCount'] = true;
-    	    $arDado['qtd_ja_cadastrado'] = $moDemandante->getDadosPessoaJuridica( $arrParam );
+    	    if( $_REQUEST['funcao'] == 'R' ) #Carrega informações do representante
+    	    {
+    	        $arrParam['enjid'] = '';
+    	        $arrParam['enfid'] = $_GET['enfid'];
+    	        $arDado['sql_pessoajuridica'] = $moDemandante->getDadosRepresentanteJuridica( $arrParam );
+    	        $arrParam['retornoSQL'] = false;
+    	        $arrParam['retornoCount'] = true;
+    	        $arDado['qtd_ja_cadastrado'] = $moDemandante->getDadosRepresentanteJuridica( $arrParam );
+    	        $arFuncao = $moDemandante->getFuncaoEntidade($_GET['enfid']);
+    	        
+    	    }else{
+                
+        	    $arDado['sql_pessoajuridica'] = $moDemandante->getDadosPessoaJuridica( $arrParam );    	    
+        	    $arrParam['retornoSQL'] = false;
+        	    $arrParam['retornoCount'] = true;
+        	    $arDado['qtd_ja_cadastrado'] = $moDemandante->getDadosPessoaJuridica( $arrParam );
+        	    
+        	    $arFuncao = $moDemandante->getFuncaoEntidade($arDado['demandante']['enfid']);   	    
+    	    }
 	    }
+	    
+	    $arDado['qtd_ja_cadastrado'] = ($arDado['qtd_ja_cadastrado'] ? (int)$arDado['qtd_ja_cadastrado'] : (int)0);
 	    
 	    $arDado['funcao_entidade'] = $moDemandante->getDadosFuncaoEntidade($_REQUEST['ddtid']);
 	    
-	    $arFuncao = $moDemandante->getFuncaoEntidade($arDado['demandante']['enfid']);
-	    
-	    $arrEntidade[$arDado['demandante']['enjid']] = $arFuncao['enfdsc'];
-	    $arDado['entidade'] = $arrEntidade;
+	    $arDado['entidades'] = $arFuncao['enfdsc'];
 	    
 	    $this->visao->carregarDados($arDado);
 	    
@@ -256,34 +287,36 @@ class Demandantes extends mvc\Controle
 	    
 	    $efjid = $arrPost['dados'][0];
 	    $enjid = $arrPost['dados'][1];
+	    
+	    $arDado['funcao'] = $_REQUEST['funcao'];
 	    	    
 	    $arDado['ejfid'] = $efjid;
 	    $enfidfilho = $moDemandante->verificaExisteGestor($arrPost['enfid']);
-	    $arFuncao = $moDemandante->getFuncaoEntidade($enfidfilho);
 	    
 	    $enfidpai = $arrPost['enfid'];
 	    
-	    $arrEntidade[$enfidfilho] = $arFuncao['enfdsc'];
 	    $_REQUEST['enfid'] = $enfidfilho;
 	    $_REQUEST['tipo'] = 'F';
 	    $arrPost['enfid'] = $enfidfilho;
 	    $arrPost['tipo'] = 'F';
 	    
 	    if( $arrPost['enfid'] ){
-	        $arRepresentante = $moDemandante->getDadosRepresentante($arrPost['enfid'], $enfidpai);
+	        $arRepresentante = $moDemandante->getDadosRepresentante($arrPost['enfid'], $enfidpai);	        
 	        $arDado['qtd_representante'] = $arRepresentante['enrqtdcadastrados'];
-	        $arDado['tipo_representante'] = $arRepresentante['enrtipo'];
+	        $arDado['enrtipo'] = $arRepresentante['enrtipo'];
+	        $arDado['enrgestor'] = ($arRepresentante['enrgestor'] == true ? 'S' : 'N');
 	    }
 	    
-	    $arDado['entidade'] = $arrEntidade;
+	    $arFuncao = $moDemandante->getFuncaoEntidade($enfidfilho);
+	    $arDado['entidades'] = $arFuncao['enfdsc'];	    
 	    
 	    $arrParam = array('ddtid'          => $arrPost['ddtid'],
                 	        'ensid'         => $arrPost['ensid'],
                 	        'retornoSQL'    => true,
 	                        'enfid'         => $arrPost['enfid'],
                 	        'retornoCount'  => false,
-	                        'tipo_representante' => $arDado['tipo_representante'],
-                	        'tipoGestor'    => true,
+	                        'enrtipo' => $arDado['enrtipo'],
+                	        'enrgestor'    => true,
 	                        'enjid'         => $enjid);
 	    
 	    $arDado['sql_pessoafisica'] = $moDemandante->getDadosPessoaFisica( $arrParam );
@@ -324,31 +357,50 @@ class Demandantes extends mvc\Controle
 	    $arDado['demandante'] = $moDemandante->getVariaveisPessoaJuridicaPai( $arrPost['ddtid'] );
 	    $arDado['pessoa_juridica'] = array();
 	    
-	    if( $arrPost['tipo'] == 'J' && !in_array($arrPost['enfid'], array(1) ) ){
+	    $arDado['funcao'] = $_GET['funcao'];
+	    
+	    //Verifica se a pessoa e juridica e se a funcao e de representante
+	    if( $arDado['funcao'] == 'R' ){
+	        $arFuncao = $moDemandante->getFuncaoEntidade( $arrPost['enfid'] );
+	        
+	        $arDado['ddtid'] = $arrPost['ddtid'];
+	        $arDado['enjid'] = $arrPost['enjid'];
+	        $arDado['enfid'] = $arrPost['enfid'];
+	        $arDado['ejfid'] = $arrPost['ejfid'];
 	        	        
+	        $arDado['entidades'] = $arFuncao['enfdsc'];
+	        $arDado['demandante']['enfid'] = $arrPost['enfid'];
+	        
 	        $arrParam = array('ddtid' => $arrPost['ddtid'],
             	              'retornoSQL' => false,
-            	              'enjid' => $arDado['demandante']['enjid'],
-            	              'enfid' => $arDado['demandante']['enfid'],
+	                          'enjid' => $arrPost['enjid'],
+	                          'enfid' => $arrPost['enfid'],
+	                          'funcao' => $arrPost['funcao'],
             	              'retornoCount' => false);
-	        
-	        $arDado['pessoa_juridica'] = $moDemandante->getDadosRepresentanteJuridica( $arrParam );
+	        if( $arrPost['enjid'] )
+	           $arDado['pessoa_juridica'] = $moDemandante->getDadosRepresentanteJuridica( $arrParam );
 	    } else {
+	        
+	        $arDado['ddtid'] = $_GET['ddtid'];
+	        $arDado['enjid'] = $arDado['demandante']['enjid'];
+	        $arDado['enfid'] = $arDado['demandante']['enfid'];
+	        $arDado['ejfid'] = $arDado['demandante']['ejfid'];
+	        
+	        $arFuncao = $moDemandante->getFuncaoEntidade( $arDado['demandante']['enfid'] );
+	        $arDado['entidades'] = $arFuncao['enfdsc'];
+	        
 	        $arrParam = array('ddtid' => $arrPost['ddtid'],
             	            'retornoSQL' => false,
             	            'enjid' => $arDado['demandante']['enjid'],
             	            'enfid' => $arDado['demandante']['enfid'],
+	                        'funcao' => $arrPost['funcao'],
             	            'retornoCount' => false);
 	        
-	        $arDado['pessoa_juridica'] = $moDemandante->getDadosPessoaJuridica( $arrParam );
+	        if( $arrPost['enjid'] )
+	           $arDado['pessoa_juridica'] = $moDemandante->getDadosPessoaJuridica( $arrParam );
 	    }
 	    
 	    $arDado['funcao_entidade'] = $moDemandante->getDadosFuncaoEntidade($arrPost['ddtid']);
-	    
-	    $arFuncao = $moDemandante->getFuncaoEntidade($arDado['demandante']['enfid']);
-	    
-	    $arrEntidade[$arDado['demandante']['enjid']] = $arFuncao['enfdsc'];
-	    $arDado['entidade'] = $arrEntidade;
 	    
 	    $this->visao->carregarDados($arDado);
 	    
@@ -364,7 +416,14 @@ class Demandantes extends mvc\Controle
 	    
 	    $arDado['demandante'] = $moDemandante->getVariaveisPessoaJuridicaPai( $_REQUEST['ddtid'] );
 	    
-	    $gestor = ($arrPost['gestor'] == 'S' ? true : false);
+	    $arDado['funcao'] = $_GET['funcao'];
+	    
+	    $arFuncao = $moDemandante->getFuncaoEntidade( $arrPost['enfid'] );
+	    
+	    $arDado['entidades'] = $arFuncao['enfdsc'];
+	    $arDado['demandante']['enfid'] = $_GET['enfid'];
+	    $arDado['enrgestor'] = $arrPost['enrgestor'];
+	    $enrgestor = ($arrPost['enrgestor'] == 'S' ? true : false);
 	    
 	    $arDado['prefeitura'] = array();
 	    if( $arrPost['ensid']  ){
@@ -374,16 +433,22 @@ class Demandantes extends mvc\Controle
                 	           'retornoSQL'    => false,
                 	           'enfid'         => $_REQUEST['enfid'],
                 	           'retornoCount'  => false,
-	                           'tipo_representante' => $arrPost['enrtipo'],
-	                           'tipoGestor'    => $gestor,
+	                           'enrtipo' => $arrPost['enrtipo'],
+	                           'enrgestor'    => $enrgestor,
 	                           'enjid'         => $arrPost['enjid']);
 	        
 	        $arDado['pessoa_fisica'] = $moDemandante->getDadosPessoaFisica( $arrParam );
 	        $arDado['pessoa_fisica'] = $arDado['pessoa_fisica'][0];
 	    }
 	    
+	    $arDado['ddtid'] = $arrPost ['ddtid'];
+	    $arDado['ensid'] = $arrPost ['ensid'];
+	    $arDado['enfid'] = $arrPost ['enfid'];
+	    if( $arrPost['enrgestor'] == 'S' ) $arDado['ejfid'] = ($arrPost['ejfid']);
+	    else $arDado['ejfid'] = $arDado['pessoa_fisica']['ejfid'];
+	    
 	    $arDado['funcao_entidade'] = $moDemandante->getDadosFuncaoEntidade($arrPost['ddtid']);
-	    $arDado['tipo_representante'] = $arrPost['enrtipo'];
+	    $arDado['enrtipo'] = $arrPost['enrtipo'];
 	    
 	    $this->visao->carregarDados($arDado);
 	    

@@ -53,21 +53,13 @@ class DemandasPortfolioTipo_Model extends Modelo
 
     public function listaPortfolioTipo( $arrPost )
     {
-        $filtro = ' dctstatus = 1 ';
-
-        if( isset($arrPost['dctstatus']) ){
-            if($arrPost['dctstatus'] != '-1'){
-                $filtro = " dctstatus = '".$arrPost['dctstatus']."' ";
-            } else {
-                $filtro = " (dctstatus = 1 OR dctstatus = 0) ";
-            }
-        }
+        $filtro = '';
         
         if( $arrPost['dctdsc'] ){
-            $filtro .= " and dctdsc ilike removeAcento('%".$arrPost['dctdsc']."%')";
+            $filtro = " and dctdsc ilike removeAcento('%".$arrPost['dctdsc']."%')";
         }
         
-        $sql = "SELECT dctid, dctdsc FROM demandas.demandas_portfolio_tipo WHERE {$filtro}";
+        $sql = "SELECT dctid, dctdsc FROM demandas.demandas_portfolio_tipo WHERE dctstatus=1 {$filtro}";
         
 
         if($arrPost['returnsql']) {
