@@ -2,7 +2,7 @@
 global $simec;
 
 ?>
-<form method="post" name="formulario-pessoa-juridica" id="formulario-pessoa-juridica" class="form form-horizontal">
+<form method="post" name="formulario-pessoa-juridica" id="formulario-pessoa-juridica" class="form form-horizontal" data-toggle="validator" role="form">
     <input type="hidden" name="ddtid"   id="ddtid"  value="<?php echo $this->ddtid; ?>"/>
     <input type="hidden" name="enjid"   id="enjid"  value="<?php echo $this->enjid; ?>"/>
     <input type="hidden" name="enfid"   id="enfid"  value="<?php echo $this->enfid; ?>"/>
@@ -33,3 +33,6 @@ global $simec;
     echo $simec->input('enjendbairro', 'Bairro', str_to_upper($this->pessoa_juridica['enjendbairro']), array('maxlength' => '255', '', 'required'));    
     ?></div>
 </form>
+<script>
+jQuery('#formulario-pessoa-juridica').validator();
+</script>

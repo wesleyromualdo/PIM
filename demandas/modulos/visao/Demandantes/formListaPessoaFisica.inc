@@ -40,6 +40,7 @@
                     $listagemSimec->setQuery( $this->sql_pessoafisica );
                     //ver(Simec_Listagem::TOTAL_QTD_REGISTROS,d);
                     $listagemSimec->addAcao('view', array('func' => 'abreModalPessoaFisica', 'extra-params' => array('enrtipo')));
+                    $listagemSimec->addAcao('delete', array('func' => 'exluirPessoaFisica', 'extra-params' => array('enrtipo')));
                     $listagemSimec->setFormFiltros('formulario-entidade');
                     $listagemSimec->addCallbackDeCampo('enscpf', 'formata_numero_cnpj_cpf');
                     $listagemSimec->setTotalizador(Simec_Listagem::TOTAL_QTD_REGISTROS);
@@ -57,7 +58,7 @@
      aria-hidden="true">
     <div class="modal-dialog modal-lg" id="printable">
         <div class="modal-content">
-            <div class="ibox-content">            	
+            <div class="ibox-content">
                 <div class="row">
 					<div class="col-lg-12" id="form_pessoa">
 							
@@ -65,7 +66,7 @@
                 </div>
             </div>
             <div class="ibox-footer" style="text-align: center;">
-                <button type="button" id="btn-salvar-pessoa-fisica" class="btn btn-primary" data-loading-text="Salvando aguarde ..."><i class="fa fa-save"></i> Salvar</button>
+                <button type="submit" id="btn-salvar-pessoa-fisica" class="btn btn-primary" data-loading-text="Salvando aguarde ..."><i class="fa fa-save"></i> Salvar</button>
                 <button type="button" id="btn-fechar-pessoa-fisica" data-dismiss="modal" class="btn btn-success"><i class="fa fa-times-circle-o"></i> Fechar</button>
             </div>
         </div>
@@ -73,6 +74,11 @@
 </div>
 
 <script type="text/javascript">
+
+function exluirPessoaFisica( ensid, enrtipo){
+	
+}
+
 function abreModalPessoaFisica( ensid, enrtipo){
 	jQuery("#form_pessoa").html('');
 

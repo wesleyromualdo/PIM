@@ -8,6 +8,8 @@ class Demandantes extends mvc\Controle
         $this->visao->setCabecalho('includes/cabecalho_bootstrap_v4.inc', true);
         $this->visao->setRodape('includes/rodape_bootstrap_v4.inc', true);
         $this->visao->setarIncludeJS('/estrutura/js/funcoes.js');
+        $this->visao->setarIncludeJS('/includes/bootstrap-validator/validator.js');
+        $this->visao->setarIncludeJS('/includes/bootstrap-validator/validator.min.js');
         
 	    switch ($_REQUEST['requisicao']) {
 	        case 'acessarDemandante':
