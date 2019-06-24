@@ -456,6 +456,20 @@ INSERT INTO demandas.demandas(dcoid, ddtid, docid, demcpfresponsavel, demstatus)
         return $this->commit();
     }
     
+    public function excluir_pessoa_fisica( $ensid ){
+        $sql = "UPDATE corporativo.entidades_fisicaxfuncao SET effstatus = 0 WHERE ensid = $ensid;
+                UPDATE corporativo.entidades_fisica SET ensstatus = 0 WHERE ensid = $ensid";
+        $this->executar($sql);
+        return $this->commit();
+    }
+    
+    public function excluir_pessoa_juridica( $enjid ){
+        $sql = "UPDATE corporativo.entidades_juridicaxfuncao SET ejfstatus = 0 WHERE enjid = $enjid;
+                UPDATE corporativo.entidades_juridica SET enjstatus = 0 WHERE enjid = $enjid";
+        $this->executar($sql);
+        return $this->commit();
+    }
+    
     public function salva_pessoa_fisica( $arrPost ){
         $arrPost['enstelefone']         = str_replace(array('(', '-', ')', ' '), '', $arrPost['enstelefone']);
         $arrPost['enscpf']              = str_replace(array('.', '-', '/'), '', $arrPost['enscpf']);

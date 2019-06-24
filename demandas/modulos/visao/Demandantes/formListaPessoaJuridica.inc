@@ -41,6 +41,9 @@ if( $this->funcao == 'R' ){
                         $listagemSimec->addAcao('plus', array('func' => 'abreListaGetor', 'extra-params' => array('enjid')));
                     }
                     $listagemSimec->addAcao('view', array('func' => 'abreModalPessoaJuridica', 'extra-params' => array('enjid')));
+                    if(  (int)$this->qtd_representante > (int)1 ){
+                        $listagemSimec->addAcao('delete', array('func' => 'exluirPessoaJuridica', 'extra-params' => array('enjid')));
+                    }
                     //$listagemSimec->addAcao('view', 'abreModalPessoaJuridica');
                     $listagemSimec->setFormFiltros('formulario-entidade');
                     $listagemSimec->addCallbackDeCampo('enjcnpj', 'formata_numero_cnpj_cpf');
@@ -74,6 +77,10 @@ if( $this->funcao == 'R' ){
 </div>
 
 <script type="text/javascript">
+
+function exluirPessoaFisica( ejfid, enjid ){
+	window.location.href = window.location+'&requisicao=excluirPessoaJuridica&enjid='+enjid; 
+}
 
 function abreModalPessoaJuridica( ejfid, enjid ){
 	jQuery("#form_pessoa").html('');

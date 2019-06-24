@@ -40,7 +40,9 @@
                     $listagemSimec->setQuery( $this->sql_pessoafisica );
                     //ver(Simec_Listagem::TOTAL_QTD_REGISTROS,d);
                     $listagemSimec->addAcao('view', array('func' => 'abreModalPessoaFisica', 'extra-params' => array('enrtipo')));
-                    $listagemSimec->addAcao('delete', array('func' => 'exluirPessoaFisica', 'extra-params' => array('enrtipo')));
+                    if(  (int)$this->qtd_representante > (int)1 ){
+                        $listagemSimec->addAcao('delete', array('func' => 'exluirPessoaFisica', 'extra-params' => array('enrtipo')));
+                    }
                     $listagemSimec->setFormFiltros('formulario-entidade');
                     $listagemSimec->addCallbackDeCampo('enscpf', 'formata_numero_cnpj_cpf');
                     $listagemSimec->setTotalizador(Simec_Listagem::TOTAL_QTD_REGISTROS);
@@ -76,7 +78,7 @@
 <script type="text/javascript">
 
 function exluirPessoaFisica( ensid, enrtipo){
-	
+	window.location.href = window.location+'&requisicao=excluirPessoaFisica&ensid='+ensid; 
 }
 
 function abreModalPessoaFisica( ensid, enrtipo){

@@ -50,6 +50,16 @@ class Demandantes extends mvc\Controle
 	            $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_GET['ddtid'].'&enfid='.$_GET['enfid'].'&tipo='.$_GET['tipo'].'&funcao='.$_GET['funcao'];
 	            $this->sucesso($url);
 	            die;
+	        case 'excluirPessoaFisica':
+	            $this->excluir_pessoa_fisica( $_GET['ensid'] );
+	            $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_GET['ddtid'].'&enfid='.$_GET['enfid'].'&tipo='.$_GET['tipo'].'&funcao='.$_GET['funcao'];
+	            $this->sucesso($url);
+	            die;
+	        case 'excluirPessoaJuridica':
+	            $this->excluir_pessoa_juridica( $_GET['enjid'] );
+	            $url = 'demandas.php?modulo=demandantes/verDadosDemandante&acao=A&ddtid='.$_GET['ddtid'].'&enfid='.$_GET['enfid'].'&tipo='.$_GET['tipo'].'&funcao='.$_GET['funcao'];
+	            $this->sucesso($url);
+	            die;
 	        case 'montar_tela_pessoa':
 	            ob_clean();
 	            
@@ -519,5 +529,17 @@ class Demandantes extends mvc\Controle
 	    
 	    $moDemandante = new Demandantes_Model();
 	    return $moDemandante->salva_pessoa_fisica( $arrPost );
+	}
+	
+	public function excluir_pessoa_fisica( $ensid ){
+	    
+	    $moDemandante = new Demandantes_Model();
+	    return $moDemandante->excluir_pessoa_fisica( $ensid );
+	}
+	
+	public function excluir_pessoa_juridica( $enjid ){
+	    
+	    $moDemandante = new Demandantes_Model();
+	    return $moDemandante->excluir_pessoa_juridica( $enjid );
 	}	
 }
